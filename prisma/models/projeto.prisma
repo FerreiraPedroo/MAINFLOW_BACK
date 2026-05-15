@@ -1,0 +1,11 @@
+model Projeto {
+  id              Int         @id @default(autoincrement())
+  codigo          String // PRO-014-261_BS1
+  titulo          String // [BS] Adequações Estacionamento - Paris 194
+  periodo         String // 2026.1, 2026.2, 2027.1
+  orcamento       Int
+  unidade_id      Int
+  unidade         Unidade     @relation(fields: [unidade_id], references: [id])
+  centro_custo_id Int
+  centro_custo    CentroCusto @relation(fields: [centro_custo_id], references: [id])
+}

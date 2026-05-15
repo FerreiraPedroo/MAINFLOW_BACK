@@ -1,0 +1,14 @@
+model Unidade {
+  id                Int           @id @default(autoincrement())
+  sigla             String        @unique
+  area              String
+  grupo             String
+  endereco_curto    String?       @unique
+  endereco_completo String        @unique
+  mapa_google       String?
+  coordenada        Json
+  fotos             Json //Quando for para postgres SQL 
+  localizacao       Localizacao[]
+  centro_custo      CentroCusto[]
+  projeto           Projeto[]
+}

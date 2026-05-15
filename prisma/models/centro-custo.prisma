@@ -1,0 +1,7 @@
+model CentroCusto {
+  id         Int       @id @default(autoincrement())
+  titulo     String
+  unidade_id Int
+  unidade    Unidade   @relation(fields: [unidade_id], references: [id])
+  projeto    Projeto[]
+}

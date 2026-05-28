@@ -1,0 +1,12 @@
+model Address {
+  id                  Int           @id @default(autoincrement())
+  abbreviation        String        @unique // Nome curto do endereço. Ex: BS-NHD, BS-POLEM
+  zone                String                // Área em que está. Ex: Zona Norte (ZN), ZonaOeste (ZO)
+  grupo               String
+  short_address       String?       @unique
+  full_address        String        @unique
+  map_google          String?
+  coordinate          Json
+  photo               Json //Quando for para postgres SQL
+  business_unit       BusinessUnit[]
+}

@@ -1,0 +1,4 @@
+model Bloco {
+  id              Int         @id @default(autoincrement())
+  titulo          String
+}

@@ -1,0 +1,17 @@
+/**
+  PESSOA
+  - inicialmente são somente os funcionários.
+*/
+model People {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  birth_date            String
+  registration_number   String
+  photo                 String
+  sex                   String
+  hire_date             String
+  termination_date     String
+
+  allocation            Allocation?
+}
+

@@ -1,0 +1,17 @@
+/**
+  ALOCAÇÕES
+  - é onde uma Pessoa é alocada em um departamento, setor ou contrato se for o caso.
+  - inicialmente uma Pessoa só pode ser alocada em uma unica alocação.
+  - sempre que a acocação da Pessoa mudar deve ser registrado a data de inicio e o fim.
+*/
+model Allocation {
+  id              Int       @id @default(autoincrement())
+  people_id       Int       @unique
+  people          People    @relation(fields: [people_id], references: [id])
+  departament_id  Int
+  sector_id       Int
+  contract_id     Int
+  start_date      String
+  end_date        String
+}
+

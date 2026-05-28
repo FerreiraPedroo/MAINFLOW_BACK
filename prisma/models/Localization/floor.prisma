@@ -1,0 +1,4 @@
+model Floor {
+  id             Int         @id @default(autoincrement())
+  title          String
+}

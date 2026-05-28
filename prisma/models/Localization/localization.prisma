@@ -1,0 +1,9 @@
+model Localization {
+  id                Int     @id @default(autoincrement())
+  block             String
+  floor             String
+  space_type        String
+  space_name        String  @unique // Ex: Lab. Gastronomia, Lab. Informárica, Lab. Mecânica
+  business_unit_id  Int
+  business_unit     BusinessUnit @relation(fields: [business_unit_id], references: [id])
+}

@@ -1,9 +1,0 @@
-model Localizacao {
-  id          Int     @id @default(autoincrement())
-  bloco       String
-  andar       String
-  espaco_tipo String
-  espaco_nome String  @unique // Ex: Lab. Gastronomia, Lab. Informárica, Lab. Mecânica
-  unidade_id  Int
-  unidade     Unidade @relation(fields: [unidade_id], references: [id])
-}

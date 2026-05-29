@@ -1,0 +1,14 @@
+/**
+*   [parallel]: habilita a etapa paralela, quer dizer que essa etapa pode ser finalizada antes das etapas anteriores serem finalizadas. Ex: True / False
+*   [sequence]: em qual sequencia está na instancia do processo.Ex: 1, 2, 3, 4, 5, ...
+*
+*
+*/
+
+model ProcessStepInstance {
+    id                      Int     @id @default(autoincrement())
+    sequence                Int
+    parallel                Boolean     
+    process_instance_id     Int
+    process_instance        ProcessInstance     @relation(fields: [process_instance_id], references: [id])
+}

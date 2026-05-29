@@ -1,0 +1,8 @@
+model ProcessStepModel {
+    id                      Int     @id @default(autoincrement())
+    sequence                Int
+    parallel                Int
+    process_model_id        Int
+    process_model           ProcessModel     @relation(fields: [process_model_id], references: [id])
+
+}

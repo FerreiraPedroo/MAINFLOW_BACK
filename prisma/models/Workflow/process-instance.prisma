@@ -1,0 +1,11 @@
+// quando for exibir a lista de processos deve buscar por aqui.
+// Ex: getProcessos - a API deve direcionar para o id do processo.
+//     quer dizer que getProcessos é id: 1
+// 
+model ProcessInstance {
+    id                          Int          @id @default(autoincrement())
+    process_model_id            Int
+    people_id                   Int
+    people                      People      @relation(fields: [people_id], references: [id])
+    process_step_instance       ProcessStepInstance[]
+}

@@ -1,0 +1,5 @@
+model ProcessModel {
+    id                  Int     @id     @default(autoincrement())
+    title               String  // nome do processo. Ex: Criação de projeto, Edição de projeto
+    process_steps       ProcessStepModel[]
+}

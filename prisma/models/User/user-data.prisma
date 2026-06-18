@@ -1,0 +1,10 @@
+model UserData {
+    id                  Int                 @id     @default(autoincrement())
+    user_id             Int
+    user                User                @relation(fields: [user_id], references: [id])
+    role                String
+
+    business_unit_id    Int
+    business_unit       BusinessUnit        @relation(fields: [business_unit_id], references:[id]) 
+
+}

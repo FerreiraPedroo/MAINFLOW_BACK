@@ -1,8 +1,20 @@
+//
+//
+// A etapa aponta para a página que será exibida.
+//
+//
+//
 model ProcessStepModel {
     id                      Int     @id @default(autoincrement())
-    sequence                Int
-    parallel                Int
+    page                    String  // aqui é a página do etapa do processo, que pode ser exibido dentro de outra página
+    sequence                Int     // em qual posição aparece essa sequencia.
+    parallel                Boolean // se a etapa é paralela, se pode ser concluida antes das etapas anteriores
+
+    users                   User[]
+    // group_users             GroupUser[]
+        
     process_model_id        Int
     process_model           ProcessModel     @relation(fields: [process_model_id], references: [id])
 
 }
+

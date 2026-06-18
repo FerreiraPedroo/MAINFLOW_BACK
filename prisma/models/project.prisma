@@ -1,11 +1,18 @@
+
 model Project {
   id                  Int             @id @default(autoincrement())
   code                String          // PRO-014-261_BS1
   title               String          // [BS] Adequações Estacionamento - Paris 194
   period              String          // 2026.1, 2026.2, 2027.1
   budget              Float           // 25000.00 | igual a R$25.000,00
+  status              String          // PENDENTE, APROVADO, REJEITADO, RASCUNHO
+
+  process_id          Int             //
+  process             ProcessInstance @relation(fields: [process_id], references: [id])
+  
   business_unit_id    Int
   business_unit       BusinessUnit    @relation(fields: [business_unit_id], references: [id])
+  
   center_cost_id      Int
   center_cost         CenterCost      @relation(fields: [center_cost_id], references: [id])
 }

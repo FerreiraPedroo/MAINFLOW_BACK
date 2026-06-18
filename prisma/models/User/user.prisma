@@ -1,0 +1,14 @@
+model User {
+  id                  Int          @id @default(autoincrement())
+  user                String       // o 'user' é o email.
+  name                String
+  birth_date          String
+  photo               String
+  user_data           UserData
+
+  process_step_model  ProcessStepModel[]
+  business_unit_id    Int
+  business_unit       BusinessUnit @relation(fields: [business_unit_id], references: [id])
+
+  process_instance ProcessInstance[]
+}

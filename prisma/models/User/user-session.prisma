@@ -1,0 +1,8 @@
+model UserSession {
+    id                  Int
+    session_token       String
+    user_id             Int
+    user                User          @relation(fields: [user_id], references: [id])
+    business_unit_id    Int
+    business_unit       BusinessUnit
+}

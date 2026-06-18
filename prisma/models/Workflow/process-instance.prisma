@@ -1,11 +1,29 @@
-// quando for exibir a lista de processos deve buscar por aqui.
-// Ex: getProcessos - a API deve direcionar para o id do processo.
-//     quer dizer que getProcessos é id: 1
-// 
+//  Quase todo modelo tem uma lista de processos.
+//  Quando abre um CRUD básico é criado um processo que é atrelado.
+//  Projeto -> novo projeto = cria uma instancia do processo de criar um projeto e
+//                            atrela ao registro do processo.
+//  
+//
+//
+
 model ProcessInstance {
-    id                          Int          @id @default(autoincrement())
+    id                          Int                     @id @default(autoincrement())
     process_model_id            Int
-    people_id                   Int
-    people                      People      @relation(fields: [people_id], references: [id])
+
+    history                     Json
     process_step_instance       ProcessStepInstance[]
+    project                     Project[]
+    
+    user_id                     Int
+    user                        User                    @relation(fields: [user_id], references: [id])
+    
+    business_unit_id            Int
+    business_unit               BusinessUnit            @relation(fields: [business_unit_id], references: [id])
+    
+    department_id               Int
+    department                  Department              @relation(fields: [department_id], references: [id])
+    
+    sector_id                   Int
+    sector                      Sector?                 @relation(fields: [sector_id], references: [id])
+    
 }

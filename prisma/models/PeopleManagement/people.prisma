@@ -13,6 +13,5 @@ model People {
   termination_date     String
 
   allocation            Allocation?
-  process_instance      ProcessInstance[]
 }
 

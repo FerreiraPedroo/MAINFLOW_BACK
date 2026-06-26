@@ -1,4 +1,4 @@
-model EspacoTipo {
+model EspaceType {
   id              Int         @id @default(autoincrement())
   title           String
 }

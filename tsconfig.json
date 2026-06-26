@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
+    "lib": ["ES2023"],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@prisma/*": ["./prisma/*"],
+      "@database/*": ["./src/database/*"],
       "@models/*": ["./src/database/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@common/*": ["./src/common/*"],
     },
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "resolvePackageJsonExports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
@@ -19,9 +25,10 @@
     "outDir": "./dist",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
+    "strict": true,
+    // "strictNullChecks": true,
+    // "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
   }

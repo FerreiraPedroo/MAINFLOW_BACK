@@ -13,6 +13,6 @@ model Project {
   business_unit_id    Int
   business_unit       BusinessUnit    @relation(fields: [business_unit_id], references: [id])
   
-  center_cost_id      Int
-  center_cost         CenterCost      @relation(fields: [center_cost_id], references: [id])
+  cost_center_id      Int
+  cost_center         CostCenter      @relation(fields: [cost_center_id], references: [id])
 }

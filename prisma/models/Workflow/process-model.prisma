@@ -8,7 +8,7 @@
 model ProcessModel {
     id                          Int     @id     @default(autoincrement())
     title                       String  // nome do processo. Ex: Criação de projeto, Edição de projeto
-    process_api                 String  // aqui é o identificador do processo. Ex: POST/project/new
+    process_call                String  // aqui é o identificador do processo. Ex: POST/project/new
     status                      String  // Status do processo. Ex: PENDENTE, CANCELADO, APROVADO
 
     process_steps_model         ProcessStepModel[]

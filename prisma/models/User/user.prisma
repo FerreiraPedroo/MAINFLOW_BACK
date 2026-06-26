@@ -4,11 +4,13 @@ model User {
   name                String
   birth_date          String
   photo               String
-  user_data           UserData
 
-  process_step_model  ProcessStepModel[]
   business_unit_id    Int
   business_unit       BusinessUnit @relation(fields: [business_unit_id], references: [id])
 
-  process_instance ProcessInstance[]
+  user_data           UserData?
+  user_session        UserSession?
+
+  process_step_model  ProcessStepModel[]
+  process_instance    ProcessInstance[]
 }

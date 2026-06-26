@@ -1,4 +1,4 @@
-model CenterCost {
+model CostCenter {
   id               Int          @id @default(autoincrement())
   title            String
   business_unit_id Int

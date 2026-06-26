@@ -8,12 +8,13 @@ model BusinessUnit {
 
   user                  User[]
   user_data             UserData[]
-  center_cost           CenterCost[]
+  cost_center           CostCenter[]
   department_sector     DepartmentSector[]
   department            Department[]
   process_model         ProcessModel[] 
   process_instance      ProcessInstance[] 
   localization          Localization[]
   project               Project[]
+  user_session          UserSession[]
 
 }

@@ -1,9 +1,10 @@
 model User {
   id                  Int          @id @default(autoincrement())
-  user                String       // o 'user' é o email.
+  email               String
+  password            String
   name                String
-  birth_date          String
-  photo               String
+  birth_date          String?
+  photo               String?
 
   business_unit_id    Int
   business_unit       BusinessUnit @relation(fields: [business_unit_id], references: [id])

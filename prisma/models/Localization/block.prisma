@@ -1,4 +1,4 @@
 model Block {
   id              Int         @id @default(autoincrement())
-  titulo          String
+  title          String
 }

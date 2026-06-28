@@ -1,13 +1,12 @@
 model Sector {
     id                      Int             @id     @default(autoincrement())
-    title                   String
-    url                     String
-    icon                    String
+    title                   String          @unique
+    icon                    String?
     
     department_id           Int
-    department              Department      @relation(fields: [default_department_id], references:[id])
-    default_department_id   Int
+    department              Department      @relation(fields: [department_id], references:[id])
 
+    process_item            ProcessItem[]
     process_model           ProcessModel[]    
     process_instance        ProcessInstance[]    
     department_sector       DepartmentSector[]

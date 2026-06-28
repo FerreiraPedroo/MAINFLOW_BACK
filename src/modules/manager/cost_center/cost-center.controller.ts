@@ -1,29 +1,38 @@
-import { Controller, Get, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 
-import type { FindCostCenterDto, FindCostCenterResponseDto } from "./dto";
+import type { FindCostCenterDto } from "./dto";
 
 import { CostCenterService } from "./cost-center.service";
+import type { CreateCostCenterDto } from "./dto/create-cost-center.dto";
 
 @Controller("/manager/cost-center")
 export class CostCenterController {
   constructor(private costCenterService: CostCenterService) {}
 
   @Get()
-  async findCostCenter(
-    @Query() query: FindCostCenterDto,
-  ): Promise<FindCostCenterResponseDto[]> {
-    const costCenter = await this.costCenterService.findAll(query);
+  async findCostCenter(@Query() query: FindCostCenterDto) {
+    try {
+      const costCenterList = await this.costCenterService.findAll(query);
 
-    const costCenterList = costCenter.map((cost) => ({
-      id: cost.id,
-      title: cost.title,
-    }));
-
-    return costCenterList;
+      return { codStatus: 200, data: costCenterList };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { codStatus: 500, message: error.message };
+      }
+      return { codStatus: 500, message: "Erro do servidor." };
+    }
   }
 
   @Post()
-  async createCostCenter(@Body() body: CreateCostCenterDto){
-    
+  async createCostCenter(@Body() body: CreateCostCenterDto) {
+    try {
+      const costCenterCreated = await this.costCenterService.create(body);
+      return { codStatus: 200, data: costCenterCreated };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { codStatus: 500, message: error.message };
+      }
+      return { codStatus: 500, message: "Erro do servidor." };
+    }
   }
 }

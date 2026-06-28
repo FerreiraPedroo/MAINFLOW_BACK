@@ -1,5 +1,6 @@
 export interface CreateCostCenterDto {
-  id: number;
   title: string;
   status: string;
+  description?: string;
+  business_unit_id?: number;
 }

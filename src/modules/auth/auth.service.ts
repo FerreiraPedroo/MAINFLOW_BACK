@@ -1,34 +1,33 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+export interface JwtPayload {
+  user: string;
+  businessId: number;
+}
 @Injectable()
 export class AuthService {
   constructor(private jwtService: JwtService) {}
 
-  async generateToken(payload: { user: string; businessId: number }) {
-    const token = await this.jwtService.signAsync(
-      {
-        payload: `${payload.user}:${payload.businessId}`,
-      },
-      {
-        secret: "SECRET",
-        // expiresIn: "7D",
-      },
-    );
+  async generateToken(
+    user: string,
+    businessId: number,
+  ): Promise<{ token: string }> {
+    const token = await this.jwtService.signAsync({
+      payload: { user, businessId },
+    });
 
-    return token;
+    return { token };
   }
 
-  async validateToken(token: string) {
+  async validateToken(token: string): Promise<JwtPayload> {
     try {
-      const tokenValid = await this.jwtService.verifyAsync(token);
+      return await this.jwtService.verifyAsync(token);
     } catch {
       throw new UnauthorizedException({
         codStatus: 401,
         message: "Não foi possivel efetuar o login.",
       });
     }
-
-    return token;
   }
 }

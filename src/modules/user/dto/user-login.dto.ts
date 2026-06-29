@@ -1,4 +1,5 @@
 export interface UserLoginResponseDto {
+  tokenInfo: string;
   userInfo: {
     id: number;
     name: string;
@@ -9,8 +10,6 @@ export interface UserLoginResponseDto {
     role: string;
     departments: DepartmentType[];
   };
-
-  tokenInfo: string;
 }
 
 type DepartmentType = {

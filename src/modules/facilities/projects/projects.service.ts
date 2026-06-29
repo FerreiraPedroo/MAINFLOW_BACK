@@ -1,17 +1,47 @@
 import { Injectable } from "@nestjs/common";
 
-import { FindProjectDto } from "@modules/facilities/projects/dto/index.js";
-import { PrismaClient } from "@prisma/generated/client.js";
+import { ProjectRepository } from "./repository/project.repository";
+import { FindAllProjectResponseDto } from "./dto/find-all-project-response.dto";
 
 @Injectable()
 export class ProjectsService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private projectRepository: ProjectRepository) {}
 
-  getProject(id: number): string {
-    return "";
+  async getById(id: number): {
+    const project = await this.projectRepository.getById(id);
+
+    if (!project) {
+      return project;
+    } else {
+      return {
+        id: project.id,
+        code: project.code,
+        title: project.title,
+        period: project.period,
+        budget: project.budget,
+        status: project.status,
+        cost_center: {
+          id: project.cost_center.id,
+          title: project.cost_center.title,
+          description: project.cost_center.description,
+        },
+      };
+    }
   }
-  async findProject(query: FindProjectDto): string {
-    const result = await this.prisma.findProject(query);
-    return "";
+
+  async findAll(): Promise<FindAllProjectResponseDto[]> {
+    const projects = await this.projectRepository.findAll();
+
+    if (!projects) {
+      return [];
+    } else {
+      return projects.map((project) => ({
+        id: project.id,
+        code: project.code,
+        title: project.title,
+        period: project.period,
+        status: project.status,
+      }));
+    }
   }
 }

@@ -51,10 +51,10 @@ export class UserService {
     //   role: userDataFound.role,
     // };
 
-    const tokenInfo = await this.authService.generateToken({
-      user: userFound.email,
-      businessId: userFound.business_unit_id,
-    });
+    const tokenInfo = await this.authService.generateToken(
+      userFound.email,
+      userFound.business_unit_id,
+    );
 
     return { userInfo, departmentsInfo, tokenInfo };
   }

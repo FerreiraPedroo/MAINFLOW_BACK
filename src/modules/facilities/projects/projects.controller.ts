@@ -1,16 +1,21 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ProjectsService } from "./projects.service.js";
+import { FindAllProjectResponseDto } from "./dto/find-all-project-response.dto.js";
 
 @Controller("/facilities/projects")
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Get("/:id")
-  getProject(@Param("id") id: number): string {
-    return this.projectsService.getProject(id);
+  getProject(@Param("id") id: number) {
+    return this.projectsService.getById(id);
   }
   @Get()
-  findProject(@Query() query: FindProjectDto): string {
-    return this.projectsService.findProject(query);
+  async findAll(): Promise<FindAllProjectResponseDto[]> {
+    return await this.projectsService.findAll();
   }
+  // @Get()
+  // findAll(@Query() query: FindProjectDto): string {
+  //   return this.projectsService.findAll();
+  // }
 }

@@ -9,15 +9,12 @@ export interface JwtPayload {
 export class AuthService {
   constructor(private jwtService: JwtService) {}
 
-  async generateToken(
-    user: string,
-    businessId: number,
-  ): Promise<{ token: string }> {
+  async generateToken(user: string, businessId: number): Promise<string> {
     const token = await this.jwtService.signAsync({
       payload: { user, businessId },
     });
 
-    return { token };
+    return token;
   }
 
   async validateToken(token: string): Promise<JwtPayload> {

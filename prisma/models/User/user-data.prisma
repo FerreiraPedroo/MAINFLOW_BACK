@@ -3,6 +3,8 @@ model UserData {
     user_id             Int                 @unique
     user_info           User                @relation(fields: [user_id], references: [id])
     role                String
+    
+    department_sector   DepartmentSector[]
 
     business_unit_id    Int
     business_unit       BusinessUnit        @relation(fields: [business_unit_id], references:[id]) 

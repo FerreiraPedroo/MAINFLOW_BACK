@@ -7,5 +7,7 @@ export class UserDataService {
 
   async getUserData(userId: number) {
     return await this.userDataRepository.getUserData(userId);
+
+    
   }
 }

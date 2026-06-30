@@ -7,7 +7,7 @@ import { FindAllProjectResponseDto } from "./dto/find-all-project-response.dto";
 export class ProjectsService {
   constructor(private projectRepository: ProjectRepository) {}
 
-  async getById(id: number): {
+  async getById(id: number) {
     const project = await this.projectRepository.getById(id);
 
     if (!project) {

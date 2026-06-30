@@ -28,6 +28,7 @@ export class UserService {
       password,
       userFound.password,
     );
+
     if (!passwordCompare) {
       throw Error(`{ codStatus: 401, message: "Usuário o senha errados." }`);
     }
@@ -45,6 +46,8 @@ export class UserService {
         `{ codStatus: 401, message: "Os dados do usuário não foram encontrados." }`,
       );
     }
+
+    const departmentSectors = await this.
 
     const departmentsInfo = { role: "", departments: [] };
     // = {

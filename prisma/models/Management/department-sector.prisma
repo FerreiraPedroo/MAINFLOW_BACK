@@ -1,6 +1,8 @@
 model DepartmentSector {
-    id                  Int     @id     @default(autoincrement())
+    id                  Int             @id     @default(autoincrement())
     order               Int
+    user_data_id        Int
+    user_data           UserData        @relation(fields:[user_data_id], references:[id])
 
     department_id       Int
     department          Department      @relation(fields:[department_id], references:[id])

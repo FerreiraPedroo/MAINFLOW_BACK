@@ -47,7 +47,7 @@ export class UserService {
       );
     }
 
-    const departmentSectors = await this.
+
 
     const departmentsInfo = { role: "", departments: [] };
     // = {

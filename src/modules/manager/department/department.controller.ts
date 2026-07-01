@@ -17,7 +17,6 @@ export class DepartmentController {
           userId,
           businessUnitId,
         );
--,,,,,,,
 
       return { codStatus: 200, data: departmentList };
     } catch (error: unknown) {

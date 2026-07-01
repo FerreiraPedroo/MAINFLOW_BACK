@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { HashService } from "@/common/service/hash.service";
+import { EncryptService } from "@/common/service/encrypt.service";
 
 import { UserController } from "./user.controller";
 
@@ -14,11 +14,12 @@ import { UserDataRepository } from "./repositories/user-data-repository";
   imports: [],
   controllers: [UserController],
   providers: [
-    HashService,
+    EncryptService,
     UserService,
     UserDataService,
     UserRepository,
     UserDataRepository,
   ],
+  exports: [UserService],
 })
 export class UserModule {}

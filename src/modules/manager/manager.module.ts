@@ -7,5 +7,6 @@ import { DepartmentModule } from "./department/department.module";
   imports: [CostCenterModule, DepartmentModule],
   controllers: [ManagerController],
   providers: [],
+  exports: [],
 })
 export class ManagerModule {}

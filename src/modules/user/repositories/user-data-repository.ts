@@ -1,9 +1,10 @@
+import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+
 
 @Injectable()
 export class UserDataRepository {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaService) {}
 
   async getUserData(userId: number) {
     return await this.prisma.userData.findFirst({

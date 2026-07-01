@@ -1,0 +1,13 @@
+import { Body, Controller, Post } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+
+@Controller("/auth")
+export class AuthController {
+  constructor(private authService: AuthService) {}
+
+  @Post("/login")
+  async singIn(@Body() body: { email: string; password: string }) {
+    const userFound = await this.authService.signIn(body.email, body.password);
+    return { statusCode: 200, data: userFound };
+  }
+}

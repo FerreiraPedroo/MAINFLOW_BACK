@@ -14,5 +14,6 @@ import { DepartmentSectorRepository } from "./repositories/department-sector.rep
     DepartmentRepository,
     DepartmentSectorRepository,
   ],
+  exports: [DepartmentService],
 })
 export class DepartmentModule {}

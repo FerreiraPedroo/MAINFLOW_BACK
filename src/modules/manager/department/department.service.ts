@@ -28,6 +28,8 @@ export class DepartmentService {
         userId,
         businessUnitId,
       );
+
+    return departmentSector;
   }
 
   // async create(body: CreateDepartmentDto) {

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "@modules/user/user.service";
 
@@ -9,6 +9,8 @@ import {
 } from "./interfaces/departments.interface";
 import { EncryptService } from "@/common/service/encrypt.service";
 import { DepartmentService } from "@modules/manager/department/department.service";
+import type { Cache } from "cache-manager";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 
 export interface JwtPayload {
   user: string;
@@ -18,6 +20,7 @@ export interface JwtPayload {
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private encryptService: EncryptService,
     private userService: UserService,
@@ -107,33 +110,24 @@ export class AuthService {
     }
 
     const tokenInfo = await this.generateToken(
-      userFound.email,
+      userFound.id,
       userFound.business_unit_id,
     );
 
-    /***
-     * ADICIONAR INFORMAÇÕES AO REDIS E/OU CACHE
-     */
+    const cacheUser = await this.cacheManager.set(
+      `userId:${userFound.id}:businessId:${userFound.business_unit_id}`,
+      { departmentsSectors },
+    );
+
 
     return { userInfo, tokenInfo, departmentsInfo };
   }
 
-  async generateToken(user: string, businessId: number): Promise<string> {
+  async generateToken(userId: number, businessId: number): Promise<string> {
     const token = await this.jwtService.signAsync({
-      payload: { user, businessId },
+      payload: { userId, businessId },
     });
 
     return token;
-  }
-
-  async validateToken(token: string): Promise<JwtPayload> {
-    try {
-      return await this.jwtService.verifyAsync(token);
-    } catch {
-      throw new UnauthorizedException({
-        codStatus: 401,
-        message: "Não foi possivel efetuar o login.",
-      });
-    }
   }
 }

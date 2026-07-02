@@ -1,19 +1,25 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
 import { AuthModule } from "@modules/auth/auth.module";
 import { PrismaModule } from "@database/prisma/prisma.module";
 
-import { UserModule } from "./modules/user/user.module";
+import { UserCacheLoadMiddlware } from "@common/middlewares/user-cache-load.middleware";
+
+import { UserModule } from "@modules/user/user.module";
 import { AdminModule } from "@modules/admin/admin.module";
 import { ManagerModule } from "@modules/manager/manager.module";
-import { ProcessModule } from "./modules/process/process.module";
+import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
-import { UserCacheLoadMiddlware } from "./common/middlewares/user-cache-load.middleware";
+import { AlsModule } from "@common/context/request-als-context.module";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
   imports: [
+    CacheModule.register({ isGlobal: true }),
+    AlsModule,
     AuthModule,
     PrismaModule,
     ManagerModule,
@@ -27,6 +33,6 @@ import { UserCacheLoadMiddlware } from "./common/middlewares/user-cache-load.mid
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserCacheLoadMiddlware).forRoutes("*");
+    consumer.apply(UserCacheLoadMiddlware).exclude("auth/login").forRoutes("*");
   }
 }

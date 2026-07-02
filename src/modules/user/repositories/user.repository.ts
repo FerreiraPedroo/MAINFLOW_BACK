@@ -6,9 +6,9 @@ import { PrismaService } from "@/database/prisma/prisma.service";
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUser(user: string): Promise<UserComplete | null> {
-    return await this.prisma.user.findFirst({
-      where: { email: user },
+  async getUser(email: string): Promise<UserComplete | null> {
+    return await this.prisma.user.findUnique({
+      where: { email },
       include: {
         business_unit: true,
         user_data: true,

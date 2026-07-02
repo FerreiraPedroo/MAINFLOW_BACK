@@ -30,6 +30,29 @@ async function main() {
     },
   });
 
+  const user = await prisma.user.upsert({
+    where: { email: "email@email.com" },
+    update: {},
+    create: {
+      email: "email@email.com",
+      password: "$2b$10$Y7JL8xYn5y.dkdSm7UKbXeBfz9F.N9NmBSOvswOKvZInFwA0RchRW",
+      name: "Usuário Admin",
+      birth_date: null,
+      photo: null,
+      business_unit_id: 1,
+    },
+  });
+
+  const userData = await prisma.userData.upsert({
+    where: { user_id: 1 },
+    update: {},
+    create: {
+      user_id: 1,
+      role: "ADMIN",
+      business_unit_id: 1,
+    },
+  });
+
   const department = await prisma.department.upsert({
     where: { title: "Gerenciamento" },
     update: {},
@@ -56,10 +79,10 @@ async function main() {
     create: {
       title: "Centro de custo",
       url: "/manager/cost-center",
+      icon: null,
       department_id: 1,
     },
   });
-
   const processItemLocalization = await prisma.processItem.upsert({
     where: { title: "Painel de localização" },
     update: {},
@@ -70,6 +93,63 @@ async function main() {
       sector_id: 1,
     },
   });
+  const processItemBuildings = await prisma.processItem.upsert({
+    where: { title: "Prédio" },
+    update: {},
+    create: {
+      title: "Prédio",
+      url: "/manager/buildings",
+      department_id: 1,
+      sector_id: 1,
+    },
+  });
+  const processItemFloor = await prisma.processItem.upsert({
+    where: { title: "Andar" },
+    update: {},
+    create: {
+      title: "Andar",
+      url: "/manager/floor",
+      department_id: 1,
+      sector_id: 1,
+    },
+  });
+
+  const departmentSector = await prisma.departmentSector.createMany({
+    data: [
+      {
+        order: 1,
+        user_data_id: 1,
+        department_id: 1,
+        sector_id: null,
+        process_item_id: 1,
+        business_unit_id: 1,
+      },
+      {
+        order: 2,
+        user_data_id: 1,
+        department_id: 1,
+        sector_id: 1,
+        process_item_id: 2,
+        business_unit_id: 1,
+      },
+      {
+        order: 3,
+        user_data_id: 1,
+        department_id: 1,
+        sector_id: 1,
+        process_item_id: 3,
+        business_unit_id: 1,
+      },
+      {
+        order: 4,
+        user_data_id: 1,
+        department_id: 1,
+        sector_id: 1,
+        process_item_id: 4,
+        business_unit_id: 1,
+      },
+    ],
+  });
 
   console.log({
     address,
@@ -78,6 +158,11 @@ async function main() {
     sector,
     processItemCostCenter,
     processItemLocalization,
+    user,
+    userData,
+    processItemBuildings,
+    processItemFloor,
+    departmentSector,
   });
 }
 

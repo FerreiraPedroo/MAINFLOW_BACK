@@ -3,11 +3,10 @@ export type AuthDepartmentSectorData = {
   title: string;
   url: string;
   icon: string | null;
-  sector: Sector[];
-  process_item: ProcessItem[];
+  itemsList: (SectorItem | ProcessItem)[];
 };
 
-type Sector = {
+export type SectorItem = {
   id: number;
   department_id: number;
   title: string;
@@ -15,7 +14,7 @@ type Sector = {
   process_item: ProcessItem[];
 };
 
-type ProcessItem = {
+export type ProcessItem = {
   id: number;
   department_id: number;
   sector_id: number | null;

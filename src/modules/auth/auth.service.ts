@@ -2,7 +2,11 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "@modules/user/user.service";
 
-import { AuthDepartmentSectorData } from "./interfaces/departments.interface";
+import {
+  AuthDepartmentSectorData,
+  ProcessItem,
+  SectorItem,
+} from "./interfaces/departments.interface";
 import { EncryptService } from "@/common/service/encrypt.service";
 import { DepartmentService } from "@modules/manager/department/department.service";
 
@@ -53,26 +57,28 @@ export class AuthService {
 
     if (departmentsSectors) {
       for (const departmentSector of departmentsSectors) {
-        const foundDepartment = departmentsInfo.find(
+        const foundDepartmentInfo = departmentsInfo.find(
           (dpto) => dpto.id == departmentSector.department_id,
         );
 
-        if (foundDepartment) {
-          if (departmentSector.sector) {
-            const foundSector = foundDepartment.sector.find(
-              (sector) => sector.id === departmentSector.sector_id,
+        if (foundDepartmentInfo) {
+          if (departmentSector.sector_id) {
+            const foundSector = foundDepartmentInfo.itemsList.find(
+              (sector): sector is SectorItem =>
+                sector.id === departmentSector.sector_id &&
+                "process_item" in sector,
             );
 
             if (foundSector) {
               foundSector.process_item.push(departmentSector.process_item);
             } else {
-              foundDepartment.sector.push({
-                ...departmentSector.sector,
+              foundDepartmentInfo.itemsList.push({
+                ...(departmentSector.sector as SectorItem),
                 process_item: [departmentSector.process_item],
               });
             }
           } else {
-            foundDepartment.process_item.push(departmentSector.process_item);
+            foundDepartmentInfo.itemsList.push(departmentSector.process_item);
           }
         } else {
           const newDepartment: AuthDepartmentSectorData = {
@@ -80,18 +86,19 @@ export class AuthService {
             title: departmentSector.department.title,
             url: departmentSector.department.url,
             icon: departmentSector.department.icon,
-            sector: [],
-            process_item: [],
+            itemsList: [],
           };
 
           if (departmentSector.sector) {
-            newDepartment.sector.push({
+            newDepartment.itemsList.push({
               id: departmentSector.sector.id,
               department_id: departmentSector.sector.department_id,
               title: departmentSector.sector.title,
               icon: departmentSector.sector.icon,
               process_item: [departmentSector.process_item],
             });
+          } else {
+            newDepartment.itemsList.push(departmentSector.process_item);
           }
 
           departmentsInfo.push(newDepartment);
@@ -103,7 +110,6 @@ export class AuthService {
       userFound.email,
       userFound.business_unit_id,
     );
-
 
     /***
      * ADICIONAR INFORMAÇÕES AO REDIS E/OU CACHE

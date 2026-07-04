@@ -7,16 +7,16 @@ import {
 } from "@nestjs/common";
 
 import { JwtService } from "@nestjs/jwt";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
-import type { Cache } from "cache-manager";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
-
-import { RequestContextService } from "../context/request-als.service";
+import { AlsContextService } from "../context/als-context.service";
+import { RequestAlsContext } from "../context/interfaces/request-als.context.interface";
+import { DepartmentSectorComplete } from "@/modules/manager/department/types/department-sector.type";
 
 @Injectable()
 export class UserCacheLoadMiddlware implements NestMiddleware {
   constructor(
-    private requestContext: RequestContextService,
+    private requestContext: AlsContextService,
     private jwtService: JwtService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
@@ -47,9 +47,10 @@ export class UserCacheLoadMiddlware implements NestMiddleware {
       );
     }
 
-    const userCacheData = await this.cacheManager.get(
-      `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
-    );
+    const userCacheData: DepartmentSectorComplete[] | undefined =
+      await this.cacheManager.get(
+        `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
+      );
 
     if (!userCacheData) {
       throw new UnauthorizedException(
@@ -57,7 +58,7 @@ export class UserCacheLoadMiddlware implements NestMiddleware {
       );
     }
 
-    const store = {
+    const store: RequestAlsContext = {
       userId: userPayload.userId,
       businessUnitId: userPayload.businessId,
       userData: userCacheData,

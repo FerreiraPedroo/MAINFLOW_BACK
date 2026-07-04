@@ -5,9 +5,10 @@ import { DepartmentController } from "./department.controller";
 
 import { DepartmentRepository } from "./repositories/department.repository";
 import { DepartmentSectorRepository } from "./repositories/department-sector.repository";
+import { AlsModule } from "@/common/context/als-context.module";
 
 @Module({
-  imports: [],
+  imports: [AlsModule],
   controllers: [DepartmentController],
   providers: [
     DepartmentService,

@@ -4,13 +4,11 @@ import { UserService } from "@modules/user/user.service";
 
 import {
   AuthDepartmentSectorData,
-  ProcessItem,
   SectorItem,
 } from "./interfaces/departments.interface";
 import { EncryptService } from "@/common/service/encrypt.service";
 import { DepartmentService } from "@modules/manager/department/department.service";
-import type { Cache } from "cache-manager";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 export interface JwtPayload {
   user: string;
@@ -51,7 +49,7 @@ export class AuthService {
     };
 
     const departmentsSectors =
-      await this.departmentService.findDepartmentSectorByUserId(
+      await this.departmentService.findDepartmentSectorByUserIdForLogin(
         userFound.id,
         userFound.business_unit_id,
       );
@@ -114,11 +112,10 @@ export class AuthService {
       userFound.business_unit_id,
     );
 
-    const cacheUser = await this.cacheManager.set(
+    await this.cacheManager.set(
       `userId:${userFound.id}:businessId:${userFound.business_unit_id}`,
-      { departmentsSectors },
+      departmentsSectors,
     );
-
 
     return { userInfo, tokenInfo, departmentsInfo };
   }

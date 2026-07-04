@@ -4,6 +4,8 @@ model ProcessItem {
     icon                String?
     url                 String
 
+    business_unit_data  BusinessUnitData[]
+    
     department_id       Int
     department          Department  @relation(fields: [department_id],references:[id] )
 

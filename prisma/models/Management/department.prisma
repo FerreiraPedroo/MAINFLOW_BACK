@@ -4,6 +4,8 @@ model Department {
     url                 String
     icon                String?
 
+    business_unit_data  BusinessUnitData[]
+    
     business_unit       BusinessUnit[]
     department_sector   DepartmentSector[]
 

@@ -3,9 +3,9 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class DepartmentRepository {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prismaService.department.findMany();
+    return await this.prisma.department.findMany();
   }
 }

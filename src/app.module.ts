@@ -13,7 +13,7 @@ import { AdminModule } from "@modules/admin/admin.module";
 import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
-import { AlsModule } from "@common/context/request-als-context.module";
+import { AlsModule } from "@/common/context/als-context.module";
 import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({

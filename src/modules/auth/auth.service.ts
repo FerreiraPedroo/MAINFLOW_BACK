@@ -3,12 +3,13 @@ import { JwtService } from "@nestjs/jwt";
 import { UserService } from "@modules/user/user.service";
 
 import {
-  AuthDepartmentSectorData,
+  AuthUserDepartmentSectorData,
   SectorItem,
 } from "./interfaces/departments.interface";
 import { EncryptService } from "@/common/service/encrypt.service";
 import { DepartmentService } from "@modules/manager/department/department.service";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
+import { env } from "node:process";
 
 export interface JwtPayload {
   user: string;
@@ -49,57 +50,59 @@ export class AuthService {
     };
 
     const departmentsSectors =
-      await this.departmentService.findDepartmentSectorByUserIdForLogin(
+      await this.departmentService.findUserDepartmentSectorByUserIdForLogin(
         userFound.id,
         userFound.business_unit_id,
       );
 
-    const departmentsInfo: AuthDepartmentSectorData[] = [];
+    const departmentsInfo: AuthUserDepartmentSectorData[] = [];
 
     if (departmentsSectors) {
-      for (const departmentSector of departmentsSectors) {
+      for (const userDepartmentSector of departmentsSectors) {
         const foundDepartmentInfo = departmentsInfo.find(
-          (dpto) => dpto.id == departmentSector.department_id,
+          (dpto) => dpto.id == userDepartmentSector.department_id,
         );
 
         if (foundDepartmentInfo) {
-          if (departmentSector.sector_id) {
+          if (userDepartmentSector.sector_id) {
             const foundSector = foundDepartmentInfo.itemsList.find(
               (sector): sector is SectorItem =>
-                sector.id === departmentSector.sector_id &&
+                sector.id === userDepartmentSector.sector_id &&
                 "process_item" in sector,
             );
 
             if (foundSector) {
-              foundSector.process_item.push(departmentSector.process_item);
+              foundSector.process_item.push(userDepartmentSector.process_item);
             } else {
               foundDepartmentInfo.itemsList.push({
-                ...(departmentSector.sector as SectorItem),
-                process_item: [departmentSector.process_item],
+                ...(userDepartmentSector.sector as SectorItem),
+                process_item: [userDepartmentSector.process_item],
               });
             }
           } else {
-            foundDepartmentInfo.itemsList.push(departmentSector.process_item);
+            foundDepartmentInfo.itemsList.push(
+              userDepartmentSector.process_item,
+            );
           }
         } else {
-          const newDepartment: AuthDepartmentSectorData = {
-            id: departmentSector.id,
-            title: departmentSector.department.title,
-            url: departmentSector.department.url,
-            icon: departmentSector.department.icon,
+          const newDepartment: AuthUserDepartmentSectorData = {
+            id: userDepartmentSector.id,
+            title: userDepartmentSector.department.title,
+            url: userDepartmentSector.department.url,
+            icon: userDepartmentSector.department.icon,
             itemsList: [],
           };
 
-          if (departmentSector.sector) {
+          if (userDepartmentSector.sector) {
             newDepartment.itemsList.push({
-              id: departmentSector.sector.id,
-              department_id: departmentSector.sector.department_id,
-              title: departmentSector.sector.title,
-              icon: departmentSector.sector.icon,
-              process_item: [departmentSector.process_item],
+              id: userDepartmentSector.sector.id,
+              department_id: userDepartmentSector.sector.department_id,
+              title: userDepartmentSector.sector.title,
+              icon: userDepartmentSector.sector.icon,
+              process_item: [userDepartmentSector.process_item],
             });
           } else {
-            newDepartment.itemsList.push(departmentSector.process_item);
+            newDepartment.itemsList.push(userDepartmentSector.process_item);
           }
 
           departmentsInfo.push(newDepartment);

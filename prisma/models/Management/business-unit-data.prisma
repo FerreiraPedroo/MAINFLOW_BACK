@@ -1,8 +1,0 @@
-model BusinessUnitData {
-  id                    Int     @id @default(autoincrement())
-  business_unit_id      Int
-  business_unit         BusinessUnit @relation(fields: [business_unit_id], references: [id])
-
-  departments_id        Department[]
-  process_items_id      ProcessItem[]
-}

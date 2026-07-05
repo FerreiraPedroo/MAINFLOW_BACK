@@ -23,4 +23,4 @@ docker ps --filter "name=MAINFLOW_POSTGRES"
 - Se a porta NÃO estiver exposta:Você precisará recriar o contêiner abrindo a porta.
   docker stop MAINFLOW_POSTGRES
   docker rm MAINFLOW_POSTGRES
-  docker run --name MAINFLOW_POSTGRES -e POSTGRES_PASSWORD=sua_senha -e POSTGRES_DB=mainflow -p 5432:5432 -d postgres
+  docker run --name MAINFLOW_POSTGRES -e POSTGRES_PASSWORD=12345678 -e POSTGRES_DB=mainflow -p 5432:5432 -d postgres

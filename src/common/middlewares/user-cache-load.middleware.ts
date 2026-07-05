@@ -11,7 +11,7 @@ import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 import { AlsContextService } from "../context/als-context.service";
 import { RequestAlsContext } from "../context/interfaces/request-als.context.interface";
-import { DepartmentSectorComplete } from "@/modules/manager/department/types/department-sector.type";
+import { UserDepartmentSectorComplete } from "@/modules/manager/department/types/department-sector.type";
 
 @Injectable()
 export class UserCacheLoadMiddlware implements NestMiddleware {
@@ -47,7 +47,7 @@ export class UserCacheLoadMiddlware implements NestMiddleware {
       );
     }
 
-    const userCacheData: DepartmentSectorComplete[] | undefined =
+    const userCacheData: UserDepartmentSectorComplete[] | undefined =
       await this.cacheManager.get(
         `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
       );

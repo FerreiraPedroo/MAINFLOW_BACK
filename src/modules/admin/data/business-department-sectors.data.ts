@@ -1,4 +1,4 @@
-export type AuthUserDepartmentSectorData = {
+export type BusinessDepartmentSectorsData = {
   id: number;
   title: string;
   url: string;

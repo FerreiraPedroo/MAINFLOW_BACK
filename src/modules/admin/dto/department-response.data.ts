@@ -1,10 +1,10 @@
-export type AuthUserDepartmentSectorData = {
+export interface DepartmentDataResponse {
   id: number;
   title: string;
   url: string;
   icon: string | null;
   itemsList: (SectorItem | ProcessItem)[];
-};
+}
 
 export type SectorItem = {
   id: number;

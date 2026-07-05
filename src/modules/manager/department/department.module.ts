@@ -4,7 +4,7 @@ import { DepartmentService } from "./department.service";
 import { DepartmentController } from "./department.controller";
 
 import { DepartmentRepository } from "./repositories/department.repository";
-import { DepartmentSectorRepository } from "./repositories/department-sector.repository";
+import { UserDepartmentSectorRepository } from "./repositories/department-sector.repository";
 import { AlsModule } from "@/common/context/als-context.module";
 
 @Module({
@@ -13,7 +13,7 @@ import { AlsModule } from "@/common/context/als-context.module";
   providers: [
     DepartmentService,
     DepartmentRepository,
-    DepartmentSectorRepository,
+    UserDepartmentSectorRepository,
   ],
   exports: [DepartmentService],
 })

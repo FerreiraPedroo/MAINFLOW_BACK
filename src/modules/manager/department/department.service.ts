@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DepartmentRepository } from "./repositories/department.repository";
-import { DepartmentSectorRepository } from "./repositories/department-sector.repository";
+import { UserDepartmentSectorRepository } from "./repositories/department-sector.repository";
 import { AlsContextService } from "@/common/context/als-context.service";
 import { RequestAlsContext } from "@/common/context/interfaces/request-als.context.interface";
 
@@ -8,7 +8,7 @@ import { RequestAlsContext } from "@/common/context/interfaces/request-als.conte
 export class DepartmentService {
   constructor(
     private departmentRepository: DepartmentRepository,
-    private departmentSectorRepository: DepartmentSectorRepository,
+    private userDepartmentSectorRepository: UserDepartmentSectorRepository,
     private requestContext: AlsContextService,
   ) {}
 
@@ -27,28 +27,28 @@ export class DepartmentService {
   }
 
   // DEPARTMENT-SECTOR ///////////////////////////////////////////
-  async findDepartmentSectorByUserId() {
+  async findUserDepartmentSectorByUserId() {
     const userData = this.requestContext.getStore() as RequestAlsContext;
 
-    const departmentSector =
-      await this.departmentSectorRepository.findDepartmetSectorByUserId(
+    const userDepartmentSector =
+      await this.userDepartmentSectorRepository.findDepartmetSectorByUserId(
         userData.userId,
         userData.businessUnitId,
       );
 
-    return departmentSector;
+    return userDepartmentSector;
   }
-  async findDepartmentSectorByUserIdForLogin(
+  async findUserDepartmentSectorByUserIdForLogin(
     userId: number,
     businessUnitId: number,
   ) {
-    const departmentSector =
-      await this.departmentSectorRepository.findDepartmetSectorByUserId(
+    const userDepartmentSector =
+      await this.userDepartmentSectorRepository.findDepartmetSectorByUserId(
         userId,
         businessUnitId,
       );
 
-    return departmentSector;
+    return userDepartmentSector;
   }
 
   // async create(body: CreateDepartmentDto) {

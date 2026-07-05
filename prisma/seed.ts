@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
 });
 
 async function main() {
@@ -114,42 +114,41 @@ async function main() {
     },
   });
 
-  const departmentSector = await prisma.departmentSector.createMany({
-    data: [
-      {
-        order: 1,
-        user_data_id: 1,
-        department_id: 1,
-        sector_id: null,
-        process_item_id: 1,
-        business_unit_id: 1,
-      },
-      {
-        order: 2,
-        user_data_id: 1,
-        department_id: 1,
-        sector_id: 1,
-        process_item_id: 2,
-        business_unit_id: 1,
-      },
-      {
-        order: 3,
-        user_data_id: 1,
-        department_id: 1,
-        sector_id: 1,
-        process_item_id: 3,
-        business_unit_id: 1,
-      },
-      {
-        order: 4,
-        user_data_id: 1,
-        department_id: 1,
-        sector_id: 1,
-        process_item_id: 4,
-        business_unit_id: 1,
-      },
-    ],
-  });
+  //
+  //
+  //
+  //
+
+  const businessUnitDepartment = await prisma.businessUnitDepartment.createMany(
+    {
+      data: [
+        {
+          department_id: 1,
+          sector_id: null,
+          process_item_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          department_id: 1,
+          sector_id: 1,
+          process_item_id: 2,
+          business_unit_id: 1,
+        },
+        {
+          department_id: 1,
+          sector_id: 1,
+          process_item_id: 3,
+          business_unit_id: 1,
+        },
+        {
+          department_id: 1,
+          sector_id: 1,
+          process_item_id: 4,
+          business_unit_id: 1,
+        },
+      ],
+    },
+  );
 
   console.log({
     address,
@@ -162,7 +161,6 @@ async function main() {
     userData,
     processItemBuildings,
     processItemFloor,
-    departmentSector,
   });
 }
 

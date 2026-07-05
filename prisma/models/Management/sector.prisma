@@ -1,13 +1,14 @@
 model Sector {
-    id                      Int             @id     @default(autoincrement())
-    title                   String          @unique
-    icon                    String?
+    id                         Int             @id     @default(autoincrement())
+    title                      String          @unique
+    icon                       String?
     
-    department_id           Int
-    department              Department      @relation(fields: [department_id], references:[id])
+    department_id               Int
+    department                  Department      @relation(fields: [department_id], references:[id])
 
-    process_item            ProcessItem[]
-    process_model           ProcessModel[]    
-    process_instance        ProcessInstance[]    
-    department_sector       DepartmentSector[]
+    process_item                ProcessItem[]
+    process_model               ProcessModel[]    
+    process_instance            ProcessInstance[]    
+    business_unit_department    BusinessUnitDepartment[]
+    user_department_sector      UserDepartmentSector[]
 }

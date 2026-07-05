@@ -1,16 +1,16 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { DepartmentSectorComplete } from "../types/department-sector.type";
+import { UserDepartmentSectorComplete } from "../types/department-sector.type";
 
 @Injectable()
-export class DepartmentSectorRepository {
+export class UserDepartmentSectorRepository {
   constructor(private prismaService: PrismaService) {}
 
   async findDepartmetSectorByUserId(
     userId: number,
     businessUnitId: number,
-  ): Promise<DepartmentSectorComplete[] | null> {
-    return await this.prismaService.departmentSector.findMany({
+  ): Promise<UserDepartmentSectorComplete[] | null> {
+    return await this.prismaService.userDepartmentSector.findMany({
       where: {
         user_data_id: userId,
         business_unit_id: businessUnitId,

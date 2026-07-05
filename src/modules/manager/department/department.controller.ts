@@ -7,9 +7,9 @@ export class DepartmentController {
   constructor(private departmentService: DepartmentService) {}
 
   @Get()
-  async findDepartmentSector() {
+  async findUserDepartmentSector() {
     const departmentList =
-      await this.departmentService.findDepartmentSectorByUserId();
+      await this.departmentService.findUserDepartmentSectorByUserId();
 
     return { statusCode: 200, data: departmentList };
   }

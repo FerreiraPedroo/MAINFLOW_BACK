@@ -18,6 +18,7 @@ export class AdminService {
   async getBusinessById(businessId: number) {
     return await this.adminRepository.getBusinessById(businessId);
   }
+
   async findBusinessDepartments(businessId: number) {
     const businessDepartments =
       await this.adminRepository.findBusinessDepartments(businessId);
@@ -81,13 +82,14 @@ export class AdminService {
 
     return departmentsInfo;
   }
+
   async addDepartmentToBusiness(request: AddDepartmentToBusinessRequest) {
-    const businessUnitDepartment: BusinessDepartmentData[] =
+    const businessUnitDepartments: BusinessDepartmentData[] =
       await this.adminRepository.findBusinessDepartments(request.businessId);
 
-    if (businessUnitDepartment.length) {
+    if (businessUnitDepartments.length) {
       const departmentProcess = request.departmentProcess.find((dp) => {
-        return businessUnitDepartment.find((bud) => {
+        return businessUnitDepartments.find((bud) => {
           return (
             bud.department_id == dp.departmentId &&
             bud.sector_id == dp.sectorId &&
@@ -95,7 +97,19 @@ export class AdminService {
           );
         });
       });
-
+      /**
+       *
+       *
+       *
+       *
+       *
+       *
+       *
+       *
+       *
+       *
+       *
+       */
       if (departmentProcess) {
         throw new UnprocessableEntityException(
           "O processo do departamento já esta alocado a unidade de negócio.",

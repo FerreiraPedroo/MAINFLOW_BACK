@@ -1,6 +1,6 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { BusinessUnit, Department } from "@prisma/client";
+import { BusinessUnit, Department, Prisma } from "@prisma/client";
 import { BusinessDepartmentData } from "../data/business-departments.data";
 import { CreateDepartmentRequest } from "../dto/create-department.request.dto";
 import { DepartmentData } from "../data/department-data.interface";
@@ -18,7 +18,7 @@ export class AdminRepository {
   async findBusinessDepartments(
     businessId: number,
   ): Promise<BusinessDepartmentData[]> {
-    return await this.prisma.$queryRaw`
+    const result = await this.prisma.$queryRaw`
       SELECT bud.*,
         TO_JSONB(d) as department,
         TO_JSONB(s) as sector,
@@ -33,6 +33,8 @@ export class AdminRepository {
       WHERE bud.business_unit_id = ${Number(businessId)}
       GROUP BY bud.id, d.id, s.id, i.id
     `;
+
+    return result as BusinessDepartmentData[];
   }
   async addDepartmentToBusiness(
     businessId: number,
@@ -45,10 +47,12 @@ export class AdminRepository {
     const queryValues = processItems
       .map(
         (pi) =>
-          `(${businessId}), ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
+          `(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
       )
-      .join(",");
-    console.log({ queryValues });
+      .join(", ")
+      .concat(";");
+
+    console.log(queryValues);
     return await this.prisma.$queryRaw`
       INSERT INTO "BusinessUnitDepartment" 
       ("business_unit_id", "department_id", "sector_id", "process_item_id")

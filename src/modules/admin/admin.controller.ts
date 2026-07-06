@@ -12,12 +12,12 @@ export class AdminController {
   async getBusinessById(@Param("businessId") businessId: number) {
     return await this.adminService.getBusinessById(businessId);
   }
-  @Get("business-units/:businessId/department")
+  @Get("business-units/:businessId/departments")
   async findBusinessDepartments(@Param("businessId") businessId: number) {
     return await this.adminService.findBusinessDepartments(businessId);
   }
 
-  @Post("business-units/:businessId/department")
+  @Post("business-units/:businessId/departments")
   async addDepartmentToBusiness(
     @Body() request: AddDepartmentToBusinessRequest,
   ) {

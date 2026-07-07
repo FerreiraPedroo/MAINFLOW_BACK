@@ -119,37 +119,6 @@ async function main() {
   //
   //
 
-  const businessUnitDepartment = await prisma.businessUnitDepartment.createMany(
-    {
-      data: [
-        {
-          department_id: 1,
-          sector_id: null,
-          process_item_id: 1,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          process_item_id: 2,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          process_item_id: 3,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          process_item_id: 4,
-          business_unit_id: 1,
-        },
-      ],
-    },
-  );
-
   console.log({
     address,
     businessUnit,

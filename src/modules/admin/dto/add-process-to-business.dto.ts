@@ -1,6 +1,6 @@
-export type AddDepartmentToBusinessRequest = {
+export type AddProcessToBusinessRequest = {
   businessId: number;
-  departmentProcess: {
+  processItems: {
     departmentId: number;
     sectorId: number | null;
     processItemId: number;

@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { AdminService } from "./admin.service";
-import type { AddDepartmentToBusinessRequest } from "./dto/add-department-to-business.dto";
+import type { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
 import type { CreateDepartmentRequest } from "./dto/create-department.request.dto";
 
 @Controller("admin")
@@ -18,10 +18,13 @@ export class AdminController {
   }
 
   @Post("business-units/:businessId/departments")
-  async addDepartmentToBusiness(
-    @Body() request: AddDepartmentToBusinessRequest,
-  ) {
-    return await this.adminService.addDepartmentToBusiness(request);
+  async addProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
+    return await this.adminService.addProcessToBusiness(request);
+  }
+
+  @Delete("business-units/:businessId/departments")
+  async removeProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
+    return await this.adminService.removeProcessToBusiness(request);
   }
 
   //

@@ -1,7 +1,7 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { BusinessUnit, Department, Prisma } from "@prisma/client";
-import { BusinessDepartmentData } from "../data/business-departments.data";
+import { BusinessProcessData } from "../data/business-departments.data";
 import { CreateDepartmentRequest } from "../dto/create-department.request.dto";
 import { DepartmentData } from "../data/department-data.interface";
 
@@ -15,15 +15,15 @@ export class AdminRepository {
       where: { id: Number(businessId) },
     });
   }
-  async findBusinessDepartments(
+  async findBusinessProcess(
     businessId: number,
-  ): Promise<BusinessDepartmentData[]> {
+  ): Promise<BusinessProcessData[]> {
     const result = await this.prisma.$queryRaw`
       SELECT bud.*,
         TO_JSONB(d) as department,
         TO_JSONB(s) as sector,
         TO_JSONB(i) as process_item
-      FROM "BusinessUnitDepartment" bud
+      FROM "BusinessUnitProcess" bud
       JOIN "Department" d
         ON d.id = bud.department_id
       LEFT JOIN "Sector" s
@@ -34,9 +34,9 @@ export class AdminRepository {
       GROUP BY bud.id, d.id, s.id, i.id
     `;
 
-    return result as BusinessDepartmentData[];
+    return result as BusinessProcessData[];
   }
-  async addDepartmentToBusiness(
+  async addProcessToBusiness(
     businessId: number,
     processItems: {
       departmentId: number;
@@ -44,20 +44,30 @@ export class AdminRepository {
       processItemId: number;
     }[],
   ) {
-    const queryValues = processItems
-      .map(
-        (pi) =>
-          `(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
-      )
-      .join(", ")
-      .concat(";");
+    const queryValues = processItems.map(
+      (pi) =>
+        Prisma.sql`(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
+    );
 
     console.log(queryValues);
     return await this.prisma.$queryRaw`
-      INSERT INTO "BusinessUnitDepartment" 
+      INSERT INTO "BusinessUnitProcess" 
       ("business_unit_id", "department_id", "sector_id", "process_item_id")
-      VALUES ${queryValues}
+      VALUES ${Prisma.join(queryValues)}
     `;
+  }
+  async removeProcessToBusiness(
+    businessId: number,
+    businessProcessIds: number[],
+  ) {
+    return await this.prisma.businessUnitProcess.deleteMany({
+      where: {
+        AND: [
+          { business_unit_id: businessId },
+          { id: { in: businessProcessIds } },
+        ],
+      },
+    });
   }
 
   // DEPARTMENTS

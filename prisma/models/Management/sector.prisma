@@ -9,6 +9,6 @@ model Sector {
     process_item                ProcessItem[]
     process_model               ProcessModel[]    
     process_instance            ProcessInstance[]    
-    business_unit_department    BusinessUnitDepartment[]
+    business_unit_process    BusinessUnitProcess[]
     user_department_sector      UserDepartmentSector[]
 }

@@ -1,16 +1,16 @@
 model Department {
-    id                          Int     @id @default(autoincrement())
-    title                       String  @unique
-    url                         String
-    icon                        String?
+    id    Int     @id @default(autoincrement())
+    title String  @unique
+    url   String
+    icon  String?
 
-    business_unit               BusinessUnit[]
-    business_unit_department    BusinessUnitDepartment[]
-    user_department_sector      UserDepartmentSector[]
+    business_unit          BusinessUnit[]
+    business_unit_process  BusinessUnitProcess[]
+    user_department_sector UserDepartmentSector[]
 
-    process_item                ProcessItem[]
-    process_model               ProcessModel[]
-    process_instance            ProcessInstance[]
+    process_item     ProcessItem[]
+    process_model    ProcessModel[]
+    process_instance ProcessInstance[]
 
-    sector                        Sector[]
+    sector Sector[]
 }

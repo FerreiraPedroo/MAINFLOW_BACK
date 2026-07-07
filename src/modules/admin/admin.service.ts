@@ -7,8 +7,9 @@ import {
 import { CreateDepartmentRequest } from "./dto/create-department.request.dto";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { DepartmentDataResponse } from "./dto/department-response.data";
-import { AddDepartmentToBusinessRequest } from "./dto/add-department-to-business.dto";
-import { BusinessDepartmentData } from "./data/business-departments.data";
+import { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
+import { BusinessProcessData } from "./data/business-departments.data";
+import { RemoveProcessToBusinessRequest } from "./dto/remove-process-to-business.request.dto";
 
 @Injectable()
 export class AdminService {
@@ -20,8 +21,8 @@ export class AdminService {
   }
 
   async findBusinessDepartments(businessId: number) {
-    const businessDepartments =
-      await this.adminRepository.findBusinessDepartments(businessId);
+    const businessDepartments: BusinessProcessData[] =
+      await this.adminRepository.findBusinessProcess(businessId);
 
     if (!businessDepartments) {
       return [];
@@ -83,47 +84,88 @@ export class AdminService {
     return departmentsInfo;
   }
 
-  async addDepartmentToBusiness(request: AddDepartmentToBusinessRequest) {
-    const businessUnitDepartments: BusinessDepartmentData[] =
-      await this.adminRepository.findBusinessDepartments(request.businessId);
+  async addProcessToBusiness(request: AddProcessToBusinessRequest) {
+    if (!request.processItems.length) {
+      throw new UnprocessableEntityException(
+        "Nenhum processo foi selecionado para associar a unidade de negócio.",
+      );
+    }
 
-    if (businessUnitDepartments.length) {
-      const departmentProcess = request.departmentProcess.find((dp) => {
-        return businessUnitDepartments.find((bud) => {
-          return (
-            bud.department_id == dp.departmentId &&
-            bud.sector_id == dp.sectorId &&
-            bud.process_item_id == dp.processItemId
-          );
-        });
+    const businessUnit = await this.getBusinessById(request.businessId);
+    if (!businessUnit) {
+      throw new UnprocessableEntityException(
+        "Dados da unidade de negócio não encontrado.",
+      );
+    }
+
+    const businessUnitProcess: BusinessProcessData[] =
+      await this.adminRepository.findBusinessProcess(request.businessId);
+
+    if (businessUnitProcess.length) {
+      const filterBusinessProcess = request.processItems.filter((dp) => {
+        return !businessUnitProcess.find(
+          (bud) => bud.process_item_id == dp.processItemId,
+        );
       });
-      /**
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       */
-      if (departmentProcess) {
-        throw new UnprocessableEntityException(
-          "O processo do departamento já esta alocado a unidade de negócio.",
-        );
-      } else {
-        const businessDepartment = this.adminRepository.addDepartmentToBusiness(
+
+      if (filterBusinessProcess.length) {
+        const businessProcess = await this.adminRepository.addProcessToBusiness(
           request.businessId,
-          request.departmentProcess,
+          filterBusinessProcess,
         );
-        return businessDepartment;
+        return businessProcess;
+      } else {
+        throw new UnprocessableEntityException(
+          "O(s) processo(s) já esta alocado a unidade de negócio.",
+        );
+      }
+    } else {
+      const businessProcess = await this.adminRepository.addProcessToBusiness(
+        request.businessId,
+        request.processItems,
+      );
+      return businessProcess;
+    }
+  }
+
+  async removeProcessToBusiness(request: RemoveProcessToBusinessRequest) {
+    if (!request.processItems.length) {
+      throw new UnprocessableEntityException(
+        "Nenhum processo foi selecionado para remover da unidade de negócio.",
+      );
+    }
+
+    const businessUnit = await this.getBusinessById(request.businessId);
+    if (!businessUnit) {
+      throw new UnprocessableEntityException(
+        "Dados da unidade de negócio não encontrado.",
+      );
+    }
+
+    const businessUnitProcess: BusinessProcessData[] =
+      await this.adminRepository.findBusinessProcess(request.businessId);
+
+    if (businessUnitProcess.length) {
+      const removeBusinessProcess = businessUnitProcess.filter((bup) => {
+        return request.processItems.find(
+          (dp) => bup.process_item_id == dp.processItemId,
+        );
+      });
+
+      if (removeBusinessProcess.length) {
+        await this.adminRepository.removeProcessToBusiness(
+          request.businessId,
+          removeBusinessProcess.map((bup) => bup.id),
+        );
+        return "Processo removido da unidade de negócio.";
+      } else {
+        throw new UnprocessableEntityException(
+          "O processo não esta alocado a unidade de negócio.",
+        );
       }
     } else {
       throw new UnprocessableEntityException(
-        "Dados da unidade de negócio não encontrado.",
+        "A unidade de negócio não tem nenhum processo associado.",
       );
     }
   }

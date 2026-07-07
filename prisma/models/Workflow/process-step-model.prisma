@@ -1,20 +1,26 @@
 //
 //
 // A etapa aponta para a página que será exibida.
+// page: pode ser um modal com a página da ação da pessoa no processo
 //
 //
 //
 model ProcessStepModel {
     id                      Int     @id @default(autoincrement())
+    title                   String  // Ex: Aprovação de EPI, Classificação de EPI, Adicionar EPI, Validar EPIs
     page                    String  // aqui é a página do etapa do processo, que pode ser exibido dentro de outra página
     sequence                Int     // em qual posição aparece essa sequencia.
     parallel                Boolean // se a etapa é paralela, se pode ser concluida antes das etapas anteriores
+    finish_process          Boolean // Se aprovado a etapa o processo é finalizado.
+
 
     users                   User[]
     // group_users             GroupUser[]
         
     process_model_id        Int
     process_model           ProcessModel     @relation(fields: [process_model_id], references: [id])
+
+    process_step_instance   ProcessStepInstance[]
 
 }
 

@@ -7,8 +7,19 @@
 
 model ProcessStepInstance {
     id                      Int     @id @default(autoincrement())
+    title                   String
+    page                    String  // aqui é a página do etapa do processo, que pode ser exibido dentro de outra página
     sequence                Int
     parallel                Boolean     
+    finish_process          Boolean
+
+    users                   Users[]
+    // group_users             GroupUser[]
+    
     process_instance_id     Int
     process_instance        ProcessInstance     @relation(fields: [process_instance_id], references: [id])
+    
+    process_step_model_id   Int
+    process_step_model      ProcessStepModel    @relation(fields: [process_step_model_id], references: [id])
+
 }

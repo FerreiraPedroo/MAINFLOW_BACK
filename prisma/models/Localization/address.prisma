@@ -5,7 +5,7 @@ model Address {
   short_address       String?       @unique
   full_address        String        @unique
   map_google          String?
-  coordinate          Json?
-  photo               Json? //Quando for para postgres SQL
+  coordinate          String?
+  photo               String? //Quando for para postgres SQL
   business_unit       BusinessUnit[]
 }

@@ -12,8 +12,6 @@ export class ProcessModelRepository {
     return await this.prisma.processModel.findMany({
       where: { business_unit_id: businessUnitId },
       include: {
-        department: true,
-        sector: true,
         process_item: true,
         process_steps_model: true,
       },

@@ -8,20 +8,18 @@
 model ProcessModel {
     id                          Int     @id     @default(autoincrement())
     title                       String  @unique // nome do processo. Ex: Criação de projeto, Edição de projeto
-    process_call                String  // aqui é o identificador do processo. Ex: POST/project/new
-    status                      String  // Status do processo. Ex: PENDENTE, CANCELADO, APROVADO
 
-    process_steps_model         ProcessStepModel[]
+    process_item_id             Int                     @unique // item do processo.
+    process_item                ProcessItem             @relation(fields:[process_item_id], references: [id])
+
+    process_call                String  @unique // aqui é o identificador do processo. Ex: POST/project/new
+    status                      String          // Status modelo do processo. Ex: PENDENTE, CANCELADO, APROVADO
+
+
+    process_item_instance       ProcessInstance[]   // A instancia do modelo
+    process_steps_model         ProcessStepModel[]  // Os modelos das etapas do processo.
     
     business_unit_id            Int
     business_unit               BusinessUnit            @relation(fields: [business_unit_id], references: [id])
-    
-    department_id               Int
-    department                  Department              @relation(fields: [department_id], references: [id])
-    
-    sector_id                   Int
-    sector                      Sector?                 @relation(fields: [sector_id], references: [id])
 
-    process_item_id             Int
-    process_item                ProcessItem             @relation(fields:[process_item_id], references: [id])
 }

@@ -1,9 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 });
+// export const prisma: PrismaClient = new PrismaClient({
+//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+// });
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -24,7 +28,7 @@ async function main() {
     update: {},
     create: {
       title: "UNISUAM",
-      photos: {},
+      photos: "",
       address_id: 1,
       cnpj: "01.002.004/0001-02",
     },
@@ -118,6 +122,37 @@ async function main() {
   //
   //
   //
+
+  // const businessUnitDepartment = await prisma.businessUnitDepartment.createMany(
+  //   {
+  //     data: [
+  //       {
+  //         department_id: 1,
+  //         sector_id: null,
+  //         process_item_id: 1,
+  //         business_unit_id: 1,
+  //       },
+  //       {
+  //         department_id: 1,
+  //         sector_id: 1,
+  //         process_item_id: 2,
+  //         business_unit_id: 1,
+  //       },
+  //       {
+  //         department_id: 1,
+  //         sector_id: 1,
+  //         process_item_id: 3,
+  //         business_unit_id: 1,
+  //       },
+  //       {
+  //         department_id: 1,
+  //         sector_id: 1,
+  //         process_item_id: 4,
+  //         business_unit_id: 1,
+  //       },
+  //     ],
+  //   },
+  // );
 
   console.log({
     address,

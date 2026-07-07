@@ -1,7 +1,7 @@
-export type FindAllProjectResponseDto = {
+export interface FindProjectsResponse {
   id: number;
-  code: string;
+  code: string | null;
   title: string;
   period: string;
   status: string;
-};
+}

@@ -1,10 +1,10 @@
 model BusinessUnit {
-  id         Int     @id @default(autoincrement())
-  title      String  @unique
-  photos     Json? //Quando for para postgres SQL 
-  address_id Int
-  address    Address @relation(fields: [address_id], references: [id])
-  cnpj       String
+  id                        Int     @id @default(autoincrement())
+  title                     String  @unique
+  photos                    String? //Quando for para postgres SQL
+  address_id                Int
+  address                   Address @relation(fields: [address_id], references: [id])
+  cnpj                      String
 
   business_unit_process BusinessUnitProcess[]
 

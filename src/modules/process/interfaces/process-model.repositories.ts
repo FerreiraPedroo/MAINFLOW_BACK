@@ -13,7 +13,6 @@ export class ProcessModelRepository {
       where: { business_unit_id: businessUnitId },
       include: {
         process_item: true,
-        process_steps_model: true,
       },
     });
   }

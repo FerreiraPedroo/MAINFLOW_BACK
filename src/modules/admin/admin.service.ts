@@ -45,7 +45,7 @@ export class AdminService {
             );
 
             if (foundSector) {
-              foundSector.process_item.push(businessDepartment.process_item);
+              foundSector.process_item.push(businessDepartment.process_item.sector_id);
             } else {
               foundDepartmentInfo.itemsList.push({
                 ...(businessDepartment.sector as SectorItem),

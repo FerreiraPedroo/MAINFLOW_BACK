@@ -1,12 +1,9 @@
-import {
-  BusinessUnitProcess,
-  Department,
-  ProcessItem,
-  Sector,
-} from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
-export type BusinessProcessData = BusinessUnitProcess & {
-  department: Department;
-  sector: Sector;
-  process_item: ProcessItem;
-};
+export type BusinessProcessData = Prisma.BusinessUnitProcessGetPayload<{
+  include: {
+    department: true;
+    sector: true;
+    process_item: true;
+  };
+}>;

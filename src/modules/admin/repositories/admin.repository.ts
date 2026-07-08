@@ -18,23 +18,33 @@ export class AdminRepository {
   async findBusinessProcess(
     businessId: number,
   ): Promise<BusinessProcessData[]> {
-    const result = await this.prisma.$queryRaw`
-      SELECT bud.*,
-        TO_JSONB(d) as department,
-        TO_JSONB(s) as sector,
-        TO_JSONB(i) as process_item
-      FROM "BusinessUnitProcess" bud
-      JOIN "Department" d
-        ON d.id = bud.department_id
-      LEFT JOIN "Sector" s
-        ON s.id = bud.sector_id
-      JOIN "ProcessItem" i
-        ON i.id = bud.process_item_id
-      WHERE bud.business_unit_id = ${Number(businessId)}
-      GROUP BY bud.id, d.id, s.id, i.id
-    `;
+    const result = await this.prisma.businessUnitProcess.findMany({
+      where: { business_unit_id: Number(businessId) },
+      include: {
+        department: true,
+        sector: true,
+        process_item: true,
+      },
+    });
 
-    return result as BusinessProcessData[];
+    // const result = await this.prisma.$queryRaw`
+    //   SELECT bud.*,
+    //     TO_JSONB(d) as department,
+    //     TO_JSONB(s) as sector,
+    //     TO_JSONB(i) as process_item
+    //   FROM "BusinessUnitProcess" bud
+    //   JOIN "Department" d
+    //     ON d.id = bud.department_id
+    //   LEFT JOIN "Sector" s
+    //     ON s.id = bud.sector_id
+    //   JOIN "ProcessItem" i
+    //     ON i.id = bud.process_item_id
+    //   WHERE bud.business_unit_id = ${Number(businessId)}
+    //   GROUP BY bud.id, d.id, s.id, i.id
+    // `;
+    // return result as BusinessProcessData[];
+
+    return result;
   }
   async addProcessToBusiness(
     businessId: number,

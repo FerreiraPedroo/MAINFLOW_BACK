@@ -10,6 +10,8 @@ model BusinessUnit {
 
   user              User[]
   user_data         UserData[]
+  user_session      UserSession[]
+  group_user        GroupUser[]
   cost_center       CostCenter[]
   department_sector UserDepartmentSector[]
   department        Department[]
@@ -17,5 +19,4 @@ model BusinessUnit {
   process_instance  ProcessInstance[]
   localization      Localization[]
   project           Project[]
-  user_session      UserSession[]
 }

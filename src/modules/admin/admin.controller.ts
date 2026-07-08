@@ -12,8 +12,8 @@ export class AdminController {
   async getBusinessById(@Param("businessId") businessId: number) {
     return await this.adminService.getBusinessById(businessId);
   }
-  @Get("business-units/:businessId/departments")
-  async findBusinessDepartments(@Param("businessId") businessId: number) {
+  @Get("business-units/:businessId/process")
+  async findBusinessProcess(@Param("businessId") businessId: number) {
     return await this.adminService.findBusinessDepartments(businessId);
   }
 

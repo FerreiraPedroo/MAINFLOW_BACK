@@ -7,5 +7,6 @@ import { CostCenterRepository } from "./repositories/cost-center.repository";
   imports: [],
   controllers: [CostCenterController],
   providers: [CostCenterService, CostCenterRepository],
+  exports: [CostCenterRepository],
 })
 export class CostCenterModule {}

@@ -7,7 +7,7 @@ model Sector {
     department                  Department      @relation(fields: [department_id], references:[id])
 
     process_item                ProcessItem[]
-    process_instance            ProcessInstance[]    
-    business_unit_process    BusinessUnitProcess[]
+   
+    business_unit_process       BusinessUnitProcess[]
     user_department_sector      UserDepartmentSector[]
 }

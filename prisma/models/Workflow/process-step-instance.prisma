@@ -10,11 +10,13 @@ model ProcessStepInstance {
     title                   String
     page                    String  // aqui é a página do etapa do processo, que pode ser exibido dentro de outra página
     sequence                Int
+    status                  String
     parallel                Boolean     
     finish_process          Boolean
 
-    users                   Users[]
-    // group_users             GroupUser[]
+    approval_group_users    GroupUser[]
+    approved_by             User[]
+    approved_at             String
     
     process_instance_id     Int
     process_instance        ProcessInstance     @relation(fields: [process_instance_id], references: [id])

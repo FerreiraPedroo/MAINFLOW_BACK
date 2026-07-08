@@ -1,17 +1,19 @@
 model User {
-  id                  Int          @id @default(autoincrement())
-  email               String       @unique
-  password            String
-  name                String
-  birth_date          String?
-  photo               String?
+  id                      Int          @id @default(autoincrement())
+  email                   String       @unique
+  password                String
+  name                    String
+  birth_date              String?
+  photo                   String?
 
-  business_unit_id    Int
-  business_unit       BusinessUnit @relation(fields: [business_unit_id], references: [id])
+  groups                  GroupUser[]
 
-  user_data           UserData?
-  user_session        UserSession?
+  business_unit_id        Int
+  business_unit           BusinessUnit @relation(fields: [business_unit_id], references: [id])
 
-  process_step_model  ProcessStepModel[]
-  process_instance    ProcessInstance[]
+  user_data               UserData?
+  user_session            UserSession?
+
+  process_instances       ProcessInstance[]
+  process_step_instances  ProcessStepInstance[]
 }

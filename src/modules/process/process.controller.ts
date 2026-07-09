@@ -1,16 +1,17 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ProcessService } from "./process.service";
+import type { CreateProcessModelRequest } from "./dto/create-process-model-request.dto";
 
-@Controller("/process")
+@Controller("admin")
 export class ProcessController {
   constructor(private processService: ProcessService) {}
 
-  @Get("/models")
-  async getProcessModelByBusinessUnit(
-    @Query("businessUnitId") businessUnitId: number,
-  ) {
-    return await this.processService.getProcessModelByBusinessUnitId(
-      businessUnitId,
-    );
+  @Get("process-models")
+  async findAllProcessModels() {
+    return await this.processService.findAllProcessModels();
+  }
+  @Post("process-models")
+  async createProcessModel(@Body() request: CreateProcessModelRequest) {
+    return await this.processService.createProcessModel(request);
   }
 }

@@ -2,23 +2,18 @@
 //  Todo processo é um página com seus próprios dados.
 //
 model ProcessModel {
-    id                      Int                     @id     @default(autoincrement())
-    title                   String                  @unique // nome processo. Ex: Criação de projeto, Edição de projeto
+    id    Int    @id @default(autoincrement())
+    title String @unique // nome processo. Ex: Criação de projeto, Edição de projeto
 
     // O identificador do processo. Ex: CREATE:PROJECT, UPDATE:PROJECT. Esse será chamado pela serviço do back.
-    process_call            String                  @unique 
+    process_call String @unique
 
     // O status do modelo, Ex: PENDENTE, CANCELADO, APROVADO. O modelo deve estar com o status aprovado para começar a ser utilizado.
-    status                  String                  
+    status String
 
-    process_item_id         Int                     @unique // Item do processo.
-    process_item            ProcessItem             @relation(fields:[process_item_id], references: [id])
+    process_item_id Int         @unique // Item do processo.
+    process_item    ProcessItem @relation(fields: [process_item_id], references: [id])
 
-
-    process_steps_models    ProcessStepModel[]      // Os modelos das etapas do processo.
-    process_instances       ProcessInstance[]       // A instancias do modelo.
-    
-    business_unit_id        Int
-    business_unit           BusinessUnit            @relation(fields: [business_unit_id], references: [id])
-
+    process_steps_models ProcessStepModel[] // Os modelos das etapas do processo.
+    process_instances    ProcessInstance[] // A instancias do modelo.
 }

@@ -4,7 +4,7 @@ model Sector {
     icon                       String?
     
     department_id               Int
-    department                  Department      @relation(fields: [department_id], references:[id])
+    department                  Department      @relation(fields: [department_id], references:[id], onDelete: Restrict)
 
     process_item                ProcessItem[]
    

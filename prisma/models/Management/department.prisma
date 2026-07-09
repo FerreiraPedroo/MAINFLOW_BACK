@@ -12,4 +12,5 @@ model Department {
     process_step_model      ProcessStepModel[]
 
     sector Sector[]
+    
 }

@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { AdminService } from "./admin.service";
-import type { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
 import type { CreateDepartmentRequest } from "./dto/create-department.request.dto";
+import type { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
+import type { RemoveProcessToBusinessRequest } from "./dto/remove-process-to-business.request.dto";
+import type { CreateSectorRequest } from "./dto/create-sector.request";
 
 @Controller("admin")
 export class AdminController {
@@ -14,16 +16,16 @@ export class AdminController {
   }
   @Get("business-units/:businessId/process")
   async findBusinessProcess(@Param("businessId") businessId: number) {
-    return await this.adminService.findBusinessDepartments(businessId);
+    return await this.adminService.findBusinessProcess(businessId);
   }
-
-  @Post("business-units/:businessId/departments")
+  @Post("business-units/:businessId/process")
   async addProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
     return await this.adminService.addProcessToBusiness(request);
   }
-
-  @Delete("business-units/:businessId/departments")
-  async removeProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
+  @Delete("business-units/:businessId/process")
+  async removeProcessToBusiness(
+    @Body() request: RemoveProcessToBusinessRequest,
+  ) {
     return await this.adminService.removeProcessToBusiness(request);
   }
 
@@ -34,7 +36,14 @@ export class AdminController {
     return await this.adminService.findDepartments();
   }
   @Post("departments")
-  async createDepartment(@Body() body: CreateDepartmentRequest) {
-    return await this.adminService.createDepartment(body);
+  async createDepartment(@Body() request: CreateDepartmentRequest) {
+    return await this.adminService.createDepartment(request);
+  }
+
+  //
+  // SECTOR
+  @Post("sector")
+  async createSector(@Body() request: CreateSectorRequest ){
+    return await this.adminService.createSector(request)
   }
 }

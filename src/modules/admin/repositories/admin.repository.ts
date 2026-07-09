@@ -4,6 +4,8 @@ import { BusinessUnit, Department, Prisma } from "@prisma/client";
 import { BusinessProcessData } from "../data/business-departments.data";
 import { CreateDepartmentRequest } from "../dto/create-department.request.dto";
 import { DepartmentData } from "../data/department-data.interface";
+import { CreateDepartmentData } from "../data/create-department.data";
+import { CreateSectorData } from "../data/create-sector.data";
 
 @Injectable()
 export class AdminRepository {
@@ -59,7 +61,6 @@ export class AdminRepository {
         Prisma.sql`(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
     );
 
-    console.log(queryValues);
     return await this.prisma.$queryRaw`
       INSERT INTO "BusinessUnitProcess" 
       ("business_unit_id", "department_id", "sector_id", "process_item_id")
@@ -82,25 +83,28 @@ export class AdminRepository {
 
   // DEPARTMENTS
   async findDepartments(): Promise<DepartmentData[]> {
-    // return await this.prisma.department.findMany();
-    return await this.prisma.$queryRaw`
-      SELECT d.*,
-        TO_JSONB(s) as sector,
-        TO_JSONB(i) as process_item
-      FROM "Department" d
-      LEFT JOIN "ProcessItem" i
-        ON i.department_id = d.id
-      LEFT JOIN "Sector" s
-        ON s.department_id = d.id AND s.id = i.sector_id
-      GROUP BY d.id, s.id, i.id
-    `;
+    return await this.prisma.department.findMany({
+      include: {
+        sector: true,
+        process_item: true,
+      },
+    });
   }
-  async createDepartment(data: CreateDepartmentRequest): Promise<Department> {
+  async createDepartment(data: CreateDepartmentData): Promise<Department> {
     return await this.prisma.department.create({
       data: {
         title: data.title,
         url: data.url,
         icon: data.icon,
+      },
+    });
+  }
+
+  // SECTOR
+  async createSector(data: CreateSectorData) {
+    return await this.prisma.sector.create({
+      data: {
+        ...data,
       },
     });
   }

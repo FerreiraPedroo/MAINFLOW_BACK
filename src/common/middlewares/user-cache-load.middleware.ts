@@ -22,46 +22,52 @@ export class UserCacheLoadMiddlware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    let token: string | undefined;
-    try {
-      token = req.headers.authorization?.replace("Bearer ", "");
+    // let token: string | undefined;
+    // try {
+    //   token = req.headers.authorization?.replace("Bearer ", "");
 
-      if (!token) {
-        throw new Error();
-      }
-    } catch {
-      throw new UnauthorizedException(
-        "Você não está logado, efetue o login novamente.",
-      );
-    }
+    //   if (!token) {
+    //     throw new Error();
+    //   }
+    // } catch {
+    //   throw new UnauthorizedException(
+    //     "Você não está logado, efetue o login novamente.",
+    //   );
+    // }
 
-    let userPayload: { userId: number; businessId: number };
-    try {
-      const { payload }: { payload: { userId: number; businessId: number } } =
-        await this.jwtService.verifyAsync(token);
+    // let userPayload: { userId: number; businessId: number };
+    // try {
+    //   const { payload }: { payload: { userId: number; businessId: number } } =
+    //     await this.jwtService.verifyAsync(token);
 
-      userPayload = payload;
-    } catch {
-      throw new UnauthorizedException(
-        "Você foi deslogado, efetue o login novamente.",
-      );
-    }
+    //   userPayload = payload;
+    // } catch {
+    //   throw new UnauthorizedException(
+    //     "Você foi deslogado, efetue o login novamente.",
+    //   );
+    // }
 
-    const userCacheData: UserDepartmentSectorComplete[] | undefined =
-      await this.cacheManager.get(
-        `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
-      );
+    // const userCacheData: UserDepartmentSectorComplete[] | undefined =
+    //   await this.cacheManager.get(
+    //     `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
+    //   );
 
-    if (!userCacheData) {
-      throw new UnauthorizedException(
-        "Dados do usuário não encontrado, efetue o login novamente.",
-      );
-    }
+    // if (!userCacheData) {
+    //   throw new UnauthorizedException(
+    //     "Dados do usuário não encontrado, efetue o login novamente.",
+    //   );
+    // }
+
+    // const store: RequestAlsContext = {
+    //   userId: userPayload.userId,
+    //   businessUnitId: userPayload.businessId,
+    //   userData: userCacheData,
+    // };
 
     const store: RequestAlsContext = {
-      userId: userPayload.userId,
-      businessUnitId: userPayload.businessId,
-      userData: userCacheData,
+      userId: 1,
+      businessUnitId: 1,
+      userData: [],
     };
 
     this.requestContext.run(store, () => next());

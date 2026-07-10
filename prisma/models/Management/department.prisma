@@ -9,8 +9,6 @@ model Department {
     user_department_sector  UserDepartmentSector[]
 
     process_item            ProcessItem[]
-    process_step_model      ProcessStepModel[]
 
-    sector Sector[]
-    
+    sector Sector[]    
 }

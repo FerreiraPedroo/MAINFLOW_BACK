@@ -7,12 +7,14 @@ model Project {
   budget              Float?          @default(0) // 25000.00 | igual a R$25.000,00
   status              String          // PENDENTE, APROVADO, REJEITADO, RASCUNHO
 
-  process_id          Int             //
-  process             ProcessInstance @relation(fields: [process_id], references: [id])
-  
   business_unit_id    Int
   business_unit       BusinessUnit    @relation(fields: [business_unit_id], references: [id])
   
   cost_center_id      Int?
   cost_center         CostCenter?      @relation(fields: [cost_center_id], references: [id])
+
+
+  process_id          Int             //
+  processInstance     ProcessInstance @relation(fields: [process_id], references: [id])
+  
 }

@@ -5,5 +5,5 @@ model CostCenter {
   description      String?
   business_unit_id Int
   business_unit    BusinessUnit @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
-  project          Project[]
+  projects         Project[]
 }

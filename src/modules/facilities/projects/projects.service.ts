@@ -4,6 +4,7 @@ import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { ProjectRepository } from "./repository/project.repository";
 import { FindProjectsResponse } from "./dto/find-projects-response.dto";
 import { CreateProjectRequest } from "./dto/create-project-request.dto";
+import { CreateProjectData } from "./data/create-project.data";
 
 @Injectable()
 export class ProjectsService {
@@ -50,10 +51,15 @@ export class ProjectsService {
       }));
     }
   }
-  async createProject(request: CreateProjectRequest) {
-    if (request.projectData.costCenterId) {
+  async createProject({
+    userId,
+    businessUnitId,
+    request,
+    processModel,
+  }: CreateProjectData) {
+    if (request.costCenterId) {
       const foundCostCenter = await this.costCenterRepository.findById(
-        request.projectData.costCenterId,
+        request.costCenterId,
       );
       if (!foundCostCenter) {
         throw new UnprocessableEntityException(
@@ -62,16 +68,18 @@ export class ProjectsService {
       }
     }
 
+    console.log(processModel)
+
     const newProjectData = {
-      ...(request.projectData.code && { code: request.projectData.code }),
-      title: request.projectData.title,
-      period: request.projectData.period,
-      budget: request.projectData.budget ?? 0,
-      status: request.projectData.status,
+      ...(request.code && { code: request.code }),
+      title: request.title,
+      period: request.period,
+      budget: request.budget ?? 0,
+      status: request.status,
       process_id: 1,
       business_unit_id: request.businessId,
-      ...(request.projectData.costCenterId && {
-        cost_center_id: request.projectData.costCenterId,
+      ...(request.costCenterId && {
+        cost_center_id: request.costCenterId,
       }),
     };
 

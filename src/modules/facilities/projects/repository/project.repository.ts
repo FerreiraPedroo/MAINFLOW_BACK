@@ -12,7 +12,7 @@ export class ProjectRepository {
 
   async getProjectsById(id: number): Promise<ProjectComplete | null> {
     return await this.prisma.project.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       include: {
         cost_center: true,
       },

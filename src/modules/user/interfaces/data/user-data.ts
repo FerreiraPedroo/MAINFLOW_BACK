@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 
-export type UserComplete = Prisma.UserGetPayload<{
+export type UserData = Prisma.UserGetPayload<{
   include: {
     business_unit: true;
     user_data: true;

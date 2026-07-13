@@ -11,9 +11,6 @@ model ProcessModel {
     // O status do modelo, Ex: PENDENTE, CANCELADO, APROVADO. O modelo deve estar com o status aprovado para começar a ser utilizado.
     status                  String
 
-    process_item_id         Int?            // Item do processo.
-    process_item            ProcessItem?    @relation(fields: [process_item_id], references: [id])
-
     process_steps_models    ProcessStepModel[] // Os modelos das etapas do processo.
     process_instances       ProcessInstance[] // A instancias do modelo.
 }

@@ -1,16 +1,16 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+
 import { UserService } from "@modules/user/user.service";
+import { EncryptService } from "@/common/service/encrypt.service";
 
 import {
-  AuthUserDepartmentSectorData,
+  AuthUserActivitiesData,
   SectorItem,
-} from "./interfaces/departments.interface";
-import { EncryptService } from "@/common/service/encrypt.service";
-import { DepartmentService } from "@modules/manager/department/department.service";
-import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-import { env } from "node:process";
+} from "./interfaces/user-activities.data";
 
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
+import { UserDataRepository } from "../user/repositories/user-data-repository";
 export interface JwtPayload {
   user: string;
   businessId: number;
@@ -23,7 +23,7 @@ export class AuthService {
     private jwtService: JwtService,
     private encryptService: EncryptService,
     private userService: UserService,
-    private departmentService: DepartmentService,
+    private userDataRepository: UserDataRepository,
   ) {}
 
   async signIn(email: string, password: string) {
@@ -49,63 +49,60 @@ export class AuthService {
       email: userFound.email,
     };
 
-    const departmentsSectors =
-      await this.departmentService.findUserDepartmentSectorByUserIdForLogin(
+    const userActivities =
+      await this.userDataRepository.findUserActivitiesByUserId(
         userFound.id,
         userFound.business_unit_id,
       );
 
-    const departmentsInfo: AuthUserDepartmentSectorData[] = [];
+    const userActivityInfo: AuthUserActivitiesData[] = [];
 
-    if (departmentsSectors) {
-      for (const userDepartmentSector of departmentsSectors) {
-        const foundDepartmentInfo = departmentsInfo.find(
-          (dpto) => dpto.id == userDepartmentSector.department_id,
+    if (userActivities) {
+      for (const userActivity of userActivities) {
+        const foundDepartmentInfo = userActivityInfo.find(
+          (dpto) => dpto.id == userActivity.department_id,
         );
 
         if (foundDepartmentInfo) {
-          if (userDepartmentSector.sector_id) {
-            const foundSector = foundDepartmentInfo.itemsList.find(
+          if (userActivity.sector_id) {
+            const foundSector = foundDepartmentInfo.activities.find(
               (sector): sector is SectorItem =>
-                sector.id === userDepartmentSector.sector_id &&
-                "process_item" in sector,
+                sector.id === userActivity.sector_id && "activities" in sector,
             );
 
             if (foundSector) {
-              foundSector.process_item.push(userDepartmentSector.process_item);
+              foundSector.activities.push(userActivity.activity);
             } else {
-              foundDepartmentInfo.itemsList.push({
-                ...(userDepartmentSector.sector as SectorItem),
-                process_item: [userDepartmentSector.process_item],
+              foundDepartmentInfo.activities.push({
+                ...(userActivity.sector as SectorItem),
+                activities: [userActivity.activity],
               });
             }
           } else {
-            foundDepartmentInfo.itemsList.push(
-              userDepartmentSector.process_item,
-            );
+            foundDepartmentInfo.activities.push(userActivity.activity);
           }
         } else {
-          const newDepartment: AuthUserDepartmentSectorData = {
-            id: userDepartmentSector.id,
-            title: userDepartmentSector.department.title,
-            url: userDepartmentSector.department.url,
-            icon: userDepartmentSector.department.icon,
-            itemsList: [],
+          const newDepartment: AuthUserActivitiesData = {
+            id: userActivity.id,
+            title: userActivity.department.title,
+            url: userActivity.department.url,
+            icon: userActivity.department.icon,
+            activities: [],
           };
 
-          if (userDepartmentSector.sector) {
-            newDepartment.itemsList.push({
-              id: userDepartmentSector.sector.id,
-              department_id: userDepartmentSector.sector.department_id,
-              title: userDepartmentSector.sector.title,
-              icon: userDepartmentSector.sector.icon,
-              process_item: [userDepartmentSector.process_item],
+          if (userActivity.sector) {
+            newDepartment.activities.push({
+              id: userActivity.sector.id,
+              department_id: userActivity.sector.department_id,
+              title: userActivity.sector.title,
+              icon: userActivity.sector.icon,
+              activities: [userActivity.activity],
             });
           } else {
-            newDepartment.itemsList.push(userDepartmentSector.process_item);
+            newDepartment.activities.push(userActivity.activity);
           }
 
-          departmentsInfo.push(newDepartment);
+          userActivityInfo.push(newDepartment);
         }
       }
     }
@@ -117,10 +114,10 @@ export class AuthService {
 
     await this.cacheManager.set(
       `userId:${userFound.id}:businessId:${userFound.business_unit_id}`,
-      departmentsSectors,
+      userActivities,
     );
 
-    return { userInfo, tokenInfo, departmentsInfo };
+    return { userInfo, tokenInfo, userActivityInfo };
   }
 
   async generateToken(userId: number, businessId: number): Promise<string> {

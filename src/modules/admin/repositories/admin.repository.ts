@@ -1,8 +1,7 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { BusinessUnit, Department, Prisma } from "@prisma/client";
-import { BusinessProcessData } from "../data/business-departments.data";
-import { CreateDepartmentRequest } from "../dto/create-department.request.dto";
+import { BusinessActivity } from "../data/business-activity.interface";
 import { DepartmentData } from "../data/department-data.interface";
 import { CreateDepartmentData } from "../data/create-department.data";
 import { CreateSectorData } from "../data/create-sector.data";
@@ -17,53 +16,34 @@ export class AdminRepository {
       where: { id: Number(businessId) },
     });
   }
-  async findBusinessProcess(
+  async findBusinessActivities(
     businessId: number,
-  ): Promise<BusinessProcessData[]> {
-    const result = await this.prisma.businessUnitProcess.findMany({
+  ): Promise<BusinessActivity[]> {
+    return await this.prisma.businessUnitActivity.findMany({
       where: { business_unit_id: Number(businessId) },
       include: {
         department: true,
         sector: true,
-        process_item: true,
+        activity: true,
       },
     });
-
-    // const result = await this.prisma.$queryRaw`
-    //   SELECT bud.*,
-    //     TO_JSONB(d) as department,
-    //     TO_JSONB(s) as sector,
-    //     TO_JSONB(i) as process_item
-    //   FROM "BusinessUnitProcess" bud
-    //   JOIN "Department" d
-    //     ON d.id = bud.department_id
-    //   LEFT JOIN "Sector" s
-    //     ON s.id = bud.sector_id
-    //   JOIN "ProcessItem" i
-    //     ON i.id = bud.process_item_id
-    //   WHERE bud.business_unit_id = ${Number(businessId)}
-    //   GROUP BY bud.id, d.id, s.id, i.id
-    // `;
-    // return result as BusinessProcessData[];
-
-    return result;
   }
   async addProcessToBusiness(
     businessId: number,
-    processItems: {
+    activities: {
       departmentId: number;
       sectorId: number | null;
-      processItemId: number;
+      activityId: number;
     }[],
   ) {
-    const queryValues = processItems.map(
+    const queryValues = activities.map(
       (pi) =>
-        Prisma.sql`(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.processItemId})`,
+        Prisma.sql`(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.activityId})`,
     );
 
     return await this.prisma.$queryRaw`
-      INSERT INTO "BusinessUnitProcess" 
-      ("business_unit_id", "department_id", "sector_id", "process_item_id")
+      INSERT INTO "BusinessUnitActivity" 
+      ("business_unit_id", "department_id", "sector_id", "activity_id")
       VALUES ${Prisma.join(queryValues)}
     `;
   }
@@ -71,7 +51,7 @@ export class AdminRepository {
     businessId: number,
     businessProcessIds: number[],
   ) {
-    return await this.prisma.businessUnitProcess.deleteMany({
+    return await this.prisma.businessUnitActivity.deleteMany({
       where: {
         AND: [
           { business_unit_id: businessId },
@@ -85,8 +65,8 @@ export class AdminRepository {
   async findDepartments(): Promise<DepartmentData[]> {
     return await this.prisma.department.findMany({
       include: {
-        sector: true,
-        process_item: true,
+        sectors: true,
+        activities: true,
       },
     });
   }

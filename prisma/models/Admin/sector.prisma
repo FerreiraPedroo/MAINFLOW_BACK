@@ -6,8 +6,9 @@ model Sector {
     department_id               Int
     department                  Department      @relation(fields: [department_id], references:[id], onDelete: Restrict)
 
-    process_item                ProcessItem[]
+    activities                  Activity[]
    
-    business_unit_process       BusinessUnitProcess[]
-    user_department_sector      UserDepartmentSector[]
+    business_unit_activity      BusinessUnitActivity[]
+    user_activities             UserActivity[]
+    allocations                 Allocation[]
 }

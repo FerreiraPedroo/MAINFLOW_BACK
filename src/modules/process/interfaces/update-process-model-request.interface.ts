@@ -3,5 +3,4 @@ export interface UpdateProcessModelRequest {
   title?: string;
   processCall?: string;
   status?: string;
-  processItemId?: number;
 }

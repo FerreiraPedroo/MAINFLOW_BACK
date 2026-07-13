@@ -16,6 +16,11 @@ export class ProcessService {
   ) {}
 
   // PROCESS
+  async getProcessModelByProcessCall(processCall: string) {
+    return await this.processModelRepository.getProcessModelByProcessCall(
+      processCall,
+    );
+  }
   async findAllProcessModels() {
     return await this.processModelRepository.findAllProcessModels();
   }
@@ -24,7 +29,6 @@ export class ProcessService {
       title: request.title,
       process_call: request.processCall,
       status: request.status,
-      process_item_id: request.processItemId,
     };
 
     try {
@@ -69,20 +73,11 @@ export class ProcessService {
       );
     }
 
-    // Verifica se o 'process item' está associado ao 'process model' da requisição.
-    if (
-      request.processItemId &&
-      processModel.process_item_id == request.processItemId
-    ) {
-      return "OK";
-    }
-
     const processModelData = {
       id: request.id,
       ...(request.title && { title: request.title }),
       ...(request.processCall && { process_call: request.processCall }),
       ...(request.status && { status: request.status }),
-      ...(request.processItemId && { process_item_id: request.processItemId }),
     };
 
     try {

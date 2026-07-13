@@ -1,0 +1,21 @@
+model BusinessUnit {
+  id                        Int     @id @default(autoincrement())
+  title                     String  @unique
+  photos                    String? //Quando for para postgres SQL
+  address_id                Int
+  address                   Address @relation(fields: [address_id], references: [id], onDelete: Restrict)
+  cnpj                      String
+
+  business_unit_activity    BusinessUnitActivity[]
+
+  Users                     User[]
+  user_datas                UserData[]
+  user_sessions             UserSession[]
+  group_users               GroupUser[]
+  cost_centers              CostCenter[]
+  user_activities           UserActivity[]
+  departments               Department[]
+  process_instances         ProcessInstance[]
+  localizations             Localization[]
+  projects                  Project[]
+}

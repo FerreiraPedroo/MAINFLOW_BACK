@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@/database/prisma/prisma.service";
 
 @Injectable()
-export class ProcessItemRepository {
+export class ActivityRepository {
   constructor(private prisma: PrismaService) {}
 
   // async getProcessModelById(
@@ -11,13 +11,13 @@ export class ProcessItemRepository {
   //   return await this.prisma.processModel.findUnique({
   //     where: { id: processModelId },
   //     include: {
-  //       process_item: true,
+  //       activity: true,
   //       process_steps_models: true,
   //     },
   //   });
   // }
   async findProcessModels(): Promise<any> {
-    return await this.prisma.processItem.findMany();
+    return await this.prisma.activity.findMany();
   }
   // async createProcessModel(data: CreateProcessModelData) {
   //   return await this.prisma.processModel.create({

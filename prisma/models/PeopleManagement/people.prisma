@@ -4,9 +4,9 @@
 */
 model People {
   id                    Int      @id @default(autoincrement())
-  name                  String
+  name                  String   @unique
   birth_date            String
-  registration_number   String?
+  registration_number   String?  @unique
   photo                 String?
   sex                   String?
   hire_date             String?

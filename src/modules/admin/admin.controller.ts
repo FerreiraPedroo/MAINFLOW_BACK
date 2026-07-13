@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import type { CreateDepartmentRequest } from "./dto/create-department.request.dto";
 import type { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
-import type { RemoveProcessToBusinessRequest } from "./dto/remove-process-to-business.request.dto";
+import type { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
 import type { CreateSectorRequest } from "./dto/create-sector.request";
 
 @Controller("admin")
@@ -14,17 +14,17 @@ export class AdminController {
   async getBusinessById(@Param("businessId") businessId: number) {
     return await this.adminService.getBusinessById(businessId);
   }
-  @Get("business-units/:businessId/process")
+  @Get("business-units/:businessId/processes")
   async findBusinessProcess(@Param("businessId") businessId: number) {
     return await this.adminService.findBusinessProcess(businessId);
   }
-  @Post("business-units/:businessId/process")
+  @Post("business-units/:businessId/processes")
   async addProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
     return await this.adminService.addProcessToBusiness(request);
   }
-  @Delete("business-units/:businessId/process")
+  @Delete("business-units/:businessId/processes")
   async removeProcessToBusiness(
-    @Body() request: RemoveProcessToBusinessRequest,
+    @Body() request: RemoveActivityToBusinessRequest,
   ) {
     return await this.adminService.removeProcessToBusiness(request);
   }
@@ -43,7 +43,7 @@ export class AdminController {
   //
   // SECTOR
   @Post("sector")
-  async createSector(@Body() request: CreateSectorRequest ){
-    return await this.adminService.createSector(request)
+  async createSector(@Body() request: CreateSectorRequest) {
+    return await this.adminService.createSector(request);
   }
 }

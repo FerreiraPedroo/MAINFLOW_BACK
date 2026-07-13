@@ -14,7 +14,16 @@ export class ProcessModelRepository {
     return await this.prisma.processModel.findUnique({
       where: { id: processModelId },
       include: {
-        process_item: true,
+        process_steps_models: true,
+      },
+    });
+  }
+  async getProcessModelByProcessCall(
+    processCall: string,
+  ): Promise<ProcessModelData | null> {
+    return await this.prisma.processModel.findUnique({
+      where: { process_call: processCall },
+      include: {
         process_steps_models: true,
       },
     });
@@ -22,7 +31,6 @@ export class ProcessModelRepository {
   async findAllProcessModels(): Promise<ProcessModelData[] | null> {
     return await this.prisma.processModel.findMany({
       include: {
-        process_item: true,
         process_steps_models: true,
       },
     });
@@ -43,9 +51,9 @@ export class ProcessModelRepository {
     });
   }
 
-  // async findProcessModelByProcessItem(processItemId: number) {
+  // async findProcessModelByActivity(activityId: number) {
   //   return this.prisma.processModel.findFirst({
-  //     where: { process_item_id: processItemId },
+  //     where: { activity_id: activityId },
   //   });
   // }
 }

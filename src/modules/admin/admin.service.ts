@@ -1,26 +1,129 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { AdminRepository } from "./repositories/admin.repository";
+
 import {
   BusinessActivitiesData,
   Activity,
   SectorItem,
 } from "./data/business-activities.data";
-import { CreateDepartmentRequest } from "./dto/create-department.request.dto";
+
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+
+import { CreateDepartmentRequest } from "./dto/create-department.request.dto";
 import { DepartmentDataResponse } from "./dto/department-response.data";
-import { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
-import { BusinessActivity } from "./data/business-activity.interface";
-import { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
 
 import { CreateSectorRequest } from "./dto/create-sector.request";
+
+import { BusinessActivity } from "./data/business-activity.interface";
+import { GetBusinessByIdRecord } from "./types/record/get-business.record";
+import { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
+
+import { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
+import { UpdateBusinessRequest } from "./types/dto/update-business-unit-request.dto";
 
 @Injectable()
 export class AdminService {
   constructor(private adminRepository: AdminRepository) {}
-  //
+
+  private prismaErrors(error: any): never {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2001": {
+          throw new UnprocessableEntityException(
+            `O unidade de negócio não foi encontrada.`,
+          );
+          break;
+        }
+        case "P2002": {
+          const meta = error.meta?.driverAdapterError as any;
+          const fields = meta?.cause?.constraint?.fields
+            ?.join(" / ")
+            .toUpperCase();
+
+          throw new UnprocessableEntityException(
+            `Existe um unidade de negócio com esses dados: ${fields}`,
+          );
+          break;
+        }
+        default: {
+          throw new UnprocessableEntityException(JSON.stringify(error.meta));
+        }
+      }
+    } else {
+      throw new UnprocessableEntityException(
+        "Não foi possivel executar a ação.",
+      );
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////
   // BUSINESS
+  async findBusiness() {
+    try {
+      const businessUnits = await this.adminRepository.findBusiness();
+
+      return businessUnits.map((bu) => ({
+        id: bu.id,
+        title: bu.title,
+        photos: bu.photos,
+        cnpj: bu.cnpj,
+      }));
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
   async getBusinessById(businessId: number) {
-    return await this.adminRepository.getBusinessById(businessId);
+    let businessUnits: GetBusinessByIdRecord | null;
+
+    try {
+      businessUnits = await this.adminRepository.getBusinessById(businessId);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+
+    if (!businessUnits) {
+      throw new UnprocessableEntityException(
+        "Unidade de negócio não encontrada.",
+      );
+    }
+
+    const businessUnitRecord = {
+      id: businessUnits.id,
+      title: businessUnits.title,
+      photos: businessUnits.photos,
+      cnpj: businessUnits.cnpj,
+      address: {
+        id: businessUnits.address.id,
+        abbreviation: businessUnits.address.abbreviation,
+        zone: businessUnits.address.zone,
+        shortAddress: businessUnits.address.short_address,
+        fullAddress: businessUnits.address.id,
+        mapGoogle: businessUnits.address.map_google,
+        coordinate: businessUnits.address.coordinate,
+        photo: businessUnits.address.photo,
+      },
+    };
+
+    return businessUnitRecord;
+  }
+  async updateBusiness(businessId: number, request: UpdateBusinessRequest) {
+    try {
+      const businessData = {
+        ...(request.title && { title: request.title }),
+        ...((request.photos || request.photos == null) && {
+          photos: request.photos,
+        }),
+        ...(request.addressId && { address_id: request.addressId }),
+        ...(request.cnpj && { title: request.cnpj }),
+      };
+
+      return await this.adminRepository.updateBusiness(
+        businessId,
+        businessData,
+      );
+    } catch (error) {
+      this.prismaErrors(error);
+    }
   }
 
   async findBusinessProcess(businessId: number) {
@@ -173,6 +276,7 @@ export class AdminService {
     }
   }
 
+  ///////////////////////////////////////////////////////////////////
   // DEPARTMENTS
   async findDepartments(): Promise<DepartmentDataResponse[]> {
     const departments = await this.adminRepository.findDepartments();
@@ -232,6 +336,7 @@ export class AdminService {
 
     return departmentsInfo;
   }
+
   async createDepartment(request: CreateDepartmentRequest) {
     const departmentData = {
       title: request.title,
@@ -254,7 +359,7 @@ export class AdminService {
       }
     }
   }
-
+  ///////////////////////////////////////////////////////////////////
   // SECTOR
   async createSector(request: CreateSectorRequest) {
     const sectorData = {

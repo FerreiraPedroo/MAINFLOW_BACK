@@ -2,9 +2,16 @@ import { CostCenterRepository } from "@modules/manager/cost_center/repositories/
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 
 import { ProjectRepository } from "./repository/project.repository";
-import { FindProjectsResponse } from "./dto/find-projects-response.dto";
-import { CreateProjectRequest } from "./dto/create-project-request.dto";
-import { CreateProjectData } from "./data/create-project.data";
+
+import { GetProjectByIdResponse } from "./types/dto/get-project-by-id-response.dto";
+
+import { FindProjectsResponse } from "./types/dto/find-projects-response.dto";
+
+import { CreateProjectResponse } from "./types/dto/create-project-response.dto";
+import { CreateProjectRequest } from "./types/dto/create-project-request.dto";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { UpdateProjectRequest } from "./types/dto/update-project-request.dto";
+import { Project } from "@prisma/client";
 
 @Injectable()
 export class ProjectsService {
@@ -13,8 +20,44 @@ export class ProjectsService {
     private costCenterRepository: CostCenterRepository,
   ) {}
 
-  async getProjectById(id: number) {
-    const project = await this.projectRepository.getProjectsById(id);
+  private prismaErrors(error: any): never {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2001": {
+          throw new UnprocessableEntityException(
+            `O projeto a ser excluído não encontrado.`,
+          );
+          break;
+        }
+        case "P2002": {
+          const meta = error.meta?.driverAdapterError as any;
+          const fields = meta?.cause?.constraint?.fields
+            ?.join(" / ")
+            .toUpperCase();
+
+          throw new UnprocessableEntityException(
+            `Existe um projeto com esses dados: ${fields}`,
+          );
+          break;
+        }
+        default: {
+          throw new UnprocessableEntityException(error);
+        }
+      }
+    } else {
+      throw new UnprocessableEntityException(
+        "Não foi possivel executar a ação.",
+      );
+    }
+  }
+
+  async getProjectById(projectId: number): Promise<GetProjectByIdResponse> {
+    let project;
+    try {
+      project = await this.projectRepository.getProjectsById(projectId);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
 
     if (!project) {
       throw new UnprocessableEntityException("Projeto não encontrado.");
@@ -36,6 +79,7 @@ export class ProjectsService {
       };
     }
   }
+
   async findProjects(): Promise<FindProjectsResponse[]> {
     const projects = await this.projectRepository.findProjects();
 
@@ -51,15 +95,13 @@ export class ProjectsService {
       }));
     }
   }
-  async createProject({
-    userId,
-    businessUnitId,
-    request,
-    processModel,
-  }: CreateProjectData) {
-    if (request.costCenterId) {
+
+  async createProject(
+    projectInput: CreateProjectRequest,
+  ): Promise<CreateProjectResponse> {
+    if (projectInput.costCenterId) {
       const foundCostCenter = await this.costCenterRepository.findById(
-        request.costCenterId,
+        projectInput.costCenterId,
       );
       if (!foundCostCenter) {
         throw new UnprocessableEntityException(
@@ -68,24 +110,67 @@ export class ProjectsService {
       }
     }
 
-    console.log(processModel)
+    const projectInputData = {
+      code: projectInput.code ?? null,
+      title: projectInput.title,
+      period: projectInput.period,
+      budget: projectInput.budget ?? 0,
+      status: projectInput.status,
+      // process_id: 1,
+      cost_center_id: projectInput.costCenterId ?? null,
+    };
 
-    const newProjectData = {
-      ...(request.code && { code: request.code }),
-      title: request.title,
-      period: request.period,
-      budget: request.budget ?? 0,
-      status: request.status,
-      process_id: 1,
-      business_unit_id: request.businessId,
+    let createdProject: Project;
+    try {
+      createdProject =
+        await this.projectRepository.createProject(projectInputData);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+
+    const projectData = {
+      id: createdProject.id,
+      code: createdProject.code,
+      title: createdProject.title,
+      period: createdProject.period,
+      budget: createdProject.budget,
+      status: createdProject.status,
+      businessUnitId: createdProject.business_unit_id,
+      costCenterId: createdProject.cost_center_id,
+      // processId: createdProject.process_id,
+    };
+
+    return projectData;
+  }
+
+  async updateProject(projectId: number, request: UpdateProjectRequest) {
+    const projectData = {
+      ...((request.code || request.code == null) && {
+        code: request.code,
+      }),
+      ...(request.title && { title: request.title }),
+      ...(request.period && { period: request.period }),
+      ...((request.budget || request.budget == 0) && {
+        budget: request.budget,
+      }),
+      ...(request.status && { status: request.status }),
       ...(request.costCenterId && {
         cost_center_id: request.costCenterId,
       }),
     };
 
-    const createdProject =
-      await this.projectRepository.createProject(newProjectData);
+    try {
+      return await this.projectRepository.updateProject(projectId, projectData);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
 
-    return createdProject;
+  async deleteProject(projectId: number) {
+    try {
+      return await this.projectRepository.deleteProject(projectId);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
   }
 }

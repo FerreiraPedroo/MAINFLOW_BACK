@@ -18,4 +18,15 @@ model BusinessUnit {
   process_instances         ProcessInstance[]
   localizations             Localization[]
   projects                  Project[]
+
+  //SOFT DELETE
+  created_at          DateTime         @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?        @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
+
 }

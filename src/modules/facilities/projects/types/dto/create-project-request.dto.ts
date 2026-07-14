@@ -1,5 +1,4 @@
 export interface CreateProjectRequest {
-  businessId: number;
   code?: string;
   title: string;
   period: string;

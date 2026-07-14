@@ -1,13 +1,13 @@
-export interface GetProjectDto {
+export interface GetProjectByIdResponse {
   id: number;
-  code: string; // PRO-014-261_BS1
+  code: string | null; // PRO-014-261_BS1
   title: string; // [BS] Adequações Estacionamento - Paris 194
   period: string; // 2026.1, 2026.2, 2027.1
-  budget: number; // 25000.00 | igual a R$25.000,00
+  budget: number | null; // 25000.00 | igual a R$25.000,00
   status: string; // PENDENTE, APROVADO, REJEITADO, RASCUNHO
-  center_cost: {
+  costCenter: {
     id: number;
     title: string;
-    description: string;
-  };
+    description: string | null;
+  } | null;
 }

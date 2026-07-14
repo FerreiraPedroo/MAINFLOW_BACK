@@ -1,52 +1,42 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  InternalServerErrorException,
   Param,
   Post,
+  Put,
 } from "@nestjs/common";
+
 import { ProjectsService } from "./projects.service";
-import { FindProjectsResponse } from "./dto/find-projects-response.dto";
-import type { CreateProjectRequest } from "./dto/create-project-request.dto";
-import { ProcessService } from "@modules/process/process.service";
-import { LocalStorageContextService } from "@common/context/local-storage-context.service";
-import { LocaStorageContextData } from "@common/context/interfaces/local-storage-context.data";
+import type { UpdateProjectRequest } from "./types/dto/update-project-request.dto";
+import type { CreateProjectRequest } from "./types/dto/create-project-request.dto";
 
 @Controller("facilities/projects")
 export class ProjectsController {
-  constructor(
-    private readonly processService: ProcessService,
-    private readonly projectsService: ProjectsService,
-    private readonly requestContext: LocalStorageContextService,
-  ) {}
+  constructor(private readonly projectsService: ProjectsService) {}
 
-  @Get()
-  async findProjects(): Promise<FindProjectsResponse[]> {
-    return await this.projectsService.findProjects();
+  @Get(":projectId")
+  async getProjectById(@Param("projectId") projectId: number) {
+    return await this.projectsService.getProjectById(projectId);
   }
-  @Get(":id")
-  getProjectById(@Param("id") id: number) {
-    return this.projectsService.getProjectById(id);
+  @Get()
+  async findProjects() {
+    return await this.projectsService.findProjects();
   }
   @Post()
   async createProject(@Body() request: CreateProjectRequest) {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
-
-    const processModel =
-      await this.processService.getProcessModelByProcessCall("CREATE:PROJECT");
-
-    if (!processModel) {
-      throw new InternalServerErrorException(
-        "Erro interno ao criar o projeto, contate o administrador do sitema.",
-      );
-    }
-
-    return await this.projectsService.createProject({
-      userId: userData.userId,
-      businessUnitId: userData.businessUnitId,
-      request,
-      processModel,
-    });
+    return await this.projectsService.createProject(request);
   }
+  @Put(":projectId")
+  async updateProjectId(
+    @Param("projectId") projectId: number,
+    @Body() request: UpdateProjectRequest,
+  ) {
+    return await this.projectsService.updateProject(projectId, request);
+  }
+  // @Delete(":projectId")
+  // async deleteProject(@Param("projectId") projectId: number) {
+  //   return await this.projectsService.deleteProject(projectId);
+  // }
 }

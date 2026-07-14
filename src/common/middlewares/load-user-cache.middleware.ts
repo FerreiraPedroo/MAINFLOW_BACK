@@ -32,6 +32,7 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
 
     // let userPayload: { userId: number; businessId: number };
     const userPayload = { userId: 1, businessId: 1 };
+    
     // try {
     //   const { payload }: { payload: { userId: number; businessId: number } } =
     //     await this.jwtService.verifyAsync(token);
@@ -43,28 +44,28 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
     //   );
     // }
 
-    const userCacheData: UserActivityData[] | undefined =
-      await this.cacheManager.get(
-        `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
-      );
+    // const userCacheData: UserActivityData[] | undefined =
+    //   await this.cacheManager.get(
+    //     `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
+    //   );
 
-    if (!userCacheData) {
-      throw new UnauthorizedException(
-        "Dados do usuário não encontrado, efetue o login novamente.",
-      );
-    }
-
-    const store: LocaStorageContextData = {
-      userId: userPayload.userId,
-      businessUnitId: userPayload.businessId,
-      userActivities: userCacheData,
-    };
+    // if (!userCacheData) {
+    //   throw new UnauthorizedException(
+    //     "Dados do usuário não encontrado, efetue o login novamente.",
+    //   );
+    // }
 
     // const store: LocaStorageContextData = {
-    //   userId: 1,
-    //   businessUnitId: 1,
-    //   userActivities: [],
+    //   userId: userPayload.userId,
+    //   businessUnitId: userPayload.businessId,
+    //   userActivities: userCacheData,
     // };
+
+    const store: LocaStorageContextData = {
+      userId: 1,
+      businessUnitId: 1,
+      userActivities: [],
+    };
 
     this.requestContext.run(store, () => next());
   }

@@ -2,12 +2,12 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
-// export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-// });
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 });
+// export const prisma: PrismaClient = new PrismaClient({
+//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+// });
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -24,14 +24,20 @@ async function main() {
       ],
     },
     businessUnit: {
-      where: { title: "UNISUAM" },
-      update: {},
-      create: {
-        title: "UNISUAM",
-        photos: "",
-        address_id: 1,
-        cnpj: "01.002.004/0001-02",
-      },
+      data: [
+        {
+          title: "UNISUAM",
+          photos: "",
+          address_id: 1,
+          cnpj: "01.002.004/0001-02",
+        },
+        {
+          title: "MAUA",
+          photos: "",
+          address_id: 1,
+          cnpj: "09.009.009/0009-09",
+        },
+      ],
     },
     user: {
       where: { email: "email@email.com" },
@@ -193,23 +199,58 @@ async function main() {
         },
       ],
     },
+    project: {
+      data: [
+        {
+          code: "PRO-019-261_CG4",
+          title: "Nova Clesam CG4",
+          period: "2026-1",
+          budget: 120000,
+          status: "APROVADO",
+          business_unit_id: 1,
+          cost_center_id: null,
+          created_by: 1,
+        },
+        {
+          code: "PRO-020-261_BGF",
+          title: "Nova Clesam Bangu Feira [Etapa 1 - Recepção + Biomedicina]",
+          period: "2026-1",
+          budget: 215000,
+          status: "APROVADO",
+          business_unit_id: 1,
+          cost_center_id: null,
+          created_by: 1,
+        },
+        {
+          code: "PRO-018-262_INST",
+          title: "Adequações Fazenda Escola",
+          period: "2026-2",
+          budget: 680000,
+          status: "APROVADO",
+          business_unit_id: 1,
+          cost_center_id: null,
+          created_by: 1,
+        },
+      ],
+    },
   };
 
   const address = await prisma.address.createMany(seeds.address);
-  const businessUnit = await prisma.businessUnit.upsert(seeds.businessUnit);
+  const businessUnit = await prisma.businessUnit.createMany(seeds.businessUnit);
   const user = await prisma.user.upsert(seeds.user);
   const userData = await prisma.userData.upsert(seeds.userData);
   const department = await prisma.department.createMany(seeds.department);
   const sector = await prisma.sector.createMany(seeds.sector);
   const costCenter = await prisma.costCenter.createMany(seeds.centerCost);
   const activity = await prisma.activity.createMany(seeds.activity);
-  const businessUnitProcess = await prisma.businessUnitActivity.createMany(
+  const businessUnitActivity = await prisma.businessUnitActivity.createMany(
     seeds.businessUnitActivity,
   );
   const processModel = await prisma.processModel.createMany(seeds.processModel);
   const processStepModel = await prisma.processStepModel.createMany(
     seeds.processStepModel,
   );
+  const project = await prisma.project.createMany(seeds.project);
 
   console.log({
     address,
@@ -220,9 +261,10 @@ async function main() {
     user,
     userData,
     activity,
-    businessUnitProcess,
+    businessUnitActivity,
     processStepModel,
     processModel,
+    project,
   });
 }
 

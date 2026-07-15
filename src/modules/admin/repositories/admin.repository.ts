@@ -7,7 +7,6 @@ import { LocaStorageContextData } from "@/common/context/interfaces/local-storag
 import { BusinessUnit, Department, Prisma } from "@prisma/client";
 import { BusinessActivity } from "../data/business-activity.interface";
 import { UpdateBusinessData } from "../types/data/update-business-unit.data";
-import { GetBusinessByIdRecord } from "../types/record/get-business.record";
 
 import { DepartmentData } from "../data/department-data.interface";
 import { CreateDepartmentData } from "../data/create-department.data";
@@ -27,12 +26,9 @@ export class AdminRepository {
   }
   async getBusinessById(
     businessId: number,
-  ): Promise<GetBusinessByIdRecord | null> {
+  ): Promise<BusinessUnit | null> {
     return await this.prisma.businessUnit.findUnique({
-      where: { id: Number(businessId) },
-      include: {
-        address: true,
-      },
+      where: { id: Number(businessId) }
     });
   }
   async updateBusiness(

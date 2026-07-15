@@ -15,11 +15,11 @@ import { DepartmentDataResponse } from "./dto/department-response.data";
 import { CreateSectorRequest } from "./dto/create-sector.request";
 
 import { BusinessActivity } from "./data/business-activity.interface";
-import { GetBusinessByIdRecord } from "./types/record/get-business.record";
 import { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
 
 import { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
 import { UpdateBusinessRequest } from "./types/dto/update-business-unit-request.dto";
+import { BusinessUnit } from "@prisma/client";
 
 @Injectable()
 export class AdminService {
@@ -73,7 +73,7 @@ export class AdminService {
     }
   }
   async getBusinessById(businessId: number) {
-    let businessUnits: GetBusinessByIdRecord | null;
+    let businessUnits: BusinessUnit | null;
 
     try {
       businessUnits = await this.adminRepository.getBusinessById(businessId);
@@ -92,16 +92,6 @@ export class AdminService {
       title: businessUnits.title,
       photos: businessUnits.photos,
       cnpj: businessUnits.cnpj,
-      address: {
-        id: businessUnits.address.id,
-        abbreviation: businessUnits.address.abbreviation,
-        zone: businessUnits.address.zone,
-        shortAddress: businessUnits.address.short_address,
-        fullAddress: businessUnits.address.id,
-        mapGoogle: businessUnits.address.map_google,
-        coordinate: businessUnits.address.coordinate,
-        photo: businessUnits.address.photo,
-      },
     };
 
     return businessUnitRecord;

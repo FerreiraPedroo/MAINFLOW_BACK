@@ -1,11 +1,27 @@
 model Address {
   id                  Int           @id @default(autoincrement())
-  abbreviation        String        @unique // Nome curto do endereço. Ex: BS-NHD, BS-POLEM
-  zone                String                // Área em que está. Ex: Zona Norte (ZN), ZonaOeste (ZO)
-  short_address       String?       @unique
-  full_address        String        @unique
+  zone                String        // Área em que está. Ex: Zona Norte (ZN), ZonaOeste (ZO)
+  short_address       String
+  full_address        String
   map_google          String?
   coordinate          String?
-  photo               String? //Quando for para postgres SQL
-  business_unit       BusinessUnit[]
+  photo               String?       //Quando for para postgres SQL
+  status              String
+  
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields:[business_unit_id], references:[id])
+
+  @@unique([business_unit_id, full_address, short_address])
+
+  Localization        Localization[]
+  
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
 }

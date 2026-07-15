@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { UnprocessableEntityException } from "@nestjs/common";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 export const prisma: PrismaClient = new PrismaClient({
   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
@@ -13,29 +15,57 @@ async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
 
   const seeds = {
-    address: {
-      data: [
-        {
-          abbreviation: "SEDE",
-          zone: "ZONA NORTE",
-          short_address: "Av. Paris, Nº84",
-          full_address: "Avenida Paris, Nº84 - Bonsucesso - RJ",
-        },
-      ],
-    },
     businessUnit: {
       data: [
         {
           title: "UNISUAM",
           photos: "",
-          address_id: 1,
           cnpj: "01.002.004/0001-02",
         },
         {
           title: "MAUA",
           photos: "",
-          address_id: 1,
           cnpj: "09.009.009/0009-09",
+        },
+      ],
+    },
+    address: {
+      data: [
+        {
+          zone: "ZONA NORTE",
+          short_address: "Av. Paris, nº84",
+          full_address: "Avenida Paris, nº84 - Bonsucesso - RJ",
+          business_unit_id: 1,
+          status: "ATIVO",
+        },
+        {
+          zone: "ZONA NORTE",
+          short_address: "Av. Paris, nº121 - Fundos",
+          full_address: "Avenida Paris, nº121 - Fundos - Bonsucesso - RJ",
+          map_google: null,
+          coordinate: null,
+          status: "ACTIVE",
+          business_unit_id: 1,
+        },
+        {
+          zone: "ZONA OESTE",
+          short_address: "Av. Cesário de Melo, nº2551",
+          full_address:
+            "Av. Cesário de Melo, nº2551 - Campo Grande, Rio de Janeiro - RJ, 23052-102",
+          map_google: null,
+          coordinate: null,
+          status: "ACTIVE",
+          business_unit_id: 1,
+        },
+        {
+          zone: "ZONA OESTE",
+          short_address: "R. da Feira, nº256",
+          full_address:
+            "Rua da Feira, nº256 - Bangu, Rio de Janeiro - RJ, 21820-030",
+          map_google: null,
+          coordinate: null,
+          status: "ACTIVE",
+          business_unit_id: 1,
         },
       ],
     },
@@ -233,39 +263,223 @@ async function main() {
         },
       ],
     },
+    localizationBlocks: {
+      data: [
+        {
+          title: "Bloco A",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Bloco B",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Bloco C",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Bloco D",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Bloco E",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+      ],
+    },
+    localizationFloors: {
+      data: [
+        {
+          title: "Térreo",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "1º Andar",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "2º Andar",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "3º Andar",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "4º Andar",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "5º Andar",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+      ],
+    },
+    localizationSpaceTypes: {
+      data: [
+        {
+          title: "Pátio",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Sala",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Corredor",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Banheiro",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Rampa",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Mesanino",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Elevador",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          title: "Escada",
+          status: "APROVADO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+      ],
+    },
+    localization: {
+      data: [
+        {
+          block_id: 1,
+          floor_id: 1,
+          space_type_id: 1,
+          address_id: 1,
+          status: "ATIVO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+      ],
+    },
   };
+  try {
+    const businessUnit = await prisma.businessUnit.createMany(
+      seeds.businessUnit,
+    );
+    const address = await prisma.address.createMany(seeds.address);
+    const user = await prisma.user.upsert(seeds.user);
+    const userData = await prisma.userData.upsert(seeds.userData);
+    const department = await prisma.department.createMany(seeds.department);
+    const sector = await prisma.sector.createMany(seeds.sector);
+    const costCenter = await prisma.costCenter.createMany(seeds.centerCost);
+    const activity = await prisma.activity.createMany(seeds.activity);
+    const businessUnitActivity = await prisma.businessUnitActivity.createMany(
+      seeds.businessUnitActivity,
+    );
+    const processModel = await prisma.processModel.createMany(
+      seeds.processModel,
+    );
+    const processStepModel = await prisma.processStepModel.createMany(
+      seeds.processStepModel,
+    );
+    const project = await prisma.project.createMany(seeds.project);
+    await prisma.block.createMany(seeds.localizationBlocks);
+    await prisma.floor.createMany(seeds.localizationFloors);
+    await prisma.spaceType.createMany(seeds.localizationSpaceTypes);
+    await prisma.localization.createMany(seeds.localization);
 
-  const address = await prisma.address.createMany(seeds.address);
-  const businessUnit = await prisma.businessUnit.createMany(seeds.businessUnit);
-  const user = await prisma.user.upsert(seeds.user);
-  const userData = await prisma.userData.upsert(seeds.userData);
-  const department = await prisma.department.createMany(seeds.department);
-  const sector = await prisma.sector.createMany(seeds.sector);
-  const costCenter = await prisma.costCenter.createMany(seeds.centerCost);
-  const activity = await prisma.activity.createMany(seeds.activity);
-  const businessUnitActivity = await prisma.businessUnitActivity.createMany(
-    seeds.businessUnitActivity,
-  );
-  const processModel = await prisma.processModel.createMany(seeds.processModel);
-  const processStepModel = await prisma.processStepModel.createMany(
-    seeds.processStepModel,
-  );
-  const project = await prisma.project.createMany(seeds.project);
+    console.log({
+      address,
+      businessUnit,
+      department,
+      sector,
+      costCenter,
+      user,
+      userData,
+      activity,
+      businessUnitActivity,
+      processStepModel,
+      processModel,
+      project,
+    });
+  } catch (error: unknown) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2001": {
+          throw new UnprocessableEntityException(
+            `O bloco a ser excluído não encontrado.`,
+          );
+          break;
+        }
+        case "P2002": {
+          const meta = error.meta?.driverAdapterError as any;
+          const fields = meta?.cause?.constraint?.fields
+            ?.join(" / ")
+            .toUpperCase();
 
-  console.log({
-    address,
-    businessUnit,
-    department,
-    sector,
-    costCenter,
-    user,
-    userData,
-    activity,
-    businessUnitActivity,
-    processStepModel,
-    processModel,
-    project,
-  });
+          throw new UnprocessableEntityException(
+            `Existe um block com esses dados: ${fields}`,
+          );
+          break;
+        }
+        case "P2025": {
+          throw new UnprocessableEntityException(
+            "Não foi possivel encontrar um registro necessário para executar a tarefa.",
+          );
+        }
+        default: {
+          console.log(error);
+          throw new UnprocessableEntityException(error.message);
+        }
+      }
+    } else {
+      console.log(error);
+      throw new UnprocessableEntityException(
+        "Não foi possivel executar a ação.",
+      );
+    }
+  }
 }
 
 main()

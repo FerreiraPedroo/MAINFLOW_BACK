@@ -1,6 +1,6 @@
 model User {
   id                      Int          @id @default(autoincrement())
-  email                   String       @unique
+  email                   String
   password                String
   name                    String
   birth_date              String?
@@ -16,4 +16,16 @@ model User {
 
   process_instances       ProcessInstance[]
   process_step_instances  ProcessStepInstance[]
+  
+  @@unique([business_unit_id, email])
+
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
 }

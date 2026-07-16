@@ -5,9 +5,9 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 
 import { PrismaService } from "@database/prisma/prisma.service";
 
-import { Localization } from "@prisma/client";
 import { CreateLocalizationData } from "../types/data/create-localization.data";
 import { LocalizationRecord } from "../types/record/localization.record";
+import { UpdateLocalizationData } from "../types/data/update-localization.data";
 
 @Injectable()
 export class LocalizationRepository {
@@ -50,6 +50,7 @@ export class LocalizationRepository {
       },
       select: {
         id: true,
+        title: true,
         status: true,
         block: {
           select: { title: true },
@@ -66,7 +67,7 @@ export class LocalizationRepository {
   async updateLocalization(
     localizationId: number,
     localizationData: UpdateLocalizationData,
-  ): Promise<Localization> {
+  ): Promise<LocalizationRecord> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
     return await this.prisma.localization.update({
@@ -77,6 +78,19 @@ export class LocalizationRepository {
       data: {
         ...localizationData,
         updated_by: Number(userData.userId),
+      },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        block: {
+          select: { title: true },
+        },
+        floor: {
+          select: { title: true },
+        },
+        space_type: { select: { title: true } },
+        address: { select: { short_address: true } },
       },
     });
   }

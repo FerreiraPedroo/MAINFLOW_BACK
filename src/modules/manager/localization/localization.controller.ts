@@ -6,8 +6,9 @@ import type { CreateSpaceTypeRequest } from "./types/dto/create-space-type-reque
 import type { CreateAddressRequest } from "./types/dto/create-address-request.dto";
 import type { UpdateAddressRequest } from "./types/dto/update-address-request.dto";
 import type { CreateLocalizationRequest } from "./types/dto/create-localization-request.dto";
+import type { UpdateLocalizationRequest } from "./types/dto/update-localization-request.dto";
 
-@Controller("localizations")
+@Controller("manager/localizations")
 export class Localizationcontroller {
   constructor(private localizationService: LocalizationService) {}
 

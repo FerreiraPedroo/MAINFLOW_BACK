@@ -1,10 +1,12 @@
 model GroupUser {
     id                      Int    @id @default(autoincrement())
-    title                   String @unique
+    title                   String
     users                   User[]
 
     business_unit_id        Int
     business_unit           BusinessUnit @relation(fields: [business_unit_id], references: [id])
+
+    @@unique([business_unit_id, title])
 
     process_step_model      ProcessStepModel[]
     process_step_instances  ProcessStepInstance[]

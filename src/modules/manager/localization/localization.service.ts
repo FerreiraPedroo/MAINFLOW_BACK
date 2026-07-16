@@ -11,6 +11,7 @@ import { CreateSpaceTypeRequest } from "./types/dto/create-space-type-request.dt
 import { CreateAddressRequest } from "./types/dto/create-address-request.dto";
 import { UpdateAddressRequest } from "./types/dto/update-address-request.dto";
 import { CreateLocalizationRequest } from "./types/dto/create-localization-request.dto";
+import { UpdateLocalizationRequest } from "./types/dto/update-localization-request.dto";
 
 @Injectable()
 export class LocalizationService {
@@ -81,6 +82,7 @@ export class LocalizationService {
   }
   async createLocalization(request: CreateLocalizationRequest) {
     const localizationData = {
+      title: request.title,
       block_id: Number(request.blockId),
       floor_id: Number(request.floorId),
       space_type_id: Number(request.spaceTypeId),
@@ -108,6 +110,7 @@ export class LocalizationService {
     request: UpdateLocalizationRequest,
   ) {
     const localizationData = {
+      ...(request.title && { title: request.title }),
       ...(request.blockId && { block_id: request.blockId }),
       ...(request.floorId && { floor_id: request.floorId }),
       ...(request.spaceTypeId && { space_type_id: request.spaceTypeId }),
@@ -124,6 +127,7 @@ export class LocalizationService {
 
       return {
         id: localizationRecord.id,
+        title: localizationRecord.title,
         block: localizationRecord.block.title,
         floor: localizationRecord.floor.title,
         spaceType: localizationRecord.space_type.title,

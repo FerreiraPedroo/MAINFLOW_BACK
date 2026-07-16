@@ -1,11 +1,24 @@
 model UserData {
-    id                  Int    @id @default(autoincrement())
-    user_id             Int    @unique
-    user_info           User   @relation(fields: [user_id], references: [id])
-    role                String
+    id      Int    @id @default(autoincrement())
+    email   String
+    user    User   @relation(fields: [business_unit_id, email], references: [business_unit_id, email])
+    role    String
 
-    activities          UserActivity[]
+    activities UserActivity[]
 
-    business_unit_id    Int
-    business_unit       BusinessUnit @relation(fields: [business_unit_id], references: [id])
+    business_unit_id Int
+    business_unit    BusinessUnit @relation(fields: [business_unit_id], references: [id])
+
+    @@unique([business_unit_id, email])
+
+    //SOFT DELETE
+    created_at DateTime @default(now())
+    created_by Int?
+
+    updated_at DateTime? @updatedAt
+    updated_by Int?
+
+    deleted_at DateTime?
+    deleted_by Int?
+
 }

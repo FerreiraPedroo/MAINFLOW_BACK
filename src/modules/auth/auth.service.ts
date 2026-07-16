@@ -27,7 +27,7 @@ export class AuthService {
   ) {}
 
   async signIn(email: string, password: string) {
-    const userFound = await this.userService.getUser(email);
+    const userFound = await this.userService.getUserByEmail(email);
 
     if (!userFound) {
       throw new UnauthorizedException("Senha ou usuário errado(s).");

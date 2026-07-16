@@ -1,29 +1,30 @@
-
 model Project {
-  id                  Int              @id @default(autoincrement())
-  code                String?          @unique      // PRO-014-261_BS1
-  title               String           @unique      // [BS] Adequações Estacionamento - Paris 194
-  period              String                        // 2026.1, 2026.2, 2027.1
-  budget              Float?           @default(0)  // 25000.00 | igual a R$25.000,00
-  status              String                        // PENDENTE, APROVADO, REJEITADO, RASCUNHO
+  id                  Int           @id @default(autoincrement())
+  code                String?       // PRO-014-261_BS1
+  title               String        // [BS] Adequações Estacionamento - Paris 194
+  period              String        // 2026.1, 2026.2, 2027.1
+  budget              Float?        @default(0) // 25000.00 | igual a R$25.000,00
+  status              String        // PENDENTE, APROVADO, REJEITADO, RASCUNHO
 
   business_unit_id    Int
-  business_unit       BusinessUnit     @relation(fields: [business_unit_id], references: [id])
-  
-  cost_center_id      Int?
-  cost_center         CostCenter?      @relation(fields: [cost_center_id], references: [id])
+  business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id])
 
-  process_id          Int?             
+  cost_center_id      Int?
+  cost_center         CostCenter?   @relation(fields: [cost_center_id], references: [id])
+
+  process_id          Int?
   processInstance     ProcessInstance? @relation(fields: [process_id], references: [id])
+  
+  @@unique([business_unit_id, title])
 
   //SOFT DELETE
-  created_at          DateTime         @default(now())
+  created_at          DateTime      @default(now())
   created_by          Int
 
-  updated_at          DateTime?        @updatedAt
+  updated_at          DateTime?     @updatedAt
   updated_by          Int?
 
   deleted_at          DateTime?
   deleted_by          Int?
-  
+
 }

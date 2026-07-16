@@ -1,8 +1,10 @@
 model UserSession {
     id                  Int           @id     @default(autoincrement())
     session_token       String
-    user_id             Int           @unique
-    user                User          @relation(fields: [user_id], references: [id])
+    email               String
+    user                User          @relation(fields: [business_unit_id, email], references: [business_unit_id, email])
     business_unit_id    Int
     business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id])
+
+    @@unique([business_unit_id, email])
 }

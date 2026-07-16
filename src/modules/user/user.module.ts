@@ -21,6 +21,6 @@ import { UserDataRepository } from "./repositories/user-data-repository";
     UserRepository,
     UserDataRepository,
   ],
-  exports: [UserService, UserDataService, UserDataRepository],
+  exports: [UserService, UserDataService, UserRepository, UserDataRepository],
 })
 export class UserModule {}

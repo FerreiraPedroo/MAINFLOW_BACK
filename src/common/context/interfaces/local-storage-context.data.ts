@@ -1,4 +1,4 @@
-import { UserActivityData } from "@/modules/user/interfaces/data/user-activity.data";
+import { UserActivityData } from "@/modules/user/types/data/user-activity.data";
 
 export interface LocaStorageContextData {
   userId: number;

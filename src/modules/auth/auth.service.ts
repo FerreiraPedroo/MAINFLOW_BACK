@@ -1,7 +1,8 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
-import { UserService } from "@modules/user/user.service";
+import { UserDataRepository } from "@modules/user/repositories/user-data-repository";
+import { UserRepository } from "@modules/user/repositories/user.repository";
 import { EncryptService } from "@/common/service/encrypt.service";
 
 import {
@@ -10,7 +11,6 @@ import {
 } from "./interfaces/user-activities.data";
 
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-import { UserDataRepository } from "../user/repositories/user-data-repository";
 export interface JwtPayload {
   user: string;
   businessId: number;
@@ -22,12 +22,12 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private encryptService: EncryptService,
-    private userService: UserService,
     private userDataRepository: UserDataRepository,
+    private userRepository: UserRepository,
   ) {}
 
   async signIn(email: string, password: string) {
-    const userFound = await this.userService.getUserByEmail(email);
+    const userFound = await this.userRepository.getUserByEmail(email);
 
     if (!userFound) {
       throw new UnauthorizedException("Senha ou usuário errado(s).");

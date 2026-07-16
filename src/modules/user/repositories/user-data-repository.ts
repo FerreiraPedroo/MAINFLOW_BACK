@@ -1,6 +1,7 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { UserActivityData } from "../interfaces/data/user-activity.data";
+import { UserActivityData } from "../types/data/user-activity.data";
+// import { UserActivityData } from "../interfaces/data/user-activity.data";
 
 @Injectable()
 export class UserDataRepository {

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { Inject, Injectable, NestMiddleware, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, NestMiddleware } from "@nestjs/common";
 
 import { JwtService } from "@nestjs/jwt";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 import { LocalStorageContextService } from "../context/local-storage-context.service";
 import { LocaStorageContextData } from "../context/interfaces/local-storage-context.data";
-import { UserActivityData } from "@/modules/user/interfaces/data/user-activity.data";
+// import { UserActivityData } from "@/modules/user/interfaces/data/user-activity.data";
 
 @Injectable()
 export class LoadUserCacheMiddlware implements NestMiddleware {
@@ -32,7 +32,7 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
 
     // let userPayload: { userId: number; businessId: number };
     const userPayload = { userId: 1, businessId: 1 };
-    
+
     // try {
     //   const { payload }: { payload: { userId: number; businessId: number } } =
     //     await this.jwtService.verifyAsync(token);

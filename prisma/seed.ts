@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+// import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-// export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-// });
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 });
+// export const prisma: PrismaClient = new PrismaClient({
+//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+// });
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -70,26 +70,27 @@ async function main() {
       ],
     },
     user: {
-      where: { email: "email@email.com" },
-      update: {},
-      create: {
-        email: "email@email.com",
-        password:
-          "$2b$10$Y7JL8xYn5y.dkdSm7UKbXeBfz9F.N9NmBSOvswOKvZInFwA0RchRW",
-        name: "Usuário Admin",
-        birth_date: null,
-        photo: null,
-        business_unit_id: 1,
-      },
+      data: [
+        {
+          email: "email@email.com",
+          password:
+            "$2b$10$Y7JL8xYn5y.dkdSm7UKbXeBfz9F.N9NmBSOvswOKvZInFwA0RchRW",
+          name: "Usuário Admin",
+          birth_date: null,
+          photo: null,
+          business_unit_id: 1,
+        },
+      ],
     },
     userData: {
-      where: { user_id: 1 },
-      update: {},
-      create: {
-        user_id: 1,
-        role: "ADMIN",
-        business_unit_id: 1,
-      },
+      data: [
+        {
+          user_id: 1,
+          email: "email@email.com",
+          role: "ADMIN",
+          business_unit_id: 1,
+        },
+      ],
     },
     department: {
       data: [
@@ -429,8 +430,8 @@ async function main() {
       seeds.businessUnit,
     );
     const address = await prisma.address.createMany(seeds.address);
-    const user = await prisma.user.upsert(seeds.user);
-    const userData = await prisma.userData.upsert(seeds.userData);
+    const user = await prisma.user.createMany(seeds.user);
+    const userData = await prisma.userData.createMany(seeds.userData);
     const department = await prisma.department.createMany(seeds.department);
     const sector = await prisma.sector.createMany(seeds.sector);
     const costCenter = await prisma.costCenter.createMany(seeds.centerCost);

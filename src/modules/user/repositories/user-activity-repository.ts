@@ -1,24 +1,19 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { UserActivityData } from "../types/data/user-activity.data";
-// import { UserActivityData } from "../interfaces/data/user-activity.data";
+
+import { UserActivityRecord } from "../types/record/find-user-activities-by-email.record";
 
 @Injectable()
-export class UserDataRepository {
+export class UserActivityRepository {
   constructor(private prisma: PrismaService) {}
 
-  async getUserData(userId: number) {
-    return await this.prisma.userData.findFirst({
-      where: { user_id: userId },
-    });
-  }
-  async findUserActivitiesByUserId(
+  async findUserActivitiesById(
     userId: number,
     businessUnitId: number,
-  ): Promise<UserActivityData[] | null> {
+  ): Promise<UserActivityRecord[] | null> {
     return await this.prisma.userActivity.findMany({
       where: {
-        user_data_id: userId,
+        user_id: userId,
         business_unit_id: businessUnitId,
       },
       include: {

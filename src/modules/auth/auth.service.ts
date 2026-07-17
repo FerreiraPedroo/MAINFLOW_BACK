@@ -1,7 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
-import { UserDataRepository } from "@modules/user/repositories/user-data-repository";
+import { UserActivityRepository } from "@/modules/user/repositories/user-activity-repository";
 import { UserRepository } from "@modules/user/repositories/user.repository";
 import { EncryptService } from "@/common/service/encrypt.service";
 
@@ -22,7 +22,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private encryptService: EncryptService,
-    private userDataRepository: UserDataRepository,
+    private userActivityRepository: UserActivityRepository,
     private userRepository: UserRepository,
   ) {}
 
@@ -50,7 +50,7 @@ export class AuthService {
     };
 
     const userActivities =
-      await this.userDataRepository.findUserActivitiesByUserId(
+      await this.userActivityRepository.findUserActivitiesById(
         userFound.id,
         userFound.business_unit_id,
       );

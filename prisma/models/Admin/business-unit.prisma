@@ -7,9 +7,8 @@ model BusinessUnit {
   business_unit_activity    BusinessUnitActivity[]
 
   users                     User[]
-  user_datas                UserData[]
-  user_sessions             UserSession[]
   group_users               GroupUser[]
+  user_sessions             UserSession[]
   user_activities           UserActivity[]
   
   projects                  Project[]

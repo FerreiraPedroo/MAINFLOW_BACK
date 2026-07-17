@@ -11,7 +11,7 @@ model User {
   business_unit_id        Int
   business_unit           BusinessUnit @relation(fields: [business_unit_id], references: [id])
 
-  user_data               UserData[]
+  user_activities         UserActivity[]
   user_session            UserSession[]
 
   process_instances       ProcessInstance[]

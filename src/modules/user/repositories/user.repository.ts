@@ -16,18 +16,23 @@ export class UserRepository {
     private requestContext: LocalStorageContextService,
   ) {}
 
-  async getUser(): Promise<UserRecord | null> {
+  async getUsers(): Promise<User[]> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
-    return await this.prisma.user.findUnique({
+    return await this.prisma.user.findMany({
       where: {
-        id: Number(userData.userId),
         business_unit_id: Number(userData.businessUnitId),
       },
-      include: {
-        business_unit: true,
-        user_data: true,
-        user_session: true,
+    });
+  }
+  async createUser(user: CreateUserData): Promise<User | null> {
+    const userData = this.requestContext.getStore() as LocaStorageContextData;
+
+    return await this.prisma.user.create({
+      data: {
+        ...user,
+        created_by: Number(userData.userId),
+        business_unit_id: Number(userData.businessUnitId),
       },
     });
   }
@@ -43,37 +48,23 @@ export class UserRepository {
       },
       include: {
         business_unit: true,
-        user_data: true,
         user_session: true,
       },
     });
   }
-  async getUsers(): Promise<UserRecord[]> {
+
+  async getLoggedUser(): Promise<UserRecord | null> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
-    return await this.prisma.user.findMany({
+    return await this.prisma.user.findUnique({
       where: {
+        id: Number(userData.userId),
         business_unit_id: Number(userData.businessUnitId),
       },
       include: {
         business_unit: true,
-        user_data: true,
+
         user_session: true,
-      },
-    });
-  }
-  async createUser(user: CreateUserData): Promise<User | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
-    console.log({
-      ...user,
-      created_by: Number(userData.userId),
-      business_unit_id: Number(userData.businessUnitId),
-    });
-    return await this.prisma.user.create({
-      data: {
-        ...user,
-        created_by: Number(userData.userId),
-        business_unit_id: Number(userData.businessUnitId),
       },
     });
   }

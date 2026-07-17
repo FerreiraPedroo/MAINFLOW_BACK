@@ -26,14 +26,7 @@ export class UserController {
 
   //   return { statusCode: 200, data: departmentList };
   // }
-  // @Get()
-  // async getMyUser() {
-  //   return await this.userService.getUser();
-  // }
-  @Get()
-  async getUsers() {
-    return await this.userService.getUsers();
-  }
+
   @Post()
   @UseInterceptors(FileInterceptor("photo"))
   async createUser(
@@ -47,8 +40,10 @@ export class UserController {
     photo: Express.Multer.File,
     @Body() request: CreateUserRequest,
   ) {
-    // request["file"] = avatar;
-    console.log(photo);
-    return await this.userService.createUser(request);
+    return await this.userService.createUser(photo, request);
+  }
+  @Get()
+  async getUsers() {
+    return await this.userService.getUsers();
   }
 }

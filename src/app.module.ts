@@ -17,6 +17,7 @@ import { AdminModule } from "@modules/admin/admin.module";
 import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
+import { FileModule } from "./common/modules/file/file.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FacilitiesModule } from "@modules/facilities/facilities.module";
     }),
     CacheModule.register({ isGlobal: true }),
     MulterConfigModule,
+    FileModule,
     LocalStorageContextModule,
     AuthModule,
     PrismaModule,

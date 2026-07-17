@@ -1,18 +1,20 @@
+import { FileService } from "./../../common/modules/file/file.service";
+import { User } from "@prisma/client";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { EncryptService } from "@/common/service/encrypt.service";
+import { EncryptService } from "@common/service/encrypt.service";
 
 import { UserRepository } from "./repositories/user.repository";
 
 import { CreateUserRequest } from "./types/dto/create-user-request.dto";
-import { User } from "@prisma/client";
 
 @Injectable()
 export class UserService {
   constructor(
     private userRepository: UserRepository,
     private encryptService: EncryptService,
+    private fileService: FileService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -53,62 +55,27 @@ export class UserService {
     }
   }
 
-  async getUser() {
-    try {
-      const userRecord = await this.userRepository.getUser();
-
-      if (userRecord == null) {
-        throw new UnprocessableEntityException("Usuário não encontrado.");
-      }
-
-      return {
-        id: userRecord.id,
-        email: userRecord.email,
-        name: userRecord.name,
-        birth_date: userRecord.birth_date,
-        photo: userRecord.photo,
-      };
-    } catch (error) {
-      this.prismaErrors(error);
-    }
-  }
-  async getUserByEmail(email: string) {
-    try {
-      const userRecord = await this.userRepository.getUserByEmail(email);
-
-      if (userRecord == null) {
-        throw new UnprocessableEntityException("Usuário não encontrado.");
-      }
-
-      return {
-        id: userRecord.id,
-        email: userRecord.email,
-        name: userRecord.name,
-        birth_date: userRecord.birth_date,
-        photo: userRecord.photo,
-      };
-    } catch (error) {
-      this.prismaErrors(error);
-    }
-  }
   async getUsers() {
     try {
-      const userRecords = await this.userRepository.getUsers();
+      const usersRecord = await this.userRepository.getUsers();
 
-      return userRecords.map((user) => ({
+      return usersRecord.map((user) => ({
         id: user.id,
         email: user.email,
         name: user.name,
-        birth_date: user.birth_date,
+        birthData: user.birth_date,
         photo: user.photo,
       }));
     } catch (error) {
       this.prismaErrors(error);
     }
   }
-  async createUser(request: CreateUserRequest) {
+  async createUser(photo: Express.Multer.File, request: CreateUserRequest) {
     const user = await this.userRepository.getUserByEmail(request.email);
     if (user) {
+      if (photo) {
+        await this.fileService.removeFile(photo.path);
+      }
       throw new UnprocessableEntityException(
         "Existe um usuário cadastrado com esse email.",
       );
@@ -118,16 +85,17 @@ export class UserService {
       request.password,
     );
 
-    // let photoUrl;
-    // if(request.file){
-    // }
+    let photoUrl;
+    if (photo) {
+      photoUrl = await this.fileService.fileSave(photo, "users/avatar");
+    }
 
     const userData = {
       email: request.email,
       password: passwordHash,
       name: request.name,
       ...(request.birthDate && { birth_date: request.birthDate }),
-      ...(request.file && { photo: request.file.originalname }),
+      ...(photoUrl && { photo: photoUrl }),
     };
 
     let userRecord: User | null;
@@ -135,6 +103,13 @@ export class UserService {
     try {
       userRecord = await this.userRepository.createUser(userData);
     } catch (error) {
+      if (photoUrl) {
+        await this.fileService.removeFile(photoUrl);
+      }
+      if (photo) {
+        await this.fileService.removeFile(photo.path);
+      }
+
       this.prismaErrors(error);
     }
 
@@ -151,5 +126,40 @@ export class UserService {
       birthDate: userRecord.birth_date,
       photo: userRecord.photo,
     };
+
+    return {
+      id: "userRecord.id",
+      email: "userRecord.email",
+      name: "userRecord.name",
+      birthDate: "userRecord.birth_date",
+      photo: "userRecord.photo",
+    };
+  }
+
+  async getLoggedUser() {
+    try {
+      return await this.userRepository.getLoggedUser();
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async getUserByEmail(email: string) {
+    try {
+      const userRecord = await this.userRepository.getUserByEmail(email);
+
+      if (userRecord == null) {
+        throw new UnprocessableEntityException("Usuário não encontrado.");
+      }
+
+      return {
+        id: userRecord.id,
+        email: userRecord.email,
+        name: userRecord.name,
+        birthDate: userRecord.birth_date,
+        photo: userRecord.photo,
+      };
+    } catch (error) {
+      this.prismaErrors(error);
+    }
   }
 }

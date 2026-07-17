@@ -2,8 +2,12 @@
 
 - Para gerar o cliente do Prisma
   npx prisma generate
-- Para criar o banco de dados
+- Para subir as alterções para o banco de dados
   npx prisma db push
+- Para subir as alterações mas RESETAR o banco de dados.
+  npx prisma db push --force-reset
+- Para zerar as migrações do banco de dados.
+  npx prisma migrate reset
 - Para gerar as migrações e sincronizar com o mbanco de dados
   npx prisma migrate dev --name "digitar o nome da migração(sem aspas)"
 

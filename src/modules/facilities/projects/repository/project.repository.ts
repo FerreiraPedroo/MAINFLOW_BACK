@@ -1,13 +1,16 @@
 import { Injectable } from "@nestjs/common";
+import { Project, ProjectAllocation } from "@prisma/client";
 
 import { PrismaService } from "@/database/prisma/prisma.service";
 
-import { Project } from "@prisma/client";
-import { ProjectRecord } from "../types/record/project.record";
-import { CreateProjectData } from "../types/data/create-project.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+
+import { ProjectRecord } from "../types/record/project.record";
+import { CreateProjectData } from "../types/data/create-project.data";
 import { UpdateProjectData } from "../types/data/update-project.data";
+import { AllocatePeopleToProjectData } from "../types/data/allocate-people-to-project.data";
+import { UpdateAllocateDayData } from "../types/data/update-allocate-dat.data";
 
 /**
  * A definição do BUSINESS_UNIT_ID é feito no repositório.
@@ -32,7 +35,6 @@ export class ProjectRepository {
       },
     });
   }
-
   async findProjects(): Promise<Project[] | null> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
@@ -42,7 +44,6 @@ export class ProjectRepository {
       },
     });
   }
-
   async createProject(projectData: CreateProjectData): Promise<Project> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
@@ -54,7 +55,6 @@ export class ProjectRepository {
       },
     });
   }
-
   async updateProject(
     projectId: number,
     projectData: UpdateProjectData,
@@ -72,7 +72,6 @@ export class ProjectRepository {
       },
     });
   }
-
   async deleteProject(projectId: number) {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
@@ -85,6 +84,71 @@ export class ProjectRepository {
         deleted_at: new Date(),
         deleted_by: Number(userData.userId),
       },
+    });
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // ALLOCATIONS
+  async allocatePeopleToProject(
+    allocateData: AllocatePeopleToProjectData,
+  ): Promise<ProjectAllocation> {
+    const requestContext =
+      this.requestContext.getStore() as LocaStorageContextData;
+    console.log(allocateData);
+    return await this.prisma.projectAllocation.create({
+      data: {
+        ...allocateData,
+        business_unit_id: Number(requestContext.businessUnitId),
+      },
+    });
+  }
+  async desallocatePeopleToProject(
+    allocateId: number,
+  ): Promise<ProjectAllocation> {
+    const requestContext =
+      this.requestContext.getStore() as LocaStorageContextData;
+
+    return await this.prisma.projectAllocation.delete({
+      where: {
+        id: Number(allocateId),
+        business_unit_id: Number(requestContext.businessUnitId),
+      },
+    });
+  }
+  async getMonthProjectAllocations(
+    projectId: number,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<ProjectAllocation[]> {
+    const requestContext =
+      this.requestContext.getStore() as LocaStorageContextData;
+
+    console.log({ projectId, startDate, endDate });
+
+    return await this.prisma.projectAllocation.findMany({
+      where: {
+        assign_date: {
+          gte: startDate,
+          lte: endDate,
+        },
+        project_id: Number(projectId),
+        business_unit_id: Number(requestContext.businessUnitId),
+      },
+    });
+  }
+  async updateAllocateDay(
+    allocateId: number,
+    allocateData: UpdateAllocateDayData,
+  ): Promise<ProjectAllocation> {
+    const requestContext =
+      this.requestContext.getStore() as LocaStorageContextData;
+
+    return await this.prisma.projectAllocation.update({
+      where: {
+        id: Number(allocateId),
+        business_unit_id: Number(requestContext.businessUnitId),
+      },
+      data: { ...allocateData },
     });
   }
 }

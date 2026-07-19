@@ -52,7 +52,6 @@ export class UserRepository {
       },
     });
   }
-
   async getLoggedUser(): Promise<UserRecord | null> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
@@ -64,6 +63,18 @@ export class UserRepository {
       include: {
         business_unit: true,
 
+        user_session: true,
+      },
+    });
+  }
+
+  // SEM BUSINESS-ID
+  // UTILIZADO PARA LOGIN
+  async getLoginUserByEmail(email: string): Promise<UserRecord | null> {
+    return await this.prisma.user.findUnique({
+      where: { email },
+      include: {
+        business_unit: true,
         user_session: true,
       },
     });

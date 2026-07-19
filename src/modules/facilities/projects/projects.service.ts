@@ -1,17 +1,18 @@
-import { CostCenterRepository } from "@modules/manager/cost_center/repositories/cost-center.repository";
+import { Project } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+
+import { CostCenterRepository } from "@modules/manager/cost_center/repositories/cost-center.repository";
 
 import { ProjectRepository } from "./repository/project.repository";
 
-import { GetProjectByIdResponse } from "./types/dto/get-project-by-id-response.dto";
-
 import { FindProjectsResponse } from "./types/dto/find-projects-response.dto";
-
-import { CreateProjectResponse } from "./types/dto/create-project-response.dto";
 import { CreateProjectRequest } from "./types/dto/create-project-request.dto";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { UpdateProjectRequest } from "./types/dto/update-project-request.dto";
-import { Project } from "@prisma/client";
+import { CreateProjectResponse } from "./types/dto/create-project-response.dto";
+import { GetProjectByIdResponse } from "./types/dto/get-project-by-id-response.dto";
+import { AllocatePeopleToProjectRequest } from "./types/dto/allocate-project-to-people-request.dto";
+import { UpdateAllocateDayRequest } from "./types/dto/update-allocate-day-request.dto";
 
 @Injectable()
 export class ProjectsService {
@@ -40,11 +41,17 @@ export class ProjectsService {
           );
           break;
         }
+        case "P2025": {
+          throw new UnprocessableEntityException(
+            "Não foi possivel encontrar um registro necessário para executar a tarefa.",
+          );
+        }
         default: {
           throw new UnprocessableEntityException(error);
         }
       }
     } else {
+      console.log(error);
       throw new UnprocessableEntityException(
         "Não foi possivel executar a ação.",
       );
@@ -79,7 +86,6 @@ export class ProjectsService {
       };
     }
   }
-
   async findProjects(): Promise<FindProjectsResponse[]> {
     const projects = await this.projectRepository.findProjects();
 
@@ -95,7 +101,6 @@ export class ProjectsService {
       }));
     }
   }
-
   async createProject(
     projectInput: CreateProjectRequest,
   ): Promise<CreateProjectResponse> {
@@ -142,7 +147,6 @@ export class ProjectsService {
 
     return projectData;
   }
-
   async updateProject(projectId: number, request: UpdateProjectRequest) {
     const projectData = {
       ...((request.code || request.code == null) && {
@@ -160,15 +164,135 @@ export class ProjectsService {
     };
 
     try {
-      return await this.projectRepository.updateProject(projectId, projectData);
+      const projectRecord = await this.projectRepository.updateProject(
+        projectId,
+        projectData,
+      );
+      return {
+        id: projectRecord.id,
+        code: projectRecord.code,
+        title: projectRecord.title,
+        period: projectRecord.period,
+        status: projectRecord.status,
+      };
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async deleteProject(projectId: number) {
+    try {
+      return await this.projectRepository.deleteProject(projectId);
     } catch (error) {
       this.prismaErrors(error);
     }
   }
 
-  async deleteProject(projectId: number) {
+  /////////////////////////////////////////////////////////////////////////////////
+  // ALLOCATIONS
+  async allocatePeopleToProject(request: AllocatePeopleToProjectRequest) {
+    const assignDate = new Date(request.assignDate);
+
+    if (assignDate.toLocaleString() == "Invalid Date") {
+      throw new UnprocessableEntityException("Data inválida.");
+    }
+
+    const allocateData = {
+      project_id: request.projectId,
+      people_id: request.peopleId,
+      assign_date: assignDate,
+      start_hour: request.startHour,
+      end_hour: request.endHour,
+    };
+
     try {
-      return await this.projectRepository.deleteProject(projectId);
+      const allocateRecord =
+        await this.projectRepository.allocatePeopleToProject(allocateData);
+
+      return {
+        projectId: allocateRecord.project_id,
+        peopleId: allocateRecord.people_id,
+        assignDate: allocateRecord.assign_date,
+        startHour: allocateRecord.start_hour,
+        endHour: allocateRecord.end_hour,
+      };
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async desallocatePeopleToProject(allocateId: number) {
+    try {
+      return await this.projectRepository.desallocatePeopleToProject(
+        allocateId,
+      );
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async getMonthProjectAllocations(
+    projectId: number,
+    year: number,
+    month: number,
+  ) {
+    const startDate = new Date(year, month - 1);
+    const endDate = new Date(year, month, 0);
+
+    if (
+      startDate.toLocaleString() == "Invalid Date" ||
+      endDate.toLocaleString() == "Invalid Date"
+    ) {
+      throw new UnprocessableEntityException("Data inválida.");
+    }
+
+    try {
+      const allocateRecords =
+        await this.projectRepository.getMonthProjectAllocations(
+          projectId,
+          startDate,
+          endDate,
+        );
+
+      return allocateRecords.map((allocate) => ({
+        projectId: allocate.project_id,
+        peopleId: allocate.people_id,
+        assignDate: allocate.assign_date,
+        startHour: allocate.start_hour,
+        endHour: allocate.end_hour,
+      }));
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+
+    console.log(startDate, { endDate });
+  }
+  async updateAllocateDay(
+    projectId: number,
+    request: UpdateAllocateDayRequest,
+  ) {
+    const allocateDta = {
+      ...(request.peopleId && { people_id: request.peopleId }),
+      ...(request.startHour && { start_hour: request.startHour }),
+      ...(request.endHour && { end_hour: request.endHour }),
+    };
+
+    if (!Object.keys(allocateDta).length) {
+      throw new UnprocessableEntityException(
+        "Não foi enviado nenhum dado para ser atualizado.",
+      );
+    }
+
+    try {
+      const allocateRecord = await this.projectRepository.updateAllocateDay(
+        projectId,
+        allocateDta,
+      );
+
+      return {
+        projectId: allocateRecord.project_id,
+        peopleId: allocateRecord.people_id,
+        assignDate: allocateRecord.assign_date,
+        startHour: allocateRecord.start_hour,
+        endHour: allocateRecord.end_hour,
+      };
     } catch (error) {
       this.prismaErrors(error);
     }

@@ -82,16 +82,6 @@ async function main() {
         },
       ],
     },
-    userData: {
-      data: [
-        {
-          user_id: 1,
-          email: "email@email.com",
-          role: "ADMIN",
-          business_unit_id: 1,
-        },
-      ],
-    },
     department: {
       data: [
         {
@@ -424,6 +414,46 @@ async function main() {
         },
       ],
     },
+    people: {
+      data: [
+        {
+          name: "Primeiro nome",
+          birth_date: "1983-05-30",
+          registration_number: "11-111111",
+          sex: "Masculino",
+          status: "ATIVO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          name: "Segundo nome",
+          birth_date: "2010-05-30",
+          registration_number: "22-222222",
+          sex: "Masculino",
+          status: "ATIVO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          name: "Terceiro nome",
+          birth_date: "2000-05-30",
+          registration_number: "33-333333",
+          sex: "Masculino",
+          status: "ATIVO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+        {
+          name: "Quarto nome",
+          birth_date: "1990-05-30",
+          registration_number: "44-444444",
+          sex: "Masculino",
+          status: "ATIVO",
+          business_unit_id: 1,
+          created_by: 1,
+        },
+      ],
+    },
   };
   try {
     const businessUnit = await prisma.businessUnit.createMany(
@@ -431,7 +461,6 @@ async function main() {
     );
     const address = await prisma.address.createMany(seeds.address);
     const user = await prisma.user.createMany(seeds.user);
-    const userData = await prisma.userData.createMany(seeds.userData);
     const department = await prisma.department.createMany(seeds.department);
     const sector = await prisma.sector.createMany(seeds.sector);
     const costCenter = await prisma.costCenter.createMany(seeds.centerCost);
@@ -450,6 +479,7 @@ async function main() {
     await prisma.floor.createMany(seeds.localizationFloors);
     await prisma.spaceType.createMany(seeds.localizationSpaceTypes);
     await prisma.localization.createMany(seeds.localization);
+    await prisma.people.createMany(seeds.people);
 
     console.log({
       address,
@@ -458,7 +488,6 @@ async function main() {
       sector,
       costCenter,
       user,
-      userData,
       activity,
       businessUnitActivity,
       processStepModel,

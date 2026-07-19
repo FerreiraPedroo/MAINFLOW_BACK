@@ -1,16 +1,23 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { JwtService } from "@nestjs/jwt";
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 
-import { UserActivityRepository } from "@/modules/user/repositories/user-activity-repository";
+import { EncryptService } from "@common/service/encrypt.service";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+
+import { UserActivityRepository } from "@modules/user/repositories/user-activity-repository";
 import { UserRepository } from "@modules/user/repositories/user.repository";
-import { EncryptService } from "@/common/service/encrypt.service";
 
 import {
   AuthUserActivitiesData,
   SectorItem,
-} from "./interfaces/user-activities.data";
-
-import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
+} from "./data/user-activities.data";
+import { UserRecord } from "../user/types/data/user-record";
 export interface JwtPayload {
   user: string;
   businessId: number;
@@ -22,37 +29,80 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private encryptService: EncryptService,
-    private userActivityRepository: UserActivityRepository,
     private userRepository: UserRepository,
+    private userActivityRepository: UserActivityRepository,
   ) {}
 
-  async signIn(email: string, password: string) {
-    const userFound = await this.userRepository.getUserByEmail(email);
+  private prismaErrors(error: any): never {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2001": {
+          throw new UnprocessableEntityException(
+            `O usuário não pode ser excluído.`,
+          );
+          break;
+        }
+        case "P2002": {
+          const meta = error.meta?.driverAdapterError as any;
+          const fields = meta?.cause?.constraint?.fields
+            ?.join(" / ")
+            .toUpperCase();
 
-    if (!userFound) {
-      throw new UnauthorizedException("Senha ou usuário errado(s).");
+          throw new UnprocessableEntityException(
+            `Existe um usuário com esses dados: ${fields}`,
+          );
+          break;
+        }
+        case "P2025": {
+          throw new UnprocessableEntityException(
+            "Não foi possivel encontrar o usuário.",
+          );
+        }
+        default: {
+          console.log(error);
+          throw new UnprocessableEntityException(error.message);
+        }
+      }
+    } else {
+      console.log(error);
+      throw new UnprocessableEntityException(
+        "Não foi possivel executar a ação.",
+      );
+    }
+  }
+
+  async signIn(email: string, password: string) {
+    let userRecord: UserRecord | null;
+    try {
+      userRecord = await this.userRepository.getLoginUserByEmail(email);
+    } catch (error) {
+      this.prismaErrors("Senha ou usuário errado(s).");
+    }
+
+    if (!userRecord) {
+      throw new UnauthorizedException("Usuário ou senha errados.");
     }
 
     const passwordCompare = await this.encryptService.compareHash(
       password,
-      userFound.password,
+      userRecord.password,
     );
 
     if (!passwordCompare) {
-      throw new UnauthorizedException("Senha ou usuário errado(s).");
+      throw new UnauthorizedException("Senha ou usuário errados.");
     }
 
     const userInfo = {
-      id: userFound.id,
-      name: userFound.name,
-      photo: userFound.photo,
-      email: userFound.email,
+      id: userRecord.id,
+      name: userRecord.name,
+      photo: userRecord.photo,
+      email: userRecord.email,
     };
 
     const userActivities =
       await this.userActivityRepository.findUserActivitiesById(
-        userFound.id,
-        userFound.business_unit_id,
+        userRecord.id,
+        userRecord.business_unit_id,
       );
 
     const userActivityInfo: AuthUserActivitiesData[] = [];
@@ -108,12 +158,12 @@ export class AuthService {
     }
 
     const tokenInfo = await this.generateToken(
-      userFound.id,
-      userFound.business_unit_id,
+      userRecord.id,
+      userRecord.business_unit_id,
     );
 
     await this.cacheManager.set(
-      `userId:${userFound.id}:businessId:${userFound.business_unit_id}`,
+      `userId:${userRecord.id}:businessId:${userRecord.business_unit_id}`,
       userActivities,
     );
 

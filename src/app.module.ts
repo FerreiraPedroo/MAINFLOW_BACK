@@ -18,6 +18,8 @@ import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
 import { FileModule } from "./common/modules/file/file.module";
+import { PeopleModule } from "./modules/people/people.module";
+
 
 @Module({
   imports: [
@@ -25,16 +27,17 @@ import { FileModule } from "./common/modules/file/file.module";
       isGlobal: true,
     }),
     CacheModule.register({ isGlobal: true }),
-    MulterConfigModule,
-    FileModule,
     LocalStorageContextModule,
-    AuthModule,
+    MulterConfigModule,
     PrismaModule,
-    ManagerModule,
+    AuthModule,
+    FileModule,
     FacilitiesModule,
     ProcessModule,
+    ManagerModule,
     AdminModule,
     UserModule,
+    PeopleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

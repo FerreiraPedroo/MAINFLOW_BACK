@@ -135,7 +135,6 @@ export class UserService {
       photo: "userRecord.photo",
     };
   }
-
   async getLoggedUser() {
     try {
       return await this.userRepository.getLoggedUser();

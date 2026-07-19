@@ -11,7 +11,6 @@ model BusinessUnit {
   user_sessions             UserSession[]
   user_activities           UserActivity[]
   
-  projects                  Project[]
   cost_centers              CostCenter[]
   departments               Department[]
   process_instances         ProcessInstance[]
@@ -22,8 +21,11 @@ model BusinessUnit {
   block                     Block[]
   floor                     Floor[]
 
+  projects                  Project[]
+  project_allocations       ProjectAllocation[]
 
-
+  peoples                   People[]
+  allocations               Allocation[]
 
 
   //SOFT DELETE

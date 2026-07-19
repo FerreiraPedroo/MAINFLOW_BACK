@@ -5,45 +5,58 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 
 import { PrismaService } from "@database/prisma/prisma.service";
 
-import { Block } from "@prisma/client";
-import { CreateBlockData } from "../types/data/create-block.data";
+import { People } from "@prisma/client";
+import { CreatePeopleData } from "../types/data/create-people.data";
+import { UpdatePeopleData } from "../types/data/update-people.data";
 
 @Injectable()
-export class BlockRepository {
+export class PeopleRepository {
   constructor(
     private prisma: PrismaService,
     private requestContext: LocalStorageContextService,
   ) {}
 
-  async findBlock(): Promise<Block[]> {
+  async findPeople(peopleId: number): Promise<People | null> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
-    return await this.prisma.block.findMany({
+    return await this.prisma.people.findUnique({
+      where: {
+        id: Number(peopleId),
+        business_unit_id: Number(userData.businessUnitId),
+      },
+    });
+  }
+  async findPeoples(): Promise<People[]> {
+    const userData = this.requestContext.getStore() as LocaStorageContextData;
+
+    return await this.prisma.people.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
     });
   }
-  async createBlock(blockData: CreateBlockData): Promise<Block> {
+  async createPeople(peopleData: CreatePeopleData): Promise<People> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
-    return await this.prisma.block.create({
+    return await this.prisma.people.create({
       data: {
-        title: blockData.title,
-        status: blockData.status.toUpperCase(),
+        ...peopleData,
         business_unit_id: Number(userData.businessUnitId),
         created_by: Number(userData.userId),
       },
     });
   }
-  async updateBlock(blockId: number, blockStatus: string): Promise<Block> {
+  async updatePeople(
+    peopleId: number,
+    peopleData: UpdatePeopleData,
+  ): Promise<People> {
     const userData = this.requestContext.getStore() as LocaStorageContextData;
 
-    return await this.prisma.block.update({
+    return await this.prisma.people.update({
       where: {
-        id: Number(blockId),
+        id: Number(peopleId),
         business_unit_id: Number(userData.businessUnitId),
       },
       data: {
-        status: blockStatus.toUpperCase(),
+        ...peopleData,
         updated_by: Number(userData.userId),
       },
     });

@@ -5,7 +5,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 
 import { LocalStorageContextService } from "../context/local-storage-context.service";
-import { LocaStorageContextData } from "../context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "../context/interfaces/local-storage-context.data";
 // import { UserActivityData } from "@/modules/user/interfaces/data/user-activity.data";
 
 @Injectable()
@@ -55,13 +55,13 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
     //   );
     // }
 
-    // const store: LocaStorageContextData = {
+    // const store: LocalStorageContextData = {
     //   userId: userPayload.userId,
     //   businessUnitId: userPayload.businessId,
     //   userActivities: userCacheData,
     // };
 
-    const store: LocaStorageContextData = {
+    const store: LocalStorageContextData = {
       userId: 1,
       businessUnitId: 1,
       userActivities: [],

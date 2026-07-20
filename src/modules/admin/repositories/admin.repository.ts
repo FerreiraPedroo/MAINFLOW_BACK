@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
 import { BusinessUnit, Department, Prisma } from "@prisma/client";
 import { BusinessActivity } from "../data/business-activity.interface";
@@ -24,18 +24,16 @@ export class AdminRepository {
   async findBusiness(): Promise<BusinessUnit[]> {
     return await this.prisma.businessUnit.findMany();
   }
-  async getBusinessById(
-    businessId: number,
-  ): Promise<BusinessUnit | null> {
+  async getBusinessById(businessId: number): Promise<BusinessUnit | null> {
     return await this.prisma.businessUnit.findUnique({
-      where: { id: Number(businessId) }
+      where: { id: Number(businessId) },
     });
   }
   async updateBusiness(
     businessId: number,
     businessData: UpdateBusinessData,
   ): Promise<BusinessUnit | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.businessUnit.update({
       where: { id: Number(businessId) },

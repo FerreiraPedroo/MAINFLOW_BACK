@@ -4,7 +4,7 @@ import { Project, ProjectAllocation } from "@prisma/client";
 import { PrismaService } from "@/database/prisma/prisma.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
 import { ProjectRecord } from "../types/record/project.record";
 import { CreateProjectData } from "../types/data/create-project.data";
@@ -23,7 +23,7 @@ export class ProjectRepository {
   ) {}
 
   async getProjectsById(id: number): Promise<ProjectRecord | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.project.findUnique({
       where: {
@@ -36,7 +36,7 @@ export class ProjectRepository {
     });
   }
   async findProjects(): Promise<Project[] | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.project.findMany({
       where: {
@@ -45,7 +45,7 @@ export class ProjectRepository {
     });
   }
   async createProject(projectData: CreateProjectData): Promise<Project> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.project.create({
       data: {
@@ -59,7 +59,7 @@ export class ProjectRepository {
     projectId: number,
     projectData: UpdateProjectData,
   ): Promise<Project> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return this.prisma.project.update({
       where: {
@@ -73,7 +73,7 @@ export class ProjectRepository {
     });
   }
   async deleteProject(projectId: number) {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     await this.prisma.project.update({
       where: {
@@ -93,7 +93,7 @@ export class ProjectRepository {
     allocateData: AllocatePeopleToProjectData,
   ): Promise<ProjectAllocation> {
     const requestContext =
-      this.requestContext.getStore() as LocaStorageContextData;
+      this.requestContext.getStore() as LocalStorageContextData;
     console.log(allocateData);
     return await this.prisma.projectAllocation.create({
       data: {
@@ -106,7 +106,7 @@ export class ProjectRepository {
     allocateId: number,
   ): Promise<ProjectAllocation> {
     const requestContext =
-      this.requestContext.getStore() as LocaStorageContextData;
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.projectAllocation.delete({
       where: {
@@ -121,7 +121,7 @@ export class ProjectRepository {
     endDate: Date,
   ): Promise<ProjectAllocation[]> {
     const requestContext =
-      this.requestContext.getStore() as LocaStorageContextData;
+      this.requestContext.getStore() as LocalStorageContextData;
 
     console.log({ projectId, startDate, endDate });
 
@@ -141,7 +141,7 @@ export class ProjectRepository {
     allocateData: UpdateAllocateDayData,
   ): Promise<ProjectAllocation> {
     const requestContext =
-      this.requestContext.getStore() as LocaStorageContextData;
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.projectAllocation.update({
       where: {

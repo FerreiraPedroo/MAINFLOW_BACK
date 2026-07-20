@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { PrismaService } from "@database/prisma/prisma.service";
@@ -16,14 +16,14 @@ export class BlockRepository {
   ) {}
 
   async findBlocks(): Promise<Block[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.block.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
     });
   }
   async createBlock(blockData: CreateBlockData): Promise<Block> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.block.create({
       data: {
@@ -35,7 +35,7 @@ export class BlockRepository {
     });
   }
   async updateBlock(blockId: number, blockStatus: string): Promise<Block> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.block.update({
       where: {

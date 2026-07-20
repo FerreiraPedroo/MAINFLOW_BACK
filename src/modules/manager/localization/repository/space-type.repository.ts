@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { PrismaService } from "@database/prisma/prisma.service";
@@ -16,7 +16,7 @@ export class SpaceTypeRepository {
   ) {}
 
   async findSpaceTypes(): Promise<SpaceType[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
@@ -25,7 +25,7 @@ export class SpaceTypeRepository {
   async createSpaceType(
     spaceTypeData: CreateSpaceTypeData,
   ): Promise<SpaceType> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.create({
       data: {
@@ -40,7 +40,7 @@ export class SpaceTypeRepository {
     spaceTypeId: number,
     spaceTypeStatus: string,
   ): Promise<SpaceType> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.update({
       where: {

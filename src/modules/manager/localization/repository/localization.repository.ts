@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { PrismaService } from "@database/prisma/prisma.service";
@@ -17,7 +17,7 @@ export class LocalizationRepository {
   ) {}
 
   async findLocalizations(): Promise<LocalizationRecord[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
@@ -40,7 +40,7 @@ export class LocalizationRepository {
   async createLocalization(
     localizationData: CreateLocalizationData,
   ): Promise<LocalizationRecord> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.create({
       data: {
@@ -68,7 +68,7 @@ export class LocalizationRepository {
     localizationId: number,
     localizationData: UpdateLocalizationData,
   ): Promise<LocalizationRecord> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.update({
       where: {

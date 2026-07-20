@@ -1,10 +1,14 @@
 import { Module } from "@nestjs/common";
-import { CostCenterController } from "./cost-center.controller";
+
+import { LocalStorageContextModule } from "@/common/context/local-storage-context.module";
+
 import { CostCenterService } from "./cost-center.service";
+
 import { CostCenterRepository } from "./repositories/cost-center.repository";
+import { CostCenterController } from "./cost-center.controller";
 
 @Module({
-  imports: [],
+  imports: [LocalStorageContextModule],
   controllers: [CostCenterController],
   providers: [CostCenterService, CostCenterRepository],
   exports: [CostCenterRepository],

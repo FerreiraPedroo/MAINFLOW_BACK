@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { PrismaService } from "@database/prisma/prisma.service";
@@ -17,7 +17,7 @@ export class PeopleRepository {
   ) {}
 
   async findPeople(peopleId: number): Promise<People | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findUnique({
       where: {
@@ -27,14 +27,14 @@ export class PeopleRepository {
     });
   }
   async findPeoples(): Promise<People[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
     });
   }
   async createPeople(peopleData: CreatePeopleData): Promise<People> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.create({
       data: {
@@ -48,7 +48,7 @@ export class PeopleRepository {
     peopleId: number,
     peopleData: UpdatePeopleData,
   ): Promise<People> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.update({
       where: {

@@ -5,12 +5,14 @@ model BusinessUnit {
   cnpj                      String
 
   business_unit_activity    BusinessUnitActivity[]
-
+  
+  // ADMIN
   users                     User[]
   group_users               GroupUser[]
   user_sessions             UserSession[]
   user_activities           UserActivity[]
   
+  // MANAGEMENT
   cost_centers              CostCenter[]
   departments               Department[]
   process_instances         ProcessInstance[]
@@ -21,11 +23,19 @@ model BusinessUnit {
   block                     Block[]
   floor                     Floor[]
 
+  // FACILITIES
   projects                  Project[]
   project_allocations       ProjectAllocation[]
 
+  // PEOPLE
   peoples                   People[]
   allocations               Allocation[]
+
+
+  // SUPPLY-CHAIN
+  procurements              Procurement[]
+  suppliers                 Supplier[]
+  items                     Item[]
 
 
   //SOFT DELETE

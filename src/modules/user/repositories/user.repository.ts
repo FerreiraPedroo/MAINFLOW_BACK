@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "@/database/prisma/prisma.service";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { UserRecord } from "../types/data/user-record";
@@ -17,7 +17,7 @@ export class UserRepository {
   ) {}
 
   async getUsers(): Promise<User[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findMany({
       where: {
@@ -26,7 +26,7 @@ export class UserRepository {
     });
   }
   async createUser(user: CreateUserData): Promise<User | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.create({
       data: {
@@ -37,7 +37,7 @@ export class UserRepository {
     });
   }
   async getUserByEmail(email: string): Promise<UserRecord | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findUnique({
       where: {
@@ -53,7 +53,7 @@ export class UserRepository {
     });
   }
   async getLoggedUser(): Promise<UserRecord | null> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findUnique({
       where: {

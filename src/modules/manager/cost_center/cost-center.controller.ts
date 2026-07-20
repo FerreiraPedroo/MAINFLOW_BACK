@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 
-import type { FindCostCenterDto } from "./dto";
-
 import { CostCenterService } from "./cost-center.service";
-import type { CreateCostCenterDto } from "./dto/create-cost-center.dto";
+
+import type { FindCostCenterDto } from "./types/dto/find-cost-center.dto";
+import type { CreateCostCenterRequest } from "./types/dto/create-cost-center-request.dto";
 
 @Controller("/manager/cost-center")
 export class CostCenterController {
@@ -24,15 +24,7 @@ export class CostCenterController {
   }
 
   @Post()
-  async createCostCenter(@Body() body: CreateCostCenterDto) {
-    try {
-      const costCenterCreated = await this.costCenterService.create(body);
-      return { codStatus: 200, data: costCenterCreated };
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        return { codStatus: 500, message: error.message };
-      }
-      return { codStatus: 500, message: "Erro do servidor." };
-    }
+  async createCostCenter(@Body() request: CreateCostCenterRequest) {
+    return await this.costCenterService.create(request);
   }
 }

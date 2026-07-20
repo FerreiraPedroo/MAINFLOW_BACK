@@ -189,6 +189,7 @@ export class ProjectsService {
 
   /////////////////////////////////////////////////////////////////////////////////
   // ALLOCATIONS
+  // - alocação de pessoas no projeto por dia.
   async allocatePeopleToProject(request: AllocatePeopleToProjectRequest) {
     const assignDate = new Date(request.assignDate);
 
@@ -297,4 +298,5 @@ export class ProjectsService {
       this.prismaErrors(error);
     }
   }
+  ////////////////////////////////////////////////////////////////////////////////
 }

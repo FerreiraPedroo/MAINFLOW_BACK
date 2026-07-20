@@ -1,0 +1,28 @@
+model Supplier {
+  id                          Int   @id @default(autoincrement())
+  legal_name                  String  // Razão Social
+  trade_name                  String? // Nome fantasia (Opcional, pessoa fisica não pode ter.)
+  tax_number                  String  // CNPJ ou CPF
+  supplier_type               String  // Tipo de fornecedor (Pessoa Fisica ou Pessoa Juridica)
+  supplier_category           String  // Qual categoria: Distribuidor, Vendedor, Fabricante, Prestador de serviços
+  state_registration          String? // Inscrição estadual
+  email                       String?
+  phone                       String?
+  billing_address             String  // Endereço de faturamento
+
+  items                       Item[]
+
+  business_unit_id            Int
+  business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  //SOFT DELETE
+  created_at                  DateTime      @default(now())
+  created_by                  Int?
+
+  updated_at                  DateTime?     @updatedAt
+  updated_by                  Int?
+
+  deleted_at                  DateTime?
+  deleted_by                  Int?
+
+}

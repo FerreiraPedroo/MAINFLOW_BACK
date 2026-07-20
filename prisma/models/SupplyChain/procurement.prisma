@@ -1,0 +1,27 @@
+model Procurement {
+  id                    Int           @id   @default(autoincrement())
+  code                  String        @unique
+  title                 String
+  description           String?
+  type                  String  // Tipo de requisição: Serviço, Materiais
+  status                String  // Ex: RASCUNHO, ENVIADO, EM APROVAÇÃO, APROVADO, FATURADO, ENTREGUE, FATURADO/ENTREGUE
+  send_date             DateTime?
+
+  cost_center_id        Int
+  cost_center           CostCenter    @relation(fields:[cost_center_id], references:[id], onDelete: Restrict)
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+
+  items                 Item[]
+  
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
+}

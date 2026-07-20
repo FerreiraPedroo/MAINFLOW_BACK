@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { LocaStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { PrismaService } from "@database/prisma/prisma.service";
@@ -16,14 +16,14 @@ export class FloorRepository {
   ) {}
 
   async findFloor(): Promise<Floor[]> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.findMany({
       where: { business_unit_id: Number(userData.businessUnitId) },
     });
   }
   async createFloor(floorData: CreateFloorData): Promise<Floor> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.create({
       data: {
@@ -35,7 +35,7 @@ export class FloorRepository {
     });
   }
   async updateFloor(floorId: number, floorStatus: string): Promise<Floor> {
-    const userData = this.requestContext.getStore() as LocaStorageContextData;
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.update({
       where: {

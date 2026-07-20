@@ -1,15 +1,12 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { CostCenterRepository } from "./repositories/cost-center.repository";
-
-import { FindCostCenterDto } from "./types/dto/find-cost-center.dto";
-import { CreateCostCenterRequest } from "./types/dto/create-cost-center-request.dto";
-import { FindCostCenterResponseDto } from "./types/dto/find-cost-center-response.dto";
+import { ProcurementRepository } from "./repositories/procurement.repository";
+import { CreateProcurementRequest } from "./types/dto/create-procurement.request.dto";
 
 @Injectable()
-export class CostCenterService {
-  constructor(private costCenterRepository: CostCenterRepository) {}
+export class ProcurementService {
+  constructor(private procurementRepository: ProcurementRepository) {}
 
   private prismaErrors(error: any): never {
     if (error instanceof PrismaClientKnownRequestError) {
@@ -48,34 +45,35 @@ export class CostCenterService {
     }
   }
 
-  async findAll(
-    query: FindCostCenterDto,
-  ): Promise<FindCostCenterResponseDto[]> {
-    const result = await this.costCenterRepository.findAll();
-
-    const costCenterList = result.map((cost) => ({
-      id: cost.id,
-      title: cost.title,
-      status: cost.status,
-    }));
-
-    return costCenterList;
-  }
-
-  async create(request: CreateCostCenterRequest) {
+  async findProcurements() {
     try {
-      const costCenterRecord = await this.costCenterRepository.create({
-        title: request.title,
-        status: request.status,
-        ...(request.description && { description: request.description }),
-      });
+      const procurementRecords =
+        await this.procurementRepository.findProcurements();
 
-      return {
-        id: costCenterRecord.id,
-        title: costCenterRecord.title,
-        status: costCenterRecord.status,
-        description: costCenterRecord.description,
-      };
+      return procurementRecords.map((procurement) => ({
+        id: procurement.id,
+        title: procurement.title,
+        type: procurement.type,
+        status: procurement.status,
+        created: procurement.created_at,
+      }));
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async createProcurement(request: CreateProcurementRequest) {
+    const procurementData = {
+      code: "",
+      title: request.title,
+      ...(request.description && { description: request.description }),
+      type: request.type,
+      status: request.status ?? "RASCUNHO",
+      cost_center_id: request.costCenterId,
+    };
+
+    try {
+      const procurementRecord =
+        await this.procurementRepository.createProcurement(procurementData);
     } catch (error) {
       this.prismaErrors(error);
     }

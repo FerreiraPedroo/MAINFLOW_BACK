@@ -16,6 +16,8 @@ model Project {
   process_id          Int?
   processInstance     ProcessInstance? @relation(fields: [process_id], references: [id], onDelete: Restrict)
   
+  procurements        Procurement[]
+  
   @@unique([business_unit_id, title])
 
   //SOFT DELETE

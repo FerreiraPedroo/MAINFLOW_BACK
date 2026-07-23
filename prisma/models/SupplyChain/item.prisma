@@ -17,7 +17,7 @@ model Item {
   manufacturer_data_sheet     String?
   manufacturer_image_path     String?
 
-  procurements                Procurement[]
+  procurementItens            ProcurementItem[]
 
   business_unit_id            Int
   business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

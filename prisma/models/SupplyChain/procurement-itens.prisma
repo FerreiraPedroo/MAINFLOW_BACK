@@ -1,0 +1,25 @@
+model ProcurementItem {
+  id                    Int           @id   @default(autoincrement())
+  quantity              Int
+
+  procurement_id        Int
+  procurement           Procurement   @relation(fields:[procurement_id], references:[id], onDelete: Restrict)
+
+  item_id               Int
+  item                  Item          @relation(fields:[item_id], references:[id], onDelete: Restrict)
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  @@unique([business_unit_id, procurement_id, item_id])
+
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
+}

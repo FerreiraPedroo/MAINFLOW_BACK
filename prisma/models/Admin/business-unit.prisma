@@ -1,51 +1,49 @@
 model BusinessUnit {
-  id                        Int     @id @default(autoincrement())
-  title                     String  @unique
-  photos                    String? //Quando for para postgres SQL
-  cnpj                      String
+  id     Int     @id @default(autoincrement())
+  title  String  @unique
+  photos String? //Quando for para postgres SQL
+  cnpj   String
 
-  business_unit_activity    BusinessUnitActivity[]
-  
+  business_unit_activity BusinessUnitActivity[]
+
   // ADMIN
-  users                     User[]
-  group_users               GroupUser[]
-  user_sessions             UserSession[]
-  user_activities           UserActivity[]
-  
+  users           User[]
+  group_users     GroupUser[]
+  user_sessions   UserSession[]
+  user_activities UserActivity[]
+
   // MANAGEMENT
-  cost_centers              CostCenter[]
-  departments               Department[]
-  process_instances         ProcessInstance[]
-  
-  localizations             Localization[]
-  space_type                SpaceType[]
-  address                   Address[]
-  block                     Block[]
-  floor                     Floor[]
+  cost_centers      CostCenter[]
+  departments       Department[]
+  process_instances ProcessInstance[]
+
+  localizations Localization[]
+  space_type    SpaceType[]
+  address       Address[]
+  block         Block[]
+  floor         Floor[]
 
   // FACILITIES
-  projects                  Project[]
-  project_allocations       ProjectAllocation[]
+  projects            Project[]
+  project_allocations ProjectAllocation[]
 
   // PEOPLE
-  peoples                   People[]
-  allocations               Allocation[]
-
+  peoples     People[]
+  allocations Allocation[]
 
   // SUPPLY-CHAIN
-  procurements              Procurement[]
-  suppliers                 Supplier[]
-  items                     Item[]
-
+  procurements     Procurement[]
+  procurementItens ProcurementItem[]
+  suppliers        Supplier[]
+  items            Item[]
 
   //SOFT DELETE
-  created_at          DateTime         @default(now())
-  created_by          Int?
+  created_at DateTime @default(now())
+  created_by Int?
 
-  updated_at          DateTime?        @updatedAt
-  updated_by          Int?
+  updated_at DateTime? @updatedAt
+  updated_by Int?
 
-  deleted_at          DateTime?
-  deleted_by          Int?
-
+  deleted_at DateTime?
+  deleted_by Int?
 }

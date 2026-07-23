@@ -51,10 +51,10 @@ export class PeopleService {
 
   ////////////////////////////////////////////////////////////////////////////////
   // PEOPLE
-  async findPeople(peopleId: number) {
+  async getPeople(peopleId: number) {
     let peopleRecord: People | null;
     try {
-      peopleRecord = await this.peopleRepository.findPeople(peopleId);
+      peopleRecord = await this.peopleRepository.getPeople(peopleId);
     } catch (error) {
       this.prismaErrors(error);
     }
@@ -123,19 +123,17 @@ export class PeopleService {
   }
   async updatePeople(peopleId: number, request: UpdatePeopleRequest) {
     const peopleData = {
-      name: request.name,
-      birth_date: request.birth_date,
       ...(request.name && { name: request.name }),
-      ...(request.birth_date && { birth_date: request.birth_date }),
-      ...(request.registration_number && {
-        registration_number: request.registration_number,
+      ...(request.birthDate && { birth_date: request.birthDate }),
+      ...(request.registrationNumber && {
+        registration_number: request.registrationNumber,
       }),
       ...(request.photo && { photo: request.photo }),
       ...(request.sex && { sex: request.sex }),
       ...(request.status && { sex: request.status }),
-      ...(request.hire_date && { hire_date: request.hire_date }),
-      ...(request.termination_date && {
-        termination_date: request.termination_date,
+      ...(request.hireDate && { hire_date: request.hireDate }),
+      ...(request.terminationDate && {
+        termination_date: request.terminationDate,
       }),
     };
     try {
@@ -147,12 +145,13 @@ export class PeopleService {
       return {
         id: peopleRecord.id,
         name: peopleRecord.name,
-        registration_number: peopleRecord.registration_number,
+        birthDate: peopleRecord.birth_date,
+        registrationNumber: peopleRecord.registration_number,
         photo: peopleRecord.photo,
         sex: peopleRecord.sex,
         status: peopleRecord.status,
-        hire_date: peopleRecord.hire_date,
-        termination_date: peopleRecord.termination_date,
+        hireDate: peopleRecord.hire_date,
+        terminationDate: peopleRecord.termination_date,
       };
     } catch (error) {
       this.prismaErrors(error);

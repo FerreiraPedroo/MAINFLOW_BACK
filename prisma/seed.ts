@@ -466,14 +466,20 @@ async function main() {
         {
           legal_name: "3M BRASIL",
           tax_number: "123123100001",
-          supplier_type: "FABRICANTE",
+          supplier_type: "PESSOA JURIDICA",
+          supplier_category: "FORNECEDOR",
           billing_address: "Escócia",
+          business_unit_id: 1,
+          created_by: 1,
         },
         {
           legal_name: "OBRA MAX",
           tax_number: "321321100044",
-          supplier_type: "FORNECEDOR",
+          supplier_type: "PESSOA JURIDICA",
+          supplier_category: "FORNECEDOR",
           billing_address: "Guadalupe/Brasil",
+          business_unit_id: 1,
+          created_by: 1,
         },
       ],
     },
@@ -482,6 +488,7 @@ async function main() {
         {
           title: "LÂMPADA FLUORESCENTE TUBULAR 40W",
           code: "1010000",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "LÂMPADAS",
           type: "MATERIAL",
@@ -491,6 +498,7 @@ async function main() {
         {
           title: "LÂMPADA FLUORESCENTE TUBULAR 20W",
           code: "1010001",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "LÂMPADAS",
           type: "MATERIAL",
@@ -500,6 +508,7 @@ async function main() {
         {
           title: "REATOR 2x40W BIVOLT",
           code: "1010002",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "REATORES",
           type: "MATERIAL",
@@ -509,6 +518,7 @@ async function main() {
         {
           title: "REATOR 2x20W BIVOLT",
           code: "1010003",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "REATORES",
           type: "MATERIAL",
@@ -518,6 +528,7 @@ async function main() {
         {
           title: "SOQUETE ENGATE RÁPIDO G13 P/LAMPADA TUBULAR",
           code: "1010004",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "SOQUETES",
           type: "MATERIAL",
@@ -526,7 +537,8 @@ async function main() {
         },
         {
           title: "SOQUETE RABICHO G13 P/LAMPADA TUBULAR",
-          code: "1010004",
+          code: "1010005",
+          unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "SOQUETES",
           type: "MATERIAL",
@@ -535,7 +547,7 @@ async function main() {
         },
         {
           title: "FITA ISOLANTE PRETA 5MTS 750V IMPERIAL",
-          code: "1010005",
+          code: "1010006",
           unit_measure: "UNIDADE",
           category: "ELÉTRICO",
           sub_category: "ISOLANTES",
@@ -546,7 +558,7 @@ async function main() {
           manufacturer_id: 1,
           manufacturer_part_number: "7891040004386",
           manufacturer_catalog: "JANEIRO 2020",
-          manufacturer_data_sheet_url:
+          manufacturer_data_sheet:
             "https://multimedia.3m.com/mws/media/1022141O/data-sheet-vinyl-tape-imperial.pdf?&fn=imperial2019.pdf",
           manufacturer_image_path:
             "https://gmidistribuidora.agilecdn.com.br/203-1_1.jpg",
@@ -581,6 +593,8 @@ async function main() {
     await prisma.spaceType.createMany(seeds.localizationSpaceTypes);
     await prisma.localization.createMany(seeds.localization);
     await prisma.people.createMany(seeds.people);
+    await prisma.supplier.createMany(seeds.supplier);
+    await prisma.item.createMany(seeds.item);
 
     console.log({
       address,
@@ -599,6 +613,7 @@ async function main() {
     if (error instanceof PrismaClientKnownRequestError) {
       switch (error.code) {
         case "P2001": {
+          console.log(error);
           throw new UnprocessableEntityException(
             `O bloco a ser excluído não encontrado.`,
           );
@@ -609,13 +624,14 @@ async function main() {
           const fields = meta?.cause?.constraint?.fields
             ?.join(" / ")
             .toUpperCase();
-
+          console.log(error);
           throw new UnprocessableEntityException(
             `Existe um block com esses dados: ${fields}`,
           );
           break;
         }
         case "P2025": {
+          console.log(error);
           throw new UnprocessableEntityException(
             "Não foi possivel encontrar um registro necessário para executar a tarefa.",
           );

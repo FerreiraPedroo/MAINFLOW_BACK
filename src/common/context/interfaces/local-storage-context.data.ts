@@ -4,4 +4,5 @@ export interface LocalStorageContextData {
   userId: number;
   businessUnitId: number;
   userActivities: UserActivityData[]; // ou um tipo mais específico
+  tx?: any;
 }

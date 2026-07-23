@@ -67,6 +67,6 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
       userActivities: [],
     };
 
-    this.requestContext.run(store, () => next());
+    void this.requestContext.run(store, () => next());
   }
 }

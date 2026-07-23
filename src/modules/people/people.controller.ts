@@ -14,8 +14,8 @@ export class Peoplecontroller {
     return await this.peopleService.findPeoples();
   }
   @Get(":peopleId")
-  async findPeople(@Param("peopleId") peopleId: number) {
-    return await this.peopleService.findPeople(peopleId);
+  async getPeople(@Param("peopleId") peopleId: number) {
+    return await this.peopleService.getPeople(peopleId);
   }
   @Post()
   async createPeople(@Body() request: CreatePeopleRequest) {

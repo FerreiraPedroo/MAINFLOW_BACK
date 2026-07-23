@@ -10,10 +10,13 @@ model Procurement {
   cost_center_id        Int
   cost_center           CostCenter    @relation(fields:[cost_center_id], references:[id], onDelete: Restrict)
 
+  project_id            Int?
+  project               Project?      @relation(fields:[project_id], references:[id], onDelete: Restrict)
+
   business_unit_id      Int
   business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
 
-  items                 Item[]
+  items                 ProcurementItem[]
   
   //SOFT DELETE
   created_at            DateTime      @default(now())

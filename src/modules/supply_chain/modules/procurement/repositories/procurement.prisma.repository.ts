@@ -1,20 +1,46 @@
+import { Procurement, ProcurementItem } from "@prisma/client";
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
-import { Procurement } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { PrismaService } from "@/database/prisma/prisma.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+
 import { CreateProcurementData } from "../types/data/create-procurement.data";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { GetProcurementRecord } from "../types/record/get-procurement.record";
+import { UpdateProcurementData } from "../types/data/update-procurement.data";
+import { ProcurementRepository } from "../types/interfaces/procurement.repository.interface";
 
 @Injectable()
-export class ProcurementRepository {
+export class ProcurementPrismaRepository implements ProcurementRepository {
   constructor(
     private prisma: PrismaService,
     private requestContext: LocalStorageContextService,
   ) {}
 
+  async getProcurement(procurementId: number): Promise<GetProcurementRecord> {
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
+
+    return await this.prisma.procurement.findUnique({
+      where: {
+        id: Number(procurementId),
+        business_unit_id: Number(userData.businessUnitId),
+      },
+      include: {
+        cost_center: true,
+        items: {
+          include: {
+            item: {
+              include: {
+                manufacturer: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   async findProcurements(): Promise<Procurement[]> {
     const userData = this.requestContext.getStore() as LocalStorageContextData;
 
@@ -32,7 +58,7 @@ export class ProcurementRepository {
         query: {
           procurement: {
             async create({ args, query }) {
-              let retry = 5;
+              let retry = 15;
 
               while (retry > 0) {
                 try {
@@ -47,9 +73,9 @@ export class ProcurementRepository {
                       code: true,
                     },
                   });
-
                   console.log({ procurementRecord });
-                  if (procurementRecord == null) {
+
+                  if (!procurementRecord) {
                     code = "R-00001";
                   } else {
                     const codeNumber = Number(
@@ -67,13 +93,14 @@ export class ProcurementRepository {
                       code = `R-${codeNumber + 1}`;
                     }
                   }
-                  console.log({ code });
+
                   // 1. Gera o código e injeta nos argumentos antes de salvar
                   args.data.code = code;
-
+                  console.log({ args });
                   // 2. Executa a query original de criação
                   return await query(args);
                 } catch (error) {
+                  console.log({ error });
                   // P2002 é o código do Prisma para erro de Unique Constraint
                   if (
                     error instanceof PrismaClientKnownRequestError &&
@@ -88,6 +115,7 @@ export class ProcurementRepository {
                   );
                 }
               }
+
               throw new Error(
                 "Não foi possível gerar um código único após várias tentativas.",
               );
@@ -104,5 +132,69 @@ export class ProcurementRepository {
         created_by: Number(userData.userId),
       },
     });
+  }
+  async procurementItens(procurementId: number): Promise<ProcurementItem[]> {
+    const userData = this.requestContext.getStore() as LocalStorageContextData;
+
+    return await this.prisma.procurementItem.findMany({
+      where: {
+        procurement_id: Number(procurementId),
+        business_unit_id: Number(userData.businessUnitId),
+      },
+    });
+  }
+  async updateProcurement(
+    procurementId: number,
+    procurementData: UpdateProcurementData,
+  ): Promise<Procurement> {
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    const client = userContext.tx || this.prisma;
+
+    return await client.procurement.update({
+      where: {
+        id: Number(procurementId),
+        business_unit_id: Number(userContext.businessUnitId),
+      },
+      data: {
+        ...procurementData,
+      },
+    });
+
+    // if (procurementItens.deleteItens?.length) {
+    //   await tx.procurementItens.deleteMany({
+    //     where: {
+    //       id: { in: procurementItens.deleteItens },
+    //       business_unit_id: Number(userData.businessUnitId),
+    //     },
+    //   });
+    // }
+    // if (procurementItens.updateItens?.length) {
+    //   for (const item of procurementItens.updateItens) {
+    //     await tx.procurementItens.update({
+    //       where: {
+    //         id: Number(item.id),
+    //         business_unit_id: Number(userData.businessUnitId),
+    //       },
+    //       data: {
+    //         quantity: item.quantity,
+    //       },
+    //     });
+    //   }
+    // }
+    // if (procurementItens.createItens?.length) {
+    //   for (const item of procurementItens.createItens) {
+    //     await tx.procurementItens.create({
+    //       data: {
+    //         item_id: item.itemId,
+    //         quantity: item.quantity,
+    //         procurement_id: Number(procurementId),
+    //         business_unit_id: Number(userData.businessUnitId),
+    //         created_by: Number(userData.userId),
+    //       },
+    //     });
+    //   }
+    // }
   }
 }

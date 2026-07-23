@@ -16,7 +16,7 @@ export class PeopleRepository {
     private requestContext: LocalStorageContextService,
   ) {}
 
-  async findPeople(peopleId: number): Promise<People | null> {
+  async getPeople(peopleId: number): Promise<People | null> {
     const userData = this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findUnique({

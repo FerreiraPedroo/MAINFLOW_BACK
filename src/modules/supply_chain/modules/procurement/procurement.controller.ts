@@ -1,19 +1,30 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 
 import { ProcurementService } from "./procurements.service";
 
 import type { CreateProcurementRequest } from "./types/dto/create-procurement.request.dto";
+import type { UpdateProcurementRequest } from "./types/dto/procurement.request.dto";
 
 @Controller("/supply-chain/procurements")
 export class ProcurementController {
   constructor(private procurementService: ProcurementService) {}
 
-  @Get()
-  async findProcurements() {
-    return await this.procurementService.findProcurements();
+  @Get(":procurementId")
+  async getProcurement(@Param("procurementId") procurementId: number) {
+    return await this.procurementService.getProcurement(procurementId);
   }
   @Post()
   async createProcurement(@Body() request: CreateProcurementRequest) {
     return await this.procurementService.createProcurement(request);
+  }
+  @Put(":procurementId")
+  async updateProcurement(
+    @Param("procurementId") procurementId: number,
+    @Body() request: UpdateProcurementRequest,
+  ) {
+    return await this.procurementService.updateProcurement(
+      procurementId,
+      request,
+    );
   }
 }

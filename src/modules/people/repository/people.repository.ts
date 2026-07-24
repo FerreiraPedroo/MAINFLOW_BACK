@@ -17,30 +17,33 @@ export class PeopleRepository {
   ) {}
 
   async getPeople(peopleId: number): Promise<People | null> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findUnique({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(userData.businessUnitId),
+        business_unit_id: Number(userContext.businessUnitId),
       },
     });
   }
   async findPeoples(): Promise<People[]> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findMany({
-      where: { business_unit_id: Number(userData.businessUnitId) },
+      where: { business_unit_id: Number(userContext.businessUnitId) },
     });
   }
   async createPeople(peopleData: CreatePeopleData): Promise<People> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.create({
       data: {
         ...peopleData,
-        business_unit_id: Number(userData.businessUnitId),
-        created_by: Number(userData.userId),
+        business_unit_id: Number(userContext.businessUnitId),
+        created_by: Number(userContext.userId),
       },
     });
   }
@@ -48,16 +51,17 @@ export class PeopleRepository {
     peopleId: number,
     peopleData: UpdatePeopleData,
   ): Promise<People> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.update({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(userData.businessUnitId),
+        business_unit_id: Number(userContext.businessUnitId),
       },
       data: {
         ...peopleData,
-        updated_by: Number(userData.userId),
+        updated_by: Number(userContext.userId),
       },
     });
   }

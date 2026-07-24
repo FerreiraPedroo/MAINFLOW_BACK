@@ -16,23 +16,25 @@ export class SpaceTypeRepository {
   ) {}
 
   async findSpaceTypes(): Promise<SpaceType[]> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.findMany({
-      where: { business_unit_id: Number(userData.businessUnitId) },
+      where: { business_unit_id: Number(userContext.businessUnitId) },
     });
   }
   async createSpaceType(
     spaceTypeData: CreateSpaceTypeData,
   ): Promise<SpaceType> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.create({
       data: {
         title: spaceTypeData.title,
         status: spaceTypeData.status.toUpperCase(),
-        business_unit_id: Number(userData.businessUnitId),
-        created_by: Number(userData.userId),
+        business_unit_id: Number(userContext.businessUnitId),
+        created_by: Number(userContext.userId),
       },
     });
   }
@@ -40,16 +42,17 @@ export class SpaceTypeRepository {
     spaceTypeId: number,
     spaceTypeStatus: string,
   ): Promise<SpaceType> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.update({
       where: {
         id: Number(spaceTypeId),
-        business_unit_id: Number(userData.businessUnitId),
+        business_unit_id: Number(userContext.businessUnitId),
       },
       data: {
         status: spaceTypeStatus.toUpperCase(),
-        updated_by: Number(userData.userId),
+        updated_by: Number(userContext.userId),
       },
     });
   }

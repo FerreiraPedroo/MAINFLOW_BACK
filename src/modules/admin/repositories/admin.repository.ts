@@ -33,13 +33,14 @@ export class AdminRepository {
     businessId: number,
     businessData: UpdateBusinessData,
   ): Promise<BusinessUnit | null> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.businessUnit.update({
       where: { id: Number(businessId) },
       data: {
         ...businessData,
-        updated_by: Number(userData.userId),
+        updated_by: Number(userContext.userId),
       },
     });
   }

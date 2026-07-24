@@ -10,7 +10,6 @@ export type GetProcurementRecord = Prettify<
   Prisma.ProcurementGetPayload<{
     include: {
       cost_center: true;
-      project: true;
       items: {
         include: {
           item: {

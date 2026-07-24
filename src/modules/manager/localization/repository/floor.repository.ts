@@ -16,35 +16,38 @@ export class FloorRepository {
   ) {}
 
   async findFloor(): Promise<Floor[]> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.findMany({
-      where: { business_unit_id: Number(userData.businessUnitId) },
+      where: { business_unit_id: Number(userContext.businessUnitId) },
     });
   }
   async createFloor(floorData: CreateFloorData): Promise<Floor> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.create({
       data: {
         title: floorData.title,
         status: floorData.status.toUpperCase(),
-        business_unit_id: Number(userData.businessUnitId),
-        created_by: Number(userData.userId),
+        business_unit_id: Number(userContext.businessUnitId),
+        created_by: Number(userContext.userId),
       },
     });
   }
   async updateFloor(floorId: number, floorStatus: string): Promise<Floor> {
-    const userData = this.requestContext.getStore() as LocalStorageContextData;
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.update({
       where: {
         id: Number(floorId),
-        business_unit_id: Number(userData.businessUnitId),
+        business_unit_id: Number(userContext.businessUnitId),
       },
       data: {
         status: floorStatus.toUpperCase(),
-        updated_by: Number(userData.userId),
+        updated_by: Number(userContext.userId),
       },
     });
   }

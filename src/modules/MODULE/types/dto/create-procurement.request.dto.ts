@@ -11,6 +11,4 @@ export class CreateProcurementRequest {
   status!: string;
   @IsNumber()
   costCenterId!: number;
-  @IsNumber()
-  projectId?: number;
 }

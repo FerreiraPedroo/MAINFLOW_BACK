@@ -90,7 +90,7 @@ export class UserService {
       photoUrl = await this.fileService.fileSave(photo, "users/avatar");
     }
 
-    const userData = {
+    const userContext = {
       email: request.email,
       password: passwordHash,
       name: request.name,
@@ -101,7 +101,7 @@ export class UserService {
     let userRecord: User | null;
 
     try {
-      userRecord = await this.userRepository.createUser(userData);
+      userRecord = await this.userRepository.createUser(userContext);
     } catch (error) {
       if (photoUrl) {
         await this.fileService.removeFile(photoUrl);

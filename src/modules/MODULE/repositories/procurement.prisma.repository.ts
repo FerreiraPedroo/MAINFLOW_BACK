@@ -30,7 +30,6 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
       },
       include: {
         cost_center: true,
-        project: true,
         items: {
           include: {
             item: {

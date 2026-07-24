@@ -82,12 +82,6 @@ export class ProcurementService {
       type: procurementRecord.type,
       status: procurementRecord.status,
       sendDate: procurementRecord.send_date,
-      project: procurementRecord.project && {
-        id: procurementRecord.project.id,
-        code: procurementRecord.project.code,
-        title: procurementRecord.project.title,
-        status: procurementRecord.project.status,
-      },
       costCenter: {
         id: procurementRecord.cost_center.id,
         title: procurementRecord.cost_center.title,
@@ -145,7 +139,6 @@ export class ProcurementService {
       type: request.type,
       status: request.status ?? "RASCUNHO",
       cost_center_id: request.costCenterId,
-      ...(request.projectId && { project_id: request.projectId }),
     };
 
     try {
@@ -159,7 +152,6 @@ export class ProcurementService {
         type: procurementRecord.type,
         status: procurementRecord.status,
         costCenterId: procurementRecord.cost_center_id,
-        projectId: procurementRecord.project_id,
       };
     } catch (error) {
       this.prismaErrors(error);
@@ -175,7 +167,6 @@ export class ProcurementService {
       ...(request.type && { type: request.type }),
       ...(request.status && { status: request.status }),
       ...(request.costCenterId && { cost_center_id: request.costCenterId }),
-      ...(request.projectId && { project_id: request.projectId }),
     };
     const createItens: {
       itemId: number;

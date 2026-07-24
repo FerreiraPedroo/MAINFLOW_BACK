@@ -10,4 +10,5 @@ export interface GetProjectByIdResponse {
     title: string;
     description: string | null;
   } | null;
+  procurements: { id: number; code: string; title: string; status: string }[];
 }

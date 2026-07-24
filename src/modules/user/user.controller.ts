@@ -22,7 +22,7 @@ export class UserController {
   // @Get()
   // async findUserActivitiesByUserId() {
   //   const departmentList =
-  //     await this.userDataService.findUserActivitiesByUserId();
+  //     await this.userContextService.findUserActivitiesByUserId();
 
   //   return { statusCode: 200, data: departmentList };
   // }

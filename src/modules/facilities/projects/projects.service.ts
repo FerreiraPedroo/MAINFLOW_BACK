@@ -83,6 +83,12 @@ export class ProjectsService {
               description: project.cost_center.description,
             }
           : null,
+        procurements: project.procurements.map((proc) => ({
+          id: proc.id,
+          code: proc.code,
+          title: proc.title,
+          status: proc.status,
+        })),
       };
     }
   }

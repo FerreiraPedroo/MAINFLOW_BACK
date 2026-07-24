@@ -1,4 +1,9 @@
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { ProcurementRepository } from "./types/interfaces/procurement.repository.interface";
+import {
+  Inject,
+  Injectable,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
@@ -7,12 +12,14 @@ import { GetProcurementRecord } from "./types/record/get-procurement.record";
 import { UpdateProcurementData } from "./types/data/update-procurement.data";
 import { UpdateProcurementRequest } from "./types/dto/procurement.request.dto";
 import { CreateProcurementRequest } from "./types/dto/create-procurement.request.dto";
-import { PrismaUnitOfWork } from "@/common/infrastructure/unit-of-work.infrastructure";
 import { ProcurementItemService } from "./procurements-item.service";
+
+import { PrismaUnitOfWork } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 
 @Injectable()
 export class ProcurementService {
   constructor(
+    @Inject("ProcurementRepository")
     private readonly procurementRepository: ProcurementPrismaRepository,
     private readonly procurementItemService: ProcurementItemService,
     private readonly unitOfWork: PrismaUnitOfWork,
@@ -189,6 +196,12 @@ export class ProcurementService {
             procurementId,
             procurementData,
           ),
+          deleteItens.length &&
+            this.procurementItemService.deleteProcurementItens(deleteItens),
+          updateItens.length &&
+            ...updateItens.map((ui) =>
+              this.procurementItemService.updateProcurementItem(ui),
+            ),
           deleteItens &&
             this.procurementItemService.deleteProcurementItens(deleteItens),
         ]);

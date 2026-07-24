@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { Inject, Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { ProcurementItemPrismaRepository } from "./repositories/procurement-item.prisma.repository";
@@ -10,6 +10,7 @@ import { FindProcurementItemRecord } from "./types/record/find-procurement-item.
 @Injectable()
 export class ProcurementItemService {
   constructor(
+    @Inject("ProcurementItemRepository")
     private readonly procurementItemRepository: ProcurementItemPrismaRepository,
   ) {}
 
@@ -88,18 +89,24 @@ export class ProcurementItemService {
       this.prismaErrors(error);
     }
   }
-  async updateProcurementItem(
-    procurementItemId: number,
-    request: UpdateProcurementItemRequest,
-  ) {
+  async updateProcurementItem(request: UpdateProcurementItemRequest) {
     const procurementItem = {
+      id: request.id,
       quantity: request.quantity,
     };
 
     try {
       return await this.procurementItemRepository.updateProcurementItem(
-        procurementItemId,
         procurementItem,
+      );
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async deleteProcurementItens(procurementItemIds: number[]) {
+    try {
+      return await this.procurementItemRepository.deleteProcurementItens(
+        procurementItemIds,
       );
     } catch (error) {
       this.prismaErrors(error);

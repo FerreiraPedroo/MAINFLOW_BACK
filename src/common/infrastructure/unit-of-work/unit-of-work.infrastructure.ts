@@ -1,5 +1,5 @@
 import { PrismaService } from "@/database/prisma/prisma.service";
-import { LocalStorageContextService } from "../context/local-storage-context.service";
+import { LocalStorageContextService } from "../../context/local-storage-context.service";
 import { UnitOfWork } from "./interfaces/unit-of-work.interface";
 import { Injectable } from "@nestjs/common";
 
@@ -20,11 +20,6 @@ export class PrismaUnitOfWork implements UnitOfWork {
 
       try {
         return await work();
-      } catch (error) {
-        if (store) {
-          delete store.tx;
-        }
-        throw error;
       } finally {
         if (store) {
           delete store.tx;

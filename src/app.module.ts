@@ -1,3 +1,4 @@
+import { UnitOfWork } from "./common/infrastructure/unit-of-work/interfaces/unit-of-work.interface";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { CacheModule } from "@nestjs/cache-manager";
 
@@ -20,6 +21,7 @@ import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
 import { SupplyChainModule } from "@/modules/supply_chain/supply-chain.module";
+import { UnitOfWorkModule } from "./common/infrastructure/unit-of-work/unit-of-work.module";
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { SupplyChainModule } from "@/modules/supply_chain/supply-chain.module";
     MulterConfigModule,
     PrismaModule,
     AuthModule,
+    UnitOfWorkModule,
     FileModule,
     FacilitiesModule,
     ProcessModule,

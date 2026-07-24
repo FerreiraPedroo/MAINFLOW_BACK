@@ -5,5 +5,6 @@ import { ProcurementModule } from "./modules/procurement/procurement.module";
   imports: [ProcurementModule],
   controllers: [],
   providers: [],
+  exports: [ProcurementModule],
 })
 export class SupplyChainModule {}

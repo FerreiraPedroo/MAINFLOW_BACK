@@ -8,7 +8,6 @@ export interface ProcurementItemRepository {
     procurementData: CreateProcurementItemData[],
   ): Promise<ProcurementItem[]>;
   updateProcurementItem(
-    procurementId: number,
     procurementData: UpdateProcurementItemData,
   ): Promise<void>;
 }

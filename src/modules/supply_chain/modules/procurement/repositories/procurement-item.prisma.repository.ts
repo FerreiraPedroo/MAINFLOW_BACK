@@ -130,43 +130,36 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     //   },
     // });
   }
-  async updateProcurementItem(
-    procurementItemId: number,
-    procurementItem: UpdateProcurementItemData,
-  ) {
+  async deleteProcurementItens(
+    procurementItensIds: number[],
+  ): Promise<ProcurementItem[]> {
+    const userContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    const client = userContext?.tx || this.prisma;
+
+    return await client.procurementItem.deleteMany({
+      where: {
+        id: { in: procurementItensIds },
+        business_unit_id: Number(userContext.businessUnitId),
+      },
+    });
+  }
+  async updateProcurementItem(procurementItem: UpdateProcurementItemData) {
     const userContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     const client = userContext.tx || this.prisma;
 
-    await client.procurementItens.update({
+    return await client.procurementItens.update({
       where: {
-        id: Number(procurementItemId),
+        id: Number(procurementItem.id),
         business_unit_id: Number(userContext.businessUnitId),
       },
       data: {
-        ...procurementItem,
+        quantity: procurementItem.quantity,
         update_by: Number(userContext.userId),
       },
     });
   }
-
-  // async findProcurements(): Promise<Procurement[]> {
-  //   const userData = this.requestContext.getStore() as LocalStorageContextData;
-
-  //   return await this.prisma.procurement.findMany({
-  //     where: { business_unit_id: Number(userData.businessUnitId) },
-  //   });
-  // }
-
-  // async procurementItens(procurementId: number): Promise<ProcurementItens[]> {
-  //   const userData = this.requestContext.getStore() as LocalStorageContextData;
-
-  //   return await this.prisma.procurementItens.findMany({
-  //     where: {
-  //       procurement_id: Number(procurementId),
-  //       business_unit_id: Number(userData.businessUnitId),
-  //     },
-  //   });
-  // }
 }

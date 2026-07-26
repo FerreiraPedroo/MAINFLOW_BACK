@@ -11,9 +11,21 @@ model User {
   business_unit_id        Int
   business_unit           BusinessUnit @relation(fields: [business_unit_id], references: [id])
 
-  user_data               UserData?
-  user_session            UserSession?
+  user_activities         UserActivity[]
+  user_session            UserSession[]
 
   process_instances       ProcessInstance[]
   process_step_instances  ProcessStepInstance[]
+  
+  @@unique([business_unit_id, email])
+
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
 }

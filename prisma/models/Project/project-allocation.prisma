@@ -1,0 +1,26 @@
+model ProjectAllocation {
+  id                    Int         @id @default(autoincrement())
+  project_id            Int
+  project               Project     @relation(fields:[project_id], references:[id])
+  people_id             Int
+  people                People      @relation(fields:[people_id], references:[id])
+  assign_date           DateTime
+  start_hour            String
+  end_hour              String
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id])
+  
+  @@unique([business_unit_id, project_id, people_id, assign_date])
+  
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
+
+}

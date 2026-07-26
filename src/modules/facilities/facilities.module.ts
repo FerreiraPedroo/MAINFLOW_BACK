@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common";
-import { ProjectsModule } from "./projects/projects.module.js";
+import { ProjectModule } from "@modules/facilities/projects/project.module";
+import { ProcessModule } from "@modules/process/process.module";
 
 @Module({
-  imports: [ProjectsModule],
-  exports: [ProjectsModule],
+  imports: [ProjectModule, ProcessModule],
+  exports: [ProjectModule],
 })
 export class FacilitiesModule {}

@@ -1,0 +1,14 @@
+model Sector {
+    id                         Int             @id     @default(autoincrement())
+    title                      String          @unique
+    icon                       String?
+    
+    department_id               Int
+    department                  Department      @relation(fields: [department_id], references:[id], onDelete: Restrict)
+
+    activities                  Activity[]
+   
+    business_unit_activity      BusinessUnitActivity[]
+    user_activities             UserActivity[]
+    allocations                 Allocation[]
+}

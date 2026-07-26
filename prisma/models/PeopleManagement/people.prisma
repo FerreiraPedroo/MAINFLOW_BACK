@@ -4,14 +4,29 @@
 */
 model People {
   id                    Int      @id @default(autoincrement())
-  name                  String
+  name                  String   @unique
   birth_date            String
-  registration_number   String?
+  registration_number   String?  @unique
   photo                 String?
   sex                   String?
+  status                String
   hire_date             String?
-  termination_date     String?
+  termination_date      String?
 
   allocation            Allocation?
+  project_allocations   ProjectAllocation[]
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
 }
 

@@ -15,8 +15,6 @@ model ProcessStepModel {
 
     approval_group_users    GroupUser[]
 
-    department_id           Int
-    department              Department @relation(fields: [department_id], references: [id])
     process_model_id        Int
     process_model           ProcessModel @relation(fields: [process_model_id], references: [id])
 

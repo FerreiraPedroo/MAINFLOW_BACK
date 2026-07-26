@@ -1,0 +1,15 @@
+model Department {
+    id                          Int     @id @default(autoincrement())
+    title                       String  @unique
+    url                         String
+    icon                        String?
+
+    business_units              BusinessUnit[]
+    business_unit_activities    BusinessUnitActivity[]
+    user_activities             UserActivity[]
+
+    activities                  Activity[]
+
+    sectors                     Sector[]
+    allocations                 Allocation[]    
+}

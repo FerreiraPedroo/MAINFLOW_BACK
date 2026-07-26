@@ -1,0 +1,38 @@
+model Item {
+  id                          Int     @id @default(autoincrement())
+  title                       String
+  code                        String
+  unit_measure                String
+  category                    String
+  sub_category                String?
+  type                        String  // define se é material ou serviço.
+  description                 String?
+  image_path                  String?
+  hs_code                     String? // Harmonized System Code (6 digitos) ou Nomenclatura comun do mercosul (8 digitos)
+
+  manufacturer_id             Int?
+  manufacturer                Supplier?    @relation(fields:[manufacturer_id], references: [id])
+  manufacturer_part_number    String? // SKU ou EAN
+  manufacturer_catalog        String?
+  manufacturer_data_sheet     String?
+  manufacturer_image_path     String?
+
+  procurementItens            ProcurementItem[]
+
+  business_unit_id            Int
+  business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  @@unique([business_unit_id, title])
+  @@unique([business_unit_id, code])
+
+  //SOFT DELETE
+  created_at                  DateTime      @default(now())
+  created_by                  Int?
+
+  updated_at                  DateTime?     @updatedAt
+  updated_by                  Int?
+
+  deleted_at                  DateTime?
+  deleted_by                  Int?
+
+}

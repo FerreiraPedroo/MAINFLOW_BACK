@@ -1,0 +1,30 @@
+# Dependências
+node_modules/
+jspm_packages/
+
+# Pastas de build e saída de produção
+dist/
+build/
+out/
+.next/
+.nuxt/
+target/
+
+# Arquivos de log e relatórios de cobertura
+*.log
+coverage/
+.nyc_output/
+
+# Configurações locais e variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Arquivos de cache de ferramentas
+.eslintcache
+.parcel-cache
+.turbo/
+.cache/
+
+# Arquivos de definição do TypeScript gerados automaticamente (opcional)
+*.d.ts

@@ -1,16 +1,23 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { JwtService } from "@nestjs/jwt";
-import { UserService } from "@modules/user/user.service";
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
+
+import { EncryptService } from "@common/service/encrypt.service";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+
+import { UserActivityRepository } from "@modules/user/repositories/user-activity-repository";
+import { UserRepository } from "@modules/user/repositories/user.repository";
 
 import {
-  AuthUserDepartmentSectorData,
+  AuthUserActivitiesData,
   SectorItem,
-} from "./interfaces/departments.interface";
-import { EncryptService } from "@/common/service/encrypt.service";
-import { DepartmentService } from "@modules/manager/department/department.service";
-import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-import { env } from "node:process";
-
+} from "./data/user-activities.data";
+import { UserRecord } from "../user/types/data/user-record";
 export interface JwtPayload {
   user: string;
   businessId: number;
@@ -22,105 +29,145 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private encryptService: EncryptService,
-    private userService: UserService,
-    private departmentService: DepartmentService,
+    private userRepository: UserRepository,
+    private userActivityRepository: UserActivityRepository,
   ) {}
 
-  async signIn(email: string, password: string) {
-    const userFound = await this.userService.getUser(email);
+  private prismaErrors(error: any): never {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2001": {
+          throw new UnprocessableEntityException(
+            `O usuário não pode ser excluído.`,
+          );
+          break;
+        }
+        case "P2002": {
+          const meta = error.meta?.driverAdapterError as any;
+          const fields = meta?.cause?.constraint?.fields
+            ?.join(" / ")
+            .toUpperCase();
 
-    if (!userFound) {
-      throw new UnauthorizedException("Senha ou usuário errado(s).");
+          throw new UnprocessableEntityException(
+            `Existe um usuário com esses dados: ${fields}`,
+          );
+          break;
+        }
+        case "P2025": {
+          throw new UnprocessableEntityException(
+            "Não foi possivel encontrar o usuário.",
+          );
+        }
+        default: {
+          console.log(error);
+          throw new UnprocessableEntityException(error.message);
+        }
+      }
+    } else {
+      console.log(error);
+      throw new UnprocessableEntityException(
+        "Não foi possivel executar a ação.",
+      );
+    }
+  }
+
+  async signIn(email: string, password: string) {
+    let userRecord: UserRecord | null;
+    try {
+      userRecord = await this.userRepository.getLoginUserByEmail(email);
+    } catch (error) {
+      this.prismaErrors("Senha ou usuário errado(s).");
+    }
+
+    if (!userRecord) {
+      throw new UnauthorizedException("Usuário ou senha errados.");
     }
 
     const passwordCompare = await this.encryptService.compareHash(
       password,
-      userFound.password,
+      userRecord.password,
     );
 
     if (!passwordCompare) {
-      throw new UnauthorizedException("Senha ou usuário errado(s).");
+      throw new UnauthorizedException("Senha ou usuário errados.");
     }
 
     const userInfo = {
-      id: userFound.id,
-      name: userFound.name,
-      photo: userFound.photo,
-      email: userFound.email,
+      id: userRecord.id,
+      name: userRecord.name,
+      photo: userRecord.photo,
+      email: userRecord.email,
     };
 
-    const departmentsSectors =
-      await this.departmentService.findUserDepartmentSectorByUserIdForLogin(
-        userFound.id,
-        userFound.business_unit_id,
+    const userActivities =
+      await this.userActivityRepository.findUserActivitiesById(
+        userRecord.id,
+        userRecord.business_unit_id,
       );
 
-    const departmentsInfo: AuthUserDepartmentSectorData[] = [];
+    const userActivityInfo: AuthUserActivitiesData[] = [];
 
-    if (departmentsSectors) {
-      for (const userDepartmentSector of departmentsSectors) {
-        const foundDepartmentInfo = departmentsInfo.find(
-          (dpto) => dpto.id == userDepartmentSector.department_id,
+    if (userActivities) {
+      for (const userActivity of userActivities) {
+        const foundDepartmentInfo = userActivityInfo.find(
+          (dpto) => dpto.id == userActivity.department_id,
         );
 
         if (foundDepartmentInfo) {
-          if (userDepartmentSector.sector_id) {
-            const foundSector = foundDepartmentInfo.itemsList.find(
+          if (userActivity.sector_id) {
+            const foundSector = foundDepartmentInfo.activities.find(
               (sector): sector is SectorItem =>
-                sector.id === userDepartmentSector.sector_id &&
-                "process_item" in sector,
+                sector.id === userActivity.sector_id && "activities" in sector,
             );
 
             if (foundSector) {
-              foundSector.process_item.push(userDepartmentSector.process_item);
+              foundSector.activities.push(userActivity.activity);
             } else {
-              foundDepartmentInfo.itemsList.push({
-                ...(userDepartmentSector.sector as SectorItem),
-                process_item: [userDepartmentSector.process_item],
+              foundDepartmentInfo.activities.push({
+                ...(userActivity.sector as SectorItem),
+                activities: [userActivity.activity],
               });
             }
           } else {
-            foundDepartmentInfo.itemsList.push(
-              userDepartmentSector.process_item,
-            );
+            foundDepartmentInfo.activities.push(userActivity.activity);
           }
         } else {
-          const newDepartment: AuthUserDepartmentSectorData = {
-            id: userDepartmentSector.id,
-            title: userDepartmentSector.department.title,
-            url: userDepartmentSector.department.url,
-            icon: userDepartmentSector.department.icon,
-            itemsList: [],
+          const newDepartment: AuthUserActivitiesData = {
+            id: userActivity.id,
+            title: userActivity.department.title,
+            url: userActivity.department.url,
+            icon: userActivity.department.icon,
+            activities: [],
           };
 
-          if (userDepartmentSector.sector) {
-            newDepartment.itemsList.push({
-              id: userDepartmentSector.sector.id,
-              department_id: userDepartmentSector.sector.department_id,
-              title: userDepartmentSector.sector.title,
-              icon: userDepartmentSector.sector.icon,
-              process_item: [userDepartmentSector.process_item],
+          if (userActivity.sector) {
+            newDepartment.activities.push({
+              id: userActivity.sector.id,
+              department_id: userActivity.sector.department_id,
+              title: userActivity.sector.title,
+              icon: userActivity.sector.icon,
+              activities: [userActivity.activity],
             });
           } else {
-            newDepartment.itemsList.push(userDepartmentSector.process_item);
+            newDepartment.activities.push(userActivity.activity);
           }
 
-          departmentsInfo.push(newDepartment);
+          userActivityInfo.push(newDepartment);
         }
       }
     }
 
     const tokenInfo = await this.generateToken(
-      userFound.id,
-      userFound.business_unit_id,
+      userRecord.id,
+      userRecord.business_unit_id,
     );
 
     await this.cacheManager.set(
-      `userId:${userFound.id}:businessId:${userFound.business_unit_id}`,
-      departmentsSectors,
+      `userId:${userRecord.id}:businessId:${userRecord.business_unit_id}`,
+      userActivities,
     );
 
-    return { userInfo, tokenInfo, departmentsInfo };
+    return { userInfo, tokenInfo, userActivityInfo };
   }
 
   async generateToken(userId: number, businessId: number): Promise<string> {

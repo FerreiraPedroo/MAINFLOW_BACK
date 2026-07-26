@@ -11,9 +11,6 @@ model ProcessInstance {
     
     user_id                     Int                     // Identifica o usuário que criou esse processo.
     user                        User                    @relation(fields: [user_id], references: [id])
-    
-    process_item_id             Int                     @unique
-    process_item                ProcessItem             @relation(fields:[process_item_id], references: [id])
 
     process_model_id            Int
     process_model               ProcessModel            @relation(fields: [process_model_id], references: [id])

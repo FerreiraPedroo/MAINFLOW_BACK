@@ -8,12 +8,10 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { EncryptService } from "@/common/service/encrypt.service";
 import { UserModule } from "../user/user.module";
-import { DepartmentModule } from "../manager/department/department.module";
 
 @Module({
   imports: [
     UserModule,
-    DepartmentModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

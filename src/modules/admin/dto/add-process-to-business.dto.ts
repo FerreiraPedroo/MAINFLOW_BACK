@@ -1,8 +1,8 @@
 export type AddProcessToBusinessRequest = {
   businessId: number;
-  processItems: {
+  activities: {
     departmentId: number;
     sectorId: number | null;
-    processItemId: number;
+    activityId: number;
   }[];
 };

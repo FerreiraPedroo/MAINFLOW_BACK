@@ -1,4 +1,22 @@
-model EspaceType {
-  id              Int         @id @default(autoincrement())
-  title           String
+model SpaceType {
+  id                  Int         @id @default(autoincrement())
+  title               String
+  status              String
+
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id])
+
+  @@unique([business_unit_id, title])
+  
+  localization        Localization[]
+
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
 }

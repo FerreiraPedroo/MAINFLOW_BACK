@@ -1,9 +1,22 @@
 model CostCenter {
-  id               Int          @id @default(autoincrement())
-  title            String
-  status           String
-  description      String?
-  business_unit_id Int
-  business_unit    BusinessUnit @relation(fields: [business_unit_id], references: [id])
-  project          Project[]
+  id                    Int          @id @default(autoincrement())
+  title                 String
+  status                String
+  description           String?
+  
+  projects              Project[]
+  procurements          Procurement[]
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
 }

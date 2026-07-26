@@ -1,11 +1,14 @@
 import { Module } from "@nestjs/common";
+
+import { ManagerModule } from "@modules/manager/manager.module";
+import { LocalStorageContextModule } from "@common/context/local-storage-context.module";
+
 import { AdminService } from "./admin.service";
-import { AdminRepository } from "./repositories/admin.repository";
 import { AdminController } from "./admin.controller";
-import { ManagerModule } from "../manager/manager.module";
+import { AdminRepository } from "./repositories/admin.repository";
 
 @Module({
-  imports: [ManagerModule],
+  imports: [ManagerModule, LocalStorageContextModule],
   controllers: [AdminController],
   providers: [AdminService, AdminRepository],
 })

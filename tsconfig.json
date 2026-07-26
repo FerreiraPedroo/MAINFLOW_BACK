@@ -10,6 +10,7 @@
       "@modules/*": ["./src/modules/*"],
       "@common/*": ["./src/common/*"],
     },
+    "types":[ "multer"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "resolvePackageJsonExports": true,

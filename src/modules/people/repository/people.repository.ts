@@ -17,33 +17,33 @@ export class PeopleRepository {
   ) {}
 
   async getPeople(peopleId: number): Promise<People | null> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findUnique({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
     });
   }
   async findPeoples(): Promise<People[]> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findMany({
-      where: { business_unit_id: Number(userContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.businessUnitId) },
     });
   }
   async createPeople(peopleData: CreatePeopleData): Promise<People> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.create({
       data: {
         ...peopleData,
-        business_unit_id: Number(userContext.businessUnitId),
-        created_by: Number(userContext.userId),
+        business_unit_id: Number(requestContext.businessUnitId),
+        created_by: Number(requestContext.userId),
       },
     });
   }
@@ -51,17 +51,17 @@ export class PeopleRepository {
     peopleId: number,
     peopleData: UpdatePeopleData,
   ): Promise<People> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.update({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
       data: {
         ...peopleData,
-        updated_by: Number(userContext.userId),
+        updated_by: Number(requestContext.userId),
       },
     });
   }

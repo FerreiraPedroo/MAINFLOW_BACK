@@ -17,11 +17,11 @@ export class LocalizationRepository {
   ) {}
 
   async findLocalizations(): Promise<LocalizationRecord[]> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.findMany({
-      where: { business_unit_id: Number(userContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.businessUnitId) },
       select: {
         id: true,
         title: true,
@@ -41,14 +41,14 @@ export class LocalizationRepository {
   async createLocalization(
     localizationData: CreateLocalizationData,
   ): Promise<LocalizationRecord> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.create({
       data: {
         ...localizationData,
-        business_unit_id: Number(userContext.businessUnitId),
-        created_by: Number(userContext.userId),
+        business_unit_id: Number(requestContext.businessUnitId),
+        created_by: Number(requestContext.userId),
       },
       select: {
         id: true,
@@ -70,17 +70,17 @@ export class LocalizationRepository {
     localizationId: number,
     localizationData: UpdateLocalizationData,
   ): Promise<LocalizationRecord> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.update({
       where: {
         id: Number(localizationId),
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
       data: {
         ...localizationData,
-        updated_by: Number(userContext.userId),
+        updated_by: Number(requestContext.userId),
       },
       select: {
         id: true,

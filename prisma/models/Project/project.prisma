@@ -6,17 +6,17 @@ model Project {
   budget              Float?        @default(0) // 25000.00 | igual a R$25.000,00
   status              String        // PENDENTE, APROVADO, REJEITADO, RASCUNHO
 
-  project_allocations ProjectAllocation[]
   business_unit_id    Int
   business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
 
-  cost_center_id      Int?
-  cost_center         CostCenter?   @relation(fields: [cost_center_id], references: [id], onDelete: Restrict)
+  cost_center_id      Int
+  cost_center         CostCenter    @relation(fields: [cost_center_id], references: [id], onDelete: Restrict)
 
   process_id          Int?
   processInstance     ProcessInstance? @relation(fields: [process_id], references: [id], onDelete: Restrict)
   
   procurements        Procurement[]
+  project_allocations ProjectAllocation[]
   
   @@unique([business_unit_id, title])
 

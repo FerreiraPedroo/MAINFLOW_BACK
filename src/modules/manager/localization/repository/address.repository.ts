@@ -17,21 +17,21 @@ export class AddressRepository {
   ) {}
 
   async findAddress(): Promise<Address[]> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.address.findMany({
-      where: { business_unit_id: Number(userContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.businessUnitId) },
     });
   }
   async createAddress(addressData: CreateAddressData): Promise<Address> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.address.create({
       data: {
         ...addressData,
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
     });
   }
@@ -39,17 +39,17 @@ export class AddressRepository {
     addressId: number,
     addressData: UpdateAddressData,
   ): Promise<Address> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.address.update({
       where: {
         id: Number(addressId),
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
       data: {
         ...addressData,
-        updated_by: Number(userContext.userId),
+        updated_by: Number(requestContext.userId),
       },
     });
   }

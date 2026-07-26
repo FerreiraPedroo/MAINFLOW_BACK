@@ -6,7 +6,7 @@ import { LocalStorageContextData } from "@/common/context/interfaces/local-stora
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { UserRecord } from "../types/data/user-record";
-import { CreateuserContext } from "../types/data/create-user.data";
+import { CreaterequestContext } from "../types/data/create-user.data";
 import { User } from "@prisma/client";
 
 @Injectable()
@@ -17,36 +17,36 @@ export class UserRepository {
   ) {}
 
   async getUsers(): Promise<User[]> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findMany({
       where: {
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
     });
   }
-  async createUser(user: CreateuserContext): Promise<User | null> {
-    const userContext =
+  async createUser(user: CreaterequestContext): Promise<User | null> {
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.create({
       data: {
         ...user,
-        created_by: Number(userContext.userId),
-        business_unit_id: Number(userContext.businessUnitId),
+        created_by: Number(requestContext.userId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
     });
   }
   async getUserByEmail(email: string): Promise<UserRecord | null> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findUnique({
       where: {
         business_unit_id_email: {
           email,
-          business_unit_id: Number(userContext.businessUnitId),
+          business_unit_id: Number(requestContext.businessUnitId),
         },
       },
       include: {
@@ -56,13 +56,13 @@ export class UserRepository {
     });
   }
   async getLoggedUser(): Promise<UserRecord | null> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.user.findUnique({
       where: {
-        id: Number(userContext.userId),
-        business_unit_id: Number(userContext.businessUnitId),
+        id: Number(requestContext.userId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
       include: {
         business_unit: true,

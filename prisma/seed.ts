@@ -236,7 +236,7 @@ async function main() {
           budget: 120000,
           status: "APROVADO",
           business_unit_id: 1,
-          cost_center_id: null,
+          cost_center_id: 1,
           created_by: 1,
         },
         {
@@ -246,7 +246,7 @@ async function main() {
           budget: 215000,
           status: "APROVADO",
           business_unit_id: 1,
-          cost_center_id: null,
+          cost_center_id: 1,
           created_by: 1,
         },
         {
@@ -256,7 +256,7 @@ async function main() {
           budget: 680000,
           status: "APROVADO",
           business_unit_id: 1,
-          cost_center_id: null,
+          cost_center_id: 1,
           created_by: 1,
         },
       ],

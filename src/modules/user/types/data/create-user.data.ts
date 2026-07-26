@@ -1,4 +1,4 @@
-export interface CreateuserContext {
+export interface CreaterequestContext {
   email: string;
   password: string;
   name: string;

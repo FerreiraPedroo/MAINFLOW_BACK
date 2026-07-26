@@ -16,38 +16,38 @@ export class FloorRepository {
   ) {}
 
   async findFloor(): Promise<Floor[]> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.findMany({
-      where: { business_unit_id: Number(userContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.businessUnitId) },
     });
   }
   async createFloor(floorData: CreateFloorData): Promise<Floor> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.create({
       data: {
         title: floorData.title,
         status: floorData.status.toUpperCase(),
-        business_unit_id: Number(userContext.businessUnitId),
-        created_by: Number(userContext.userId),
+        business_unit_id: Number(requestContext.businessUnitId),
+        created_by: Number(requestContext.userId),
       },
     });
   }
   async updateFloor(floorId: number, floorStatus: string): Promise<Floor> {
-    const userContext =
+    const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.update({
       where: {
         id: Number(floorId),
-        business_unit_id: Number(userContext.businessUnitId),
+        business_unit_id: Number(requestContext.businessUnitId),
       },
       data: {
         status: floorStatus.toUpperCase(),
-        updated_by: Number(userContext.userId),
+        updated_by: Number(requestContext.userId),
       },
     });
   }

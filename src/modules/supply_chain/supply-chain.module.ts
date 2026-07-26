@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ProcurementModule } from "./modules/procurement/procurement.module";
+import { ProcurementModule } from "@modules/supply_chain/modules/procurement/procurement.module";
 
 @Module({
   imports: [ProcurementModule],

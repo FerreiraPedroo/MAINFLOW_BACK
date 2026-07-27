@@ -13,14 +13,14 @@ export class UserActivityRepository {
   ) {}
 
   async findUserActivities(
-    userId: number,
+    user_id: number,
   ): Promise<UserActivityRecord[] | null> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.userActivity.findMany({
       where: {
-        user_id: userId,
+        user_id: user_id,
         business_unit_id: requestContext.business_unit_id,
       },
       include: {

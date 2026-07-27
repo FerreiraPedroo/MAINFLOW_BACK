@@ -60,7 +60,7 @@ export class ProjectRepository {
       data: {
         ...projectData,
         business_unit_id: requestContext.business_unit_id,
-        created_by: requestContext.userId,
+        created_by: requestContext.user_id,
       },
     });
   }
@@ -78,7 +78,7 @@ export class ProjectRepository {
       },
       data: {
         ...projectInput,
-        updated_by: requestContext.userId,
+        updated_by: requestContext.user_id,
       },
     });
   }
@@ -93,7 +93,7 @@ export class ProjectRepository {
       },
       data: {
         deleted_at: new Date(),
-        deleted_by: requestContext.userId,
+        deleted_by: requestContext.user_id,
       },
     });
   }

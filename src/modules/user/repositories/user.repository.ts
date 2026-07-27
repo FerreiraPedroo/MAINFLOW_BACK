@@ -34,7 +34,7 @@ export class UserRepository {
     return await this.prisma.user.create({
       data: {
         ...user,
-        created_by: Number(requestContext.userId),
+        created_by: Number(requestContext.user_id),
         business_unit_id: Number(requestContext.business_unit_id),
       },
     });
@@ -62,7 +62,7 @@ export class UserRepository {
 
     return await this.prisma.user.findUnique({
       where: {
-        id: Number(requestContext.userId),
+        id: Number(requestContext.user_id),
         business_unit_id: Number(requestContext.business_unit_id),
       },
       include: {

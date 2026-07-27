@@ -63,7 +63,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     const data: any = {
       ...procurementData,
       business_unit_id: requestContext.business_unit_id,
-      created_by: requestContext.userId,
+      created_by: requestContext.user_id,
     };
 
     const xprisma = this.prisma.$extends((client) => {

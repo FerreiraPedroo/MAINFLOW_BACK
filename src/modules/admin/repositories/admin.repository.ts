@@ -40,7 +40,7 @@ export class AdminRepository {
       where: { id: Number(businessId) },
       data: {
         ...businessData,
-        updated_by: Number(requestContext.userId),
+        updated_by: Number(requestContext.user_id),
       },
     });
   }

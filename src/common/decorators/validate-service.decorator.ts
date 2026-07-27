@@ -21,10 +21,10 @@ export function ValidateService(options: ValidateServiceOptions) {
 
       // Se tiver validado de entrada.
       if (options.input) {
-        // console.log("----------------------------------------------");
-        // console.log({ propertyKey, args });
+        console.log("----------------------------------------------");
+        console.log({ propertyKey, args });
         const inputResult = options.input.safeParse(args);
-        // console.log({ propertyKey, inputResult });
+        console.log({ propertyKey, inputResult });
 
         if (!inputResult.success) {
           console.log({ inputResult });

@@ -1,4 +1,4 @@
-import { FileService } from "./../../common/modules/file/file.service";
+import { FileService } from "@common/modules/file/file.service";
 import { User } from "@prisma/client";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";

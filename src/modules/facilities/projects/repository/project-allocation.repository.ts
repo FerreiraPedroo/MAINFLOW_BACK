@@ -82,7 +82,7 @@ export class ProjectAllocationRepository {
       where: {
         id: allocateId,
         business_unit_id: requestContext.business_unit_id,
-        deleted_by: requestContext.userId,
+        deleted_by: requestContext.user_id,
       },
     });
   }

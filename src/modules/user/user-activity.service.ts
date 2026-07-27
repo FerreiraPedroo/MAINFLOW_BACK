@@ -47,9 +47,9 @@ export class UserActivityService {
     }
   }
 
-  async findUserActivities(userId: number) {
+  async findUserActivities(user_id: number) {
     try {
-      return this.userActivityRepository.findUserActivities(userId);
+      return this.userActivityRepository.findUserActivities(user_id);
     } catch (error) {
       this.prismaErrors(error);
     }

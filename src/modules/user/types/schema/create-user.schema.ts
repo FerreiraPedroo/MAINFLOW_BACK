@@ -2,14 +2,13 @@ import type { Express } from "express";
 import z from "zod";
 
 // INPUT
-type CreateUserFile = Express.Multer.File
+const CreateUserFile = z.custom<Express.Multer.File>().optional();
 
 export const CreateUserInput = z.object({
   email: z.email(),
   password: z.string(),
   name: z.string(),
-  birthDate: z.date().nullable(),
-  photo: z.string().nullable(),
+  birth_date: z.date().optional().nullable(),
 });
 export const CreateUserInputSchema = z.tuple([CreateUserFile, CreateUserInput]);
 

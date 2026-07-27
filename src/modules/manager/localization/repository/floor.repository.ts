@@ -32,7 +32,7 @@ export class FloorRepository {
         title: floorData.title,
         status: floorData.status.toUpperCase(),
         business_unit_id: Number(requestContext.business_unit_id),
-        created_by: Number(requestContext.userId),
+        created_by: Number(requestContext.user_id),
       },
     });
   }
@@ -47,7 +47,7 @@ export class FloorRepository {
       },
       data: {
         status: floorStatus.toUpperCase(),
-        updated_by: Number(requestContext.userId),
+        updated_by: Number(requestContext.user_id),
       },
     });
   }

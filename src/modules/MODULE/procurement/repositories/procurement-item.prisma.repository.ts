@@ -44,7 +44,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
 
     const data = procurementItensData.map((pid) => ({
       ...pid,
-      created_by: requestContext.userId,
+      created_by: requestContext.user_id,
       business_unit_id: requestContext.business_unit_id,
     }));
 
@@ -80,7 +80,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
       },
       data: {
         quantity: procurementItem.quantity,
-        updated_by: requestContext.userId,
+        updated_by: requestContext.user_id,
       },
     });
   }

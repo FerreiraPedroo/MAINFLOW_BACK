@@ -48,7 +48,7 @@ export class LocalizationRepository {
       data: {
         ...localizationData,
         business_unit_id: Number(requestContext.business_unit_id),
-        created_by: Number(requestContext.userId),
+        created_by: Number(requestContext.user_id),
       },
       select: {
         id: true,
@@ -80,7 +80,7 @@ export class LocalizationRepository {
       },
       data: {
         ...localizationData,
-        updated_by: Number(requestContext.userId),
+        updated_by: Number(requestContext.user_id),
       },
       select: {
         id: true,

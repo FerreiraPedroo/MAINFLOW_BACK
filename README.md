@@ -13,18 +13,17 @@
 
 ### Docker
 
-- Para baixar o postgres
-  docker pull postgres:15.18-trixie
-- Configurar o .env
-  DATABASE_URL=postgresql://usuario:senha@host:5432/nome_do_banco
+- Para baixar o postgres <br/>
+  #> docker pull postgres:15.18-trixie <br/>
+- Configurar o .env <br/>
+  #> DATABASE_URL=postgresql://usuario:senha@host:5432/nome_do_banco <br/>
 
-# Verifique se a porta foi exposta:Para que o localhost funcione, o contêiner precisa ter sido criado com o parâmetro de porta (ex: -p 5432:5432). Rode o comando abaixo para confirmar:
+-  Verifique se a porta foi exposta:Para que o localhost funcione, o contêiner precisa ter sido criado com o parâmetro de porta (ex: -p 5432:5432). Rode o comando abaixo para confirmar: <br/>
+  #> docker ps --filter "name=MAINFLOW_POSTGRES"
 
-docker ps --filter "name=MAINFLOW_POSTGRES"
+- Se na coluna PORTS aparecer algo como 0.0.0.0:5432->5432/tcp, está correto.Se a coluna PORTS estiver vazia ou mostrar apenas 5432/tcp (sem o 0.0.0.0: antes), a porta não está aberta para o Windows. <br/> <br/>
 
-- Se na coluna PORTS aparecer algo como 0.0.0.0:5432->5432/tcp, está correto.Se a coluna PORTS estiver vazia ou mostrar apenas 5432/tcp (sem o 0.0.0.0: antes), a porta não está aberta para o Windows.
-
-- Se a porta NÃO estiver exposta:Você precisará recriar o contêiner abrindo a porta.
-  docker stop MAINFLOW_POSTGRES
-  docker rm MAINFLOW_POSTGRES
-  docker run --name MAINFLOW_POSTGRES -e POSTGRES_PASSWORD=12345678 -e POSTGRES_DB=mainflow -p 5432:5432 -d postgres
+- Se a porta NÃO estiver exposta:Você precisará recriar o contêiner abrindo a porta. <br/>
+  #> docker stop MAINFLOW_POSTGRES <br/>
+  #> docker rm MAINFLOW_POSTGRES <br/>
+  #> docker run --name MAINFLOW_POSTGRES -e POSTGRES_PASSWORD=12345678 -e POSTGRES_DB=mainflow -p 5432:5432 -d postgres <br/>

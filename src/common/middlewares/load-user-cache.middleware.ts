@@ -30,11 +30,11 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
     //   );
     // }
 
-    // let userPayload: { userId: number; businessId: number };
-    const userPayload = { userId: 1, businessId: 1 };
+    // let userPayload: { user_id: number; business_unit_id: number };
+    const userPayload = { user_id: 1, business_unit_id: 1 };
 
     // try {
-    //   const { payload }: { payload: { userId: number; businessId: number } } =
+    //   const { payload }: { payload: { user_id: number; business_unit_id: number } } =
     //     await this.jwtService.verifyAsync(token);
 
     //   userPayload = payload;
@@ -46,7 +46,7 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
 
     // const userCacheData: UserActivityData[] | undefined =
     //   await this.cacheManager.get(
-    //     `userId:${userPayload.userId}:businessId:${userPayload.businessId}`,
+    //     `user_id:${userPayload.user_id}:business_unit_id:${userPayload.business_unit_id}`,
     //   );
 
     // if (!userCacheData) {
@@ -56,14 +56,14 @@ export class LoadUserCacheMiddlware implements NestMiddleware {
     // }
 
     // const store: LocalStorageContextData = {
-    //   userId: userPayload.userId,
-    //   businessUnitId: userPayload.businessId,
+    //   user_id: userPayload.user_id,
+    //   business_unit_id: userPayload.business_unit_id,
     //   userActivities: userCacheData,
     // };
 
     const store: LocalStorageContextData = {
-      userId: 1,
-      businessUnitId: 1,
+      user_id: 1,
+      business_unit_id: 1,
       userActivities: [],
     };
 

@@ -23,7 +23,7 @@ export class PeopleRepository {
     return await this.prisma.people.findUnique({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
     });
   }
@@ -32,7 +32,7 @@ export class PeopleRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.people.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
   async createPeople(peopleData: CreatePeopleData): Promise<People> {
@@ -42,7 +42,7 @@ export class PeopleRepository {
     return await this.prisma.people.create({
       data: {
         ...peopleData,
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
     });
@@ -57,7 +57,7 @@ export class PeopleRepository {
     return await this.prisma.people.update({
       where: {
         id: Number(peopleId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         ...peopleData,

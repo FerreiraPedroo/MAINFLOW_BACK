@@ -29,7 +29,7 @@ export class CostCenterRepository {
     return this.prisma.costCenter.create({
       data: {
         ...costCenterData,
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
     });

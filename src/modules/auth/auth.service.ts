@@ -1,3 +1,4 @@
+import { UserActivityService } from "./../user/user-activity.service";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -10,7 +11,6 @@ import {
 import { EncryptService } from "@common/service/encrypt.service";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { UserActivityRepository } from "@modules/user/repositories/user-activity-repository";
 import { UserRepository } from "@modules/user/repositories/user.repository";
 
 import {
@@ -18,6 +18,7 @@ import {
   SectorItem,
 } from "./data/user-activities.data";
 import { UserRecord } from "../user/types/data/user-record";
+import { AuthLoginInput } from "./types";
 export interface JwtPayload {
   user: string;
   businessId: number;
@@ -26,11 +27,11 @@ export interface JwtPayload {
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private jwtService: JwtService,
-    private encryptService: EncryptService,
-    private userRepository: UserRepository,
-    private userActivityRepository: UserActivityRepository,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly jwtService: JwtService,
+    private readonly encryptService: EncryptService,
+    private readonly userRepository: UserRepository,
+    private readonly userActivityService: UserActivityService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -71,12 +72,14 @@ export class AuthService {
     }
   }
 
-  async signIn(email: string, password: string) {
+  async signIn(userInput: AuthLoginInput) {
     let userRecord: UserRecord | null;
     try {
-      userRecord = await this.userRepository.getLoginUserByEmail(email);
+      userRecord = await this.userRepository.getLoginUserByEmail(
+        userInput.email,
+      );
     } catch (error) {
-      this.prismaErrors("Senha ou usuário errado(s).");
+      this.prismaErrors(error);
     }
 
     if (!userRecord) {
@@ -84,7 +87,7 @@ export class AuthService {
     }
 
     const passwordCompare = await this.encryptService.compareHash(
-      password,
+      userInput.password,
       userRecord.password,
     );
 
@@ -99,11 +102,9 @@ export class AuthService {
       email: userRecord.email,
     };
 
-    const userActivities =
-      await this.userActivityRepository.findUserActivitiesById(
-        userRecord.id,
-        userRecord.business_unit_id,
-      );
+    const userActivities = await this.userActivityService.findUserActivities(
+      userRecord.id,
+    );
 
     const userActivityInfo: AuthUserActivitiesData[] = [];
 
@@ -157,24 +158,18 @@ export class AuthService {
       }
     }
 
-    const tokenInfo = await this.generateToken(
-      userRecord.id,
-      userRecord.business_unit_id,
-    );
+    const tokenInfo = await this.jwtService.signAsync({
+      payload: {
+        user_id: userRecord.id,
+        business_id: userRecord.business_unit_id,
+      },
+    });
 
     await this.cacheManager.set(
-      `userId:${userRecord.id}:businessId:${userRecord.business_unit_id}`,
+      `user_id:${userRecord.id}:business_id:${userRecord.business_unit_id}`,
       userActivities,
     );
 
     return { userInfo, tokenInfo, userActivityInfo };
-  }
-
-  async generateToken(userId: number, businessId: number): Promise<string> {
-    const token = await this.jwtService.signAsync({
-      payload: { userId, businessId },
-    });
-
-    return token;
   }
 }

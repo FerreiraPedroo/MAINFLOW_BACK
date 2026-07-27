@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-// import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
+// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-});
 // export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 // });
+export const prisma: PrismaClient = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");

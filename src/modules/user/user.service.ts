@@ -57,19 +57,12 @@ export class UserService {
 
   async getUsers() {
     try {
-      const usersRecord = await this.userRepository.getUsers();
-
-      return usersRecord.map((user) => ({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        birthData: user.birth_date,
-        photo: user.photo,
-      }));
+      return await this.userRepository.getUsers();
     } catch (error) {
       this.prismaErrors(error);
     }
   }
+
   async createUser(photo: Express.Multer.File, request: CreateUserRequest) {
     const user = await this.userRepository.getUserByEmail(request.email);
     if (user) {
@@ -126,15 +119,8 @@ export class UserService {
       birthDate: userRecord.birth_date,
       photo: userRecord.photo,
     };
-
-    return {
-      id: "userRecord.id",
-      email: "userRecord.email",
-      name: "userRecord.name",
-      birthDate: "userRecord.birth_date",
-      photo: "userRecord.photo",
-    };
   }
+
   async getLoggedUser() {
     try {
       return await this.userRepository.getLoggedUser();
@@ -142,6 +128,7 @@ export class UserService {
       this.prismaErrors(error);
     }
   }
+
   async getUserByEmail(email: string) {
     try {
       const userRecord = await this.userRepository.getUserByEmail(email);

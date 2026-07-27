@@ -20,7 +20,7 @@ export class FloorRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.floor.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
   async createFloor(floorData: CreateFloorData): Promise<Floor> {
@@ -31,7 +31,7 @@ export class FloorRepository {
       data: {
         title: floorData.title,
         status: floorData.status.toUpperCase(),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
     });
@@ -43,7 +43,7 @@ export class FloorRepository {
     return await this.prisma.floor.update({
       where: {
         id: Number(floorId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         status: floorStatus.toUpperCase(),

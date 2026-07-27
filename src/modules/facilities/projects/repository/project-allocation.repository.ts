@@ -29,7 +29,7 @@ export class ProjectAllocationRepository {
     return await this.prisma.projectAllocation.create({
       data: {
         ...allocateData,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
     });
   }
@@ -49,7 +49,7 @@ export class ProjectAllocationRepository {
           lte: endDate,
         },
         project_id: projectId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       include: {
         people: true,
@@ -66,7 +66,7 @@ export class ProjectAllocationRepository {
     return await this.prisma.projectAllocation.update({
       where: {
         id: allocateId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       data: { ...allocateData },
       include: {
@@ -81,7 +81,7 @@ export class ProjectAllocationRepository {
     return await this.prisma.projectAllocation.delete({
       where: {
         id: allocateId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
         deleted_by: requestContext.userId,
       },
     });

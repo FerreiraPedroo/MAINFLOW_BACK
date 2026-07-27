@@ -6,9 +6,9 @@ import { EncryptService } from "@/common/service/encrypt.service";
 import { UserController } from "./user.controller";
 
 import { UserService } from "./user.service";
+import { UserActivityService } from "./user-activity.service";
 
-import { UserRepository } from "./repositories/user.repository";
-import { UserActivityRepository } from "./repositories/user-activity-repository";
+import { UserActivityRepository, UserRepository } from "./repositories";
 
 @Module({
   imports: [LocalStorageContextModule],
@@ -17,8 +17,9 @@ import { UserActivityRepository } from "./repositories/user-activity-repository"
     EncryptService,
     UserService,
     UserRepository,
+    UserActivityService,
     UserActivityRepository,
   ],
-  exports: [UserService, UserRepository, UserActivityRepository],
+  exports: [UserService, UserActivityService],
 })
 export class UserModule {}

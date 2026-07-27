@@ -30,7 +30,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     return await client.procurementItem.findMany({
       where: {
         procurement_id: procurementId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
     });
   }
@@ -45,7 +45,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     const data = procurementItensData.map((pid) => ({
       ...pid,
       created_by: requestContext.userId,
-      business_unit_id: requestContext.businessUnitId,
+      business_unit_id: requestContext.business_unit_id,
     }));
 
     return await client.procurementItem.createMany({
@@ -63,7 +63,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     return await client.procurementItem.deleteMany({
       where: {
         id: { in: procurementItensIds },
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
     });
   }
@@ -76,7 +76,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     return await client.procurementItem.update({
       where: {
         id: procurementItem.id,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       data: {
         quantity: procurementItem.quantity,

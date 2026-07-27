@@ -22,10 +22,11 @@ export class UserRepository {
 
     return await this.prisma.user.findMany({
       where: {
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: requestContext.business_unit_id,
       },
     });
   }
+
   async createUser(user: CreaterequestContext): Promise<User | null> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
@@ -34,7 +35,7 @@ export class UserRepository {
       data: {
         ...user,
         created_by: Number(requestContext.userId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
     });
   }
@@ -46,7 +47,7 @@ export class UserRepository {
       where: {
         business_unit_id_email: {
           email,
-          business_unit_id: Number(requestContext.businessUnitId),
+          business_unit_id: Number(requestContext.business_unit_id),
         },
       },
       include: {
@@ -62,7 +63,7 @@ export class UserRepository {
     return await this.prisma.user.findUnique({
       where: {
         id: Number(requestContext.userId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       include: {
         business_unit: true,

@@ -29,7 +29,7 @@ export class ProjectRepository {
     return await this.prisma.project.findUnique({
       where: {
         id: id,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       include: {
         cost_center: true,
@@ -48,7 +48,7 @@ export class ProjectRepository {
 
     return await this.prisma.project.findMany({
       where: {
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
     });
   }
@@ -59,7 +59,7 @@ export class ProjectRepository {
     return await this.prisma.project.create({
       data: {
         ...projectData,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
         created_by: requestContext.userId,
       },
     });
@@ -74,7 +74,7 @@ export class ProjectRepository {
     return this.prisma.project.update({
       where: {
         id: projectId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       data: {
         ...projectInput,
@@ -89,7 +89,7 @@ export class ProjectRepository {
     await this.prisma.project.update({
       where: {
         id: projectId,
-        business_unit_id: requestContext.businessUnitId,
+        business_unit_id: requestContext.business_unit_id,
       },
       data: {
         deleted_at: new Date(),

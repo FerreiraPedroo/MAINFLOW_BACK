@@ -20,7 +20,7 @@ export class BlockRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.block.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
   async createBlock(blockData: CreateBlockData): Promise<Block> {
@@ -31,7 +31,7 @@ export class BlockRepository {
       data: {
         title: blockData.title,
         status: blockData.status.toUpperCase(),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
     });
@@ -43,7 +43,7 @@ export class BlockRepository {
     return await this.prisma.block.update({
       where: {
         id: Number(blockId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         status: blockStatus.toUpperCase(),

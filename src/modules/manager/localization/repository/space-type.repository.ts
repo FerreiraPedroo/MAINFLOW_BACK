@@ -20,7 +20,7 @@ export class SpaceTypeRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.spaceType.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
   async createSpaceType(
@@ -33,7 +33,7 @@ export class SpaceTypeRepository {
       data: {
         title: spaceTypeData.title,
         status: spaceTypeData.status.toUpperCase(),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
     });
@@ -48,7 +48,7 @@ export class SpaceTypeRepository {
     return await this.prisma.spaceType.update({
       where: {
         id: Number(spaceTypeId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         status: spaceTypeStatus.toUpperCase(),

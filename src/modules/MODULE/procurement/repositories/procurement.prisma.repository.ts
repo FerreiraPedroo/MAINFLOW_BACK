@@ -29,7 +29,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     return await this.prisma.procurement.findUnique({
       where: {
         id: procurementId,
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       include: {
         cost_center: true,
@@ -51,7 +51,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.procurement.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
   async createProcurement(
@@ -62,7 +62,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
 
     const data: any = {
       ...procurementData,
-      business_unit_id: requestContext.businessUnitId,
+      business_unit_id: requestContext.business_unit_id,
       created_by: requestContext.userId,
     };
 
@@ -146,7 +146,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     return await this.prisma.procurementItem.findMany({
       where: {
         procurement_id: Number(procurementId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
     });
   }
@@ -162,7 +162,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     return await client.procurement.update({
       where: {
         id: Number(procurementId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         ...procurementData,

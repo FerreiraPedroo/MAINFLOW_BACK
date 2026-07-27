@@ -21,7 +21,7 @@ export class LocalizationRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.localization.findMany({
-      where: { business_unit_id: Number(requestContext.businessUnitId) },
+      where: { business_unit_id: Number(requestContext.business_unit_id) },
       select: {
         id: true,
         title: true,
@@ -47,7 +47,7 @@ export class LocalizationRepository {
     return await this.prisma.localization.create({
       data: {
         ...localizationData,
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
         created_by: Number(requestContext.userId),
       },
       select: {
@@ -76,7 +76,7 @@ export class LocalizationRepository {
     return await this.prisma.localization.update({
       where: {
         id: Number(localizationId),
-        business_unit_id: Number(requestContext.businessUnitId),
+        business_unit_id: Number(requestContext.business_unit_id),
       },
       data: {
         ...localizationData,

@@ -1,17 +1,20 @@
 import { Injectable } from "@nestjs/common";
+import { BusinessUnit, BusinessUnitActivity, Department } from "@prisma/client";
 
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
-import { BusinessUnit, Department, Prisma } from "@prisma/client";
-import { BusinessActivity } from "../data/business-activity.interface";
 import { UpdateBusinessData } from "../types/data/update-business-unit.data";
 
 import { DepartmentData } from "../data/department-data.interface";
 import { CreateDepartmentData } from "../data/create-department.data";
 
 import { CreateSectorData } from "../data/create-sector.data";
+import {
+  AddActivityToBusinessInput,
+  FindBusinessActivitiesRecord,
+} from "../types";
 
 @Injectable()
 export class AdminRepository {
@@ -20,35 +23,37 @@ export class AdminRepository {
     private requestContext: LocalStorageContextService,
   ) {}
 
+  ///////////////////////////////////////////////////////////////////////
   // BUSINESS
+  ///////////////////////////////////////////////////////////////////////
   async findBusiness(): Promise<BusinessUnit[]> {
     return await this.prisma.businessUnit.findMany();
   }
-  async getBusinessById(businessId: number): Promise<BusinessUnit | null> {
+  async getBusinessById(business_id: number): Promise<BusinessUnit | null> {
     return await this.prisma.businessUnit.findUnique({
-      where: { id: Number(businessId) },
+      where: { id: business_id },
     });
   }
   async updateBusiness(
-    businessId: number,
+    business_id: number,
     businessData: UpdateBusinessData,
   ): Promise<BusinessUnit | null> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.prisma.businessUnit.update({
-      where: { id: Number(businessId) },
+      where: { id: business_id },
       data: {
         ...businessData,
-        updated_by: Number(requestContext.user_id),
+        updated_by: requestContext.user_id,
       },
     });
   }
   async findBusinessActivities(
-    businessId: number,
-  ): Promise<BusinessActivity[]> {
+    business_id: number,
+  ): Promise<FindBusinessActivitiesRecord[]> {
     return await this.prisma.businessUnitActivity.findMany({
-      where: { business_unit_id: Number(businessId) },
+      where: { business_unit_id: business_id },
       include: {
         department: true,
         sector: true,
@@ -56,40 +61,31 @@ export class AdminRepository {
       },
     });
   }
-  async addProcessToBusiness(
-    businessId: number,
-    activities: {
-      departmentId: number;
-      sectorId: number | null;
-      activityId: number;
-    }[],
-  ) {
-    const queryValues = activities.map(
-      (pi) =>
-        Prisma.sql`(${businessId}, ${pi.departmentId}, ${pi.sectorId}, ${pi.activityId})`,
-    );
-
-    return await this.prisma.$queryRaw`
-      INSERT INTO "BusinessUnitActivity" 
-      ("business_unit_id", "department_id", "sector_id", "activity_id")
-      VALUES ${Prisma.join(queryValues)}
-    `;
+  async addActivityToBusiness(
+    business_id: number,
+    activity_id: number,
+    businessActivity: AddActivityToBusinessInput,
+  ): Promise<BusinessUnitActivity> {
+    return await this.prisma.businessUnitActivity.create({
+      data: {
+        business_unit_id: business_id,
+        activity_id,
+        ...businessActivity,
+      },
+    });
   }
-  async removeProcessToBusiness(
-    businessId: number,
-    businessProcessIds: number[],
-  ) {
-    return await this.prisma.businessUnitActivity.deleteMany({
+  async removeActivityFromBusiness(business_id: number, activity_id: number) {
+    return await this.prisma.businessUnitActivity.delete({
       where: {
-        AND: [
-          { business_unit_id: businessId },
-          { id: { in: businessProcessIds } },
-        ],
+        id: activity_id,
+        business_unit_id: business_id,
       },
     });
   }
 
-  // DEPARTMENTS
+  ///////////////////////////////////////////////////////////////////////
+  // DEPARTMENT
+  ///////////////////////////////////////////////////////////////////////
   async findDepartments(): Promise<DepartmentData[]> {
     return await this.prisma.department.findMany({
       include: {

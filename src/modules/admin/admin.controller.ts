@@ -7,54 +7,113 @@ import {
   Post,
   Put,
 } from "@nestjs/common";
+
+import { ValidateService } from "@/common/decorators/validate-service.decorator";
+
 import { AdminService } from "./admin.service";
+
 import type { CreateDepartmentRequest } from "./dto/create-department.request.dto";
-import type { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
-import type { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
 import type { CreateSectorRequest } from "./dto/create-sector.request";
-import type { UpdateBusinessRequest } from "./types/dto/update-business-unit-request.dto";
+
+import type {
+  AddActivityToBusinessInputDto,
+  UpdateBusinessInputDto,
+} from "./types";
+import {
+  AddActivityToBusinessInputSchema,
+  AddActivityToBusinessOutputSchema,
+  FindBusinessOutputSchema,
+  FindDepartmentsOutputSchema,
+  GetBusinessActivitiesInputSchema,
+  GetBusinessActivitiesOutputSchema,
+  GetBusinessInputSchema,
+  GetBusinessOutputSchema,
+  RemoveBusinessActivityInputSchema,
+  RemoveBusinessActivityOutputSchema,
+  UpdateBusinessInputSchema,
+  UpdateBusinessOutputSchema,
+} from "./types";
 
 @Controller("admin")
 export class AdminController {
   constructor(private adminService: AdminService) {}
-  //
+
+  ///////////////////////////////////////////////////////////////////////
   // BUSINESS
-  @Get("business-units")
+  ///////////////////////////////////////////////////////////////////////
+  @Get("businesses")
+  @ValidateService({ output: FindBusinessOutputSchema })
   async findBusiness() {
     return await this.adminService.findBusiness();
   }
-  @Get("business-units/:businessId")
-  async getBusinessById(@Param("businessId") businessId: number) {
-    return await this.adminService.getBusinessById(businessId);
+
+  @Get("businesses/:business_id")
+  @ValidateService({
+    input: GetBusinessInputSchema,
+    output: GetBusinessOutputSchema,
+  })
+  async getBusinessById(@Param("business_id") business_id: number) {
+    return await this.adminService.getBusinessById(business_id);
   }
-  @Put("business-units/:businessId")
+
+  @Put("businesses/:business_id")
+  @ValidateService({
+    input: UpdateBusinessInputSchema,
+    output: UpdateBusinessOutputSchema,
+  })
   async updateBusiness(
-    @Param("businessId") businessId: number,
-    @Body() request: UpdateBusinessRequest,
+    @Param("business_id") business_id: number,
+    @Body() request: UpdateBusinessInputDto,
   ) {
-    return await this.adminService.updateBusiness(businessId, request);
+    return await this.adminService.updateBusiness(business_id, request);
   }
 
-  @Get("business-units/:businessId/processes")
-  async findBusinessProcess(@Param("businessId") businessId: number) {
-    return await this.adminService.findBusinessProcess(businessId);
+  @Get("businesses/:business_id/activities")
+  @ValidateService({
+    input: GetBusinessActivitiesInputSchema,
+    output: GetBusinessActivitiesOutputSchema,
+  })
+  async findBusinessActivities(@Param("business_id") business_id: number) {
+    return await this.adminService.findBusinessActivities(business_id);
   }
 
-  @Post("business-units/:businessId/processes")
-  async addProcessToBusiness(@Body() request: AddProcessToBusinessRequest) {
-    return await this.adminService.addProcessToBusiness(request);
-  }
-
-  @Delete("business-units/:businessId/processes")
-  async removeProcessToBusiness(
-    @Body() request: RemoveActivityToBusinessRequest,
+  @Post("businesses/:business_id/activities/:activity_id")
+  @ValidateService({
+    input: AddActivityToBusinessInputSchema,
+    output: AddActivityToBusinessOutputSchema,
+  })
+  async addActivityToBusiness(
+    @Param("business_id") business_id: number,
+    @Param("activity_id") activity_id: number,
+    @Body() request: AddActivityToBusinessInputDto,
   ) {
-    return await this.adminService.removeProcessToBusiness(request);
+    return await this.adminService.addActivityToBusiness(
+      business_id,
+      activity_id,
+      request,
+    );
   }
 
-  //
+  @Delete("businesses/:business_id/activities/:activity_id")
+  @ValidateService({
+    input: RemoveBusinessActivityInputSchema,
+    output: RemoveBusinessActivityOutputSchema,
+  })
+  async removeActivitFromBusiness(
+    @Param("business_id") business_id: number,
+    @Param("activity_id") activity_id: number,
+  ) {
+    return await this.adminService.removeActivitFromBusiness(
+      business_id,
+      activity_id,
+    );
+  }
+
+  ///////////////////////////////////////////////////////////////////////
   // DEPARTMENT
+  ///////////////////////////////////////////////////////////////////////
   @Get("departments")
+  @ValidateService({ output: FindDepartmentsOutputSchema })
   async findDepartments() {
     return await this.adminService.findDepartments();
   }

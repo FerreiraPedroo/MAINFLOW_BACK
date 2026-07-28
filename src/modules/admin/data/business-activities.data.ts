@@ -1,10 +1,3 @@
-export type BusinessActivitiesData = {
-  id: number;
-  title: string;
-  url: string;
-  icon: string | null;
-  activityList: (SectorItem | Activity)[];
-};
 
 export type SectorItem = {
   id: number;

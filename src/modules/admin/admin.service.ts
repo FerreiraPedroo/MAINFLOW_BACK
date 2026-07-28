@@ -1,25 +1,22 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { BusinessUnit, BusinessUnitActivity } from "@prisma/client";
+
 import { AdminRepository } from "./repositories/admin.repository";
 
-import {
-  BusinessActivitiesData,
-  Activity,
-  SectorItem,
-} from "./data/business-activities.data";
-
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { Activity, SectorItem } from "./data/business-activities.data";
 
 import { CreateDepartmentRequest } from "./dto/create-department.request.dto";
-import { DepartmentDataResponse } from "./dto/department-response.data";
 
 import { CreateSectorRequest } from "./dto/create-sector.request";
 
-import { BusinessActivity } from "./data/business-activity.interface";
-import { RemoveActivityToBusinessRequest } from "./dto/remove-activity-to-business.request.dto";
-
-import { AddProcessToBusinessRequest } from "./dto/add-process-to-business.dto";
-import { UpdateBusinessRequest } from "./types/dto/update-business-unit-request.dto";
-import { BusinessUnit } from "@prisma/client";
+import {
+  AddActivityToBusinessInput,
+  FindBusinessActivitiesRecord,
+  FindDepartmentsOutput,
+  GetBusinessActivitiesOutput,
+  UpdateBusinessInput,
+} from "./types";
 
 @Injectable()
 export class AdminService {
@@ -56,202 +53,151 @@ export class AdminService {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////
   // BUSINESS
+  ///////////////////////////////////////////////////////////////////////
   async findBusiness() {
     try {
-      const businessUnits = await this.adminRepository.findBusiness();
-
-      return businessUnits.map((bu) => ({
-        id: bu.id,
-        title: bu.title,
-        photos: bu.photos,
-        cnpj: bu.cnpj,
-      }));
+      return await this.adminRepository.findBusiness();
     } catch (error) {
       this.prismaErrors(error);
     }
   }
-  async getBusinessById(businessId: number) {
-    let businessUnits: BusinessUnit | null;
+  async getBusinessById(business_id: number) {
+    let businessUnit: BusinessUnit | null;
 
     try {
-      businessUnits = await this.adminRepository.getBusinessById(businessId);
+      businessUnit = await this.adminRepository.getBusinessById(business_id);
     } catch (error) {
       this.prismaErrors(error);
     }
 
-    if (!businessUnits) {
+    if (!businessUnit) {
       throw new UnprocessableEntityException(
         "Unidade de negócio não encontrada.",
       );
     }
 
-    const businessUnitRecord = {
-      id: businessUnits.id,
-      title: businessUnits.title,
-      photos: businessUnits.photos,
-      cnpj: businessUnits.cnpj,
-    };
-
-    return businessUnitRecord;
+    return businessUnit;
   }
-  async updateBusiness(businessId: number, request: UpdateBusinessRequest) {
+  async updateBusiness(business_id: number, businessData: UpdateBusinessInput) {
     try {
-      const businessData = {
-        ...(request.title && { title: request.title }),
-        ...((request.photos || request.photos == null) && {
-          photos: request.photos,
-        }),
-        ...(request.addressId && { address_id: request.addressId }),
-        ...(request.cnpj && { title: request.cnpj }),
-      };
-
       return await this.adminRepository.updateBusiness(
-        businessId,
+        business_id,
         businessData,
       );
     } catch (error) {
       this.prismaErrors(error);
     }
   }
+  async findBusinessActivities(business_id: number) {
+    const businessActivities: FindBusinessActivitiesRecord[] =
+      await this.adminRepository.findBusinessActivities(business_id);
 
-  async findBusinessProcess(businessId: number) {
-    const businessProcesses: BusinessActivity[] =
-      await this.adminRepository.findBusinessActivities(businessId);
-
-    if (!businessProcesses) {
+    if (!businessActivities) {
       return [];
     }
 
-    const processInfo: BusinessActivitiesData[] = [];
+    const activitiesInfo: GetBusinessActivitiesOutput[] = [];
 
-    if (businessProcesses.length) {
-      for (const businessProcess of businessProcesses) {
-        const foundProcessInfo = processInfo.find(
-          (dpto) => dpto.id == businessProcess.department_id,
+    if (businessActivities.length) {
+      for (const activitiesRecord of businessActivities) {
+        const foundActivityInfo = activitiesInfo.find(
+          (dpto) => dpto.id == activitiesRecord.department_id,
         );
 
-        if (foundProcessInfo) {
-          if (businessProcess.sector_id) {
-            const foundSector = foundProcessInfo.activityList.find(
+        if (foundActivityInfo) {
+          if (activitiesRecord.sector_id) {
+            const foundSector = foundActivityInfo.activities.find(
               (sector): sector is SectorItem =>
-                sector.id === businessProcess.sector_id &&
+                sector.id === activitiesRecord.sector_id &&
                 "activities" in sector,
             );
 
             if (foundSector) {
-              foundSector.activities.push(businessProcess.activity);
+              foundSector.activities.push(activitiesRecord.activity);
             } else {
-              foundProcessInfo.activityList.push({
-                ...(businessProcess.sector as SectorItem),
-                activities: [businessProcess.activity],
+              foundActivityInfo.activities.push({
+                ...(activitiesRecord.sector as SectorItem),
+                activities: [activitiesRecord.activity],
               });
             }
           } else {
-            foundProcessInfo.activityList.push(businessProcess.activity);
+            foundActivityInfo.activities.push(activitiesRecord.activity);
           }
         } else {
-          const newDepartment: BusinessActivitiesData = {
-            id: businessProcess.department.id,
-            title: businessProcess.department.title,
-            url: businessProcess.department.url,
-            icon: businessProcess.department.icon,
-            activityList: [],
+          const newDepartment: GetBusinessActivitiesOutput = {
+            ...activitiesRecord.department,
+            activities: [],
           };
 
-          if (businessProcess.sector) {
-            newDepartment.activityList.push({
-              id: businessProcess.sector.id,
-              department_id: businessProcess.department_id,
-              title: businessProcess.sector.title,
-              icon: businessProcess.sector.icon,
-              activities: [businessProcess.activity],
+          if (activitiesRecord.sector) {
+            newDepartment.activities.push({
+              ...activitiesRecord.sector,
+              activities: [activitiesRecord.activity],
             });
           } else {
-            newDepartment.activityList.push(businessProcess.activity);
+            newDepartment.activities.push(activitiesRecord.activity);
           }
 
-          processInfo.push(newDepartment);
+          activitiesInfo.push(newDepartment);
         }
       }
     }
 
-    return processInfo;
+    return activitiesInfo;
   }
-
-  async addProcessToBusiness(request: AddProcessToBusinessRequest) {
-    if (!request.activities?.length) {
-      throw new UnprocessableEntityException(
-        "Nenhum atividade foi selecionado para associar a unidade de negócio.",
-      );
+  async addActivityToBusiness(
+    business_id: number,
+    activity_id: number,
+    businessActivity: AddActivityToBusinessInput,
+  ) {
+    let businessActivitiesRecord: BusinessUnitActivity[];
+    try {
+      businessActivitiesRecord =
+        await this.adminRepository.findBusinessActivities(business_id);
+    } catch (error) {
+      this.prismaErrors(error);
     }
 
-    const businessUnit = await this.getBusinessById(request.businessId);
-    if (!businessUnit) {
-      throw new UnprocessableEntityException(
-        "Dados da unidade de negócio não encontrado.",
+    if (businessActivitiesRecord.length) {
+      const activities = businessActivitiesRecord.find(
+        (bur) => bur.activity_id == activity_id,
       );
-    }
 
-    const businessUnitProcess: BusinessActivity[] =
-      await this.adminRepository.findBusinessActivities(request.businessId);
-
-    if (businessUnitProcess.length) {
-      const filterBusinessProcess = request.activities.filter((dp) => {
-        return !businessUnitProcess.find(
-          (bud) => bud.activity_id == dp.activityId,
-        );
-      });
-
-      if (filterBusinessProcess.length) {
-        const businessProcess = await this.adminRepository.addProcessToBusiness(
-          request.businessId,
-          filterBusinessProcess,
-        );
-        return businessProcess;
-      } else {
+      if (activities) {
         throw new UnprocessableEntityException(
-          "O(s) atividade(s) já esta alocado a unidade de negócio.",
+          "A atividade já esta alocada na unidade de negócio.",
         );
       }
-    } else {
-      const businessProcess = await this.adminRepository.addProcessToBusiness(
-        request.businessId,
-        request.activities,
-      );
-      return businessProcess;
     }
+
+    return await this.adminRepository.addActivityToBusiness(
+      business_id,
+      activity_id,
+      businessActivity,
+    );
   }
-
-  async removeProcessToBusiness(request: RemoveActivityToBusinessRequest) {
-    if (!request.activities?.length) {
-      throw new UnprocessableEntityException(
-        "Nenhuma atividade foi selecionado para remover da unidade de negócio.",
-      );
-    }
-
-    const businessUnit = await this.getBusinessById(request.businessId);
+  async removeActivitFromBusiness(business_id: number, activity_id: number) {
+    const businessUnit = await this.getBusinessById(business_id);
     if (!businessUnit) {
       throw new UnprocessableEntityException(
         "Dados da unidade de negócio não encontrado.",
       );
     }
 
-    const businessUnitProcess: BusinessActivity[] =
-      await this.adminRepository.findBusinessActivities(request.businessId);
+    const businessActivitiesRecord: BusinessUnitActivity[] =
+      await this.adminRepository.findBusinessActivities(business_id);
 
-    if (businessUnitProcess.length) {
-      const removeProcessIds = businessUnitProcess.filter((bup) => {
-        return request.activities.find(
-          (activityId) => bup.activity_id == activityId,
-        );
+    if (businessActivitiesRecord.length) {
+      const removeProcessId = businessActivitiesRecord.find((bup) => {
+        return bup.activity_id == activity_id;
       });
 
-      if (removeProcessIds.length) {
-        await this.adminRepository.removeProcessToBusiness(
-          request.businessId,
-          removeProcessIds.map((bup) => bup.id),
+      if (removeProcessId) {
+        await this.adminRepository.removeActivityFromBusiness(
+          business_id,
+          removeProcessId.id,
         );
         return "Atividade removido da unidade de negócio.";
       } else {
@@ -266,50 +212,35 @@ export class AdminService {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////
-  // DEPARTMENTS
-  async findDepartments(): Promise<DepartmentDataResponse[]> {
+  ///////////////////////////////////////////////////////////////////////
+  // DEPARTMENT
+  ///////////////////////////////////////////////////////////////////////
+  async findDepartments(): Promise<FindDepartmentsOutput[]> {
     const departments = await this.adminRepository.findDepartments();
 
-    const departmentsInfo: DepartmentDataResponse[] = [];
+    const departmentsInfo: FindDepartmentsOutput[] = [];
 
     if (departments.length) {
       for (const department of departments) {
-        const newDepartment: BusinessActivitiesData = {
-          id: department.id,
-          title: department.title,
-          url: department.url,
-          icon: department.icon,
-          activityList: [],
+        const newDepartment: any = {
+          ...department,
+          activities: [],
         };
 
         // adiciona o atividade.
         department.activities.forEach((activity) => {
           if (!activity.sector_id) {
-            newDepartment.activityList.push({
-              id: activity.id,
-              title: activity.title,
-              url: activity.url,
-              icon: activity.icon,
-              department_id: activity.department_id,
-              sector_id: activity.sector_id,
-            });
+            newDepartment.activities.push(activity);
           }
         });
 
         // adiciona o setor.
         department.sectors.forEach((sector) => {
-          newDepartment.activityList.push({
-            id: sector.id,
-            department_id: sector.department_id,
-            title: sector.title,
-            icon: sector.icon,
-            activities: [],
-          });
+          newDepartment.activities.push({ ...sector, activities: [] });
         });
 
         // adiciona o atividade do setor.
-        newDepartment.activityList.forEach((sector: SectorItem | Activity) => {
+        newDepartment.activities.forEach((sector: SectorItem | Activity) => {
           if ("activity" in sector) {
             department.activities.forEach((activity) => {
               if (sector.id == activity.sector_id) {

@@ -1,18 +1,17 @@
 import z from "zod";
 
 // INPUT
-export const AuthLoginInputSchema = z.object({
+const AuthLogin = z.object({
   email: z.email(),
   password: z.string(),
 });
+export const AuthLoginInputSchema = z.tuple([AuthLogin]);
 
 // OUTPUT
 const activity = z.object({
   id: z.number(),
-  department_id: z.number(),
-  sector_id: z.number().nullable(),
   title: z.string(),
-  url: z.string(),
+  url: z.string().optional(),
   icon: z.string().nullable(),
 });
 const sectorItem = z.object({
@@ -22,27 +21,28 @@ const sectorItem = z.object({
   icon: z.string().nullable(),
   activities: z.array(activity),
 });
-const userActivityInfo = z.object({
+const userDepartment = z.object({
   id: z.number(),
   title: z.string(),
   url: z.string(),
   icon: z.string().nullable(),
-  activities: z.union([z.array(sectorItem), z.array(activity)]),
+  activities: z.array(z.union([sectorItem, activity])),
 });
 export const AuthLoginOutputSchema = z.object({
   tokenInfo: z.string(),
-  userActivityInfo: userActivityInfo,
-  userInfo: {
+  userActivityInfo: z.array(userDepartment),
+  userInfo: z.object({
     id: z.number(),
     name: z.string(),
     photo: z.string().nullable(),
     email: z.string(),
-  },
+  }),
 });
 
 // CONTROLLER
-export type AuthLoginDto = z.infer<typeof AuthLoginInputSchema>;
+export type AuthLoginDto = z.infer<typeof AuthLogin>;
 
 // SERVICE
 export type AuthLoginInput = AuthLoginDto;
+export type UserActivitiesInfo = z.infer<typeof userDepartment>;
 export type AuthLoginOutput = z.infer<typeof AuthLoginOutputSchema>;

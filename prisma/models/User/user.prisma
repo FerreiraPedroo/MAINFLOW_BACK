@@ -3,7 +3,7 @@ model User {
   email                   String       @unique
   password                String
   name                    String
-  birth_date              String?
+  birth_date              DateTime?
   photo                   String?
 
   groups                  GroupUser[]

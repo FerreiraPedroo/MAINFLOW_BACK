@@ -8,19 +8,17 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 
-import type { Express } from "express";
-
-import { UserService } from "./user.service";
 import { uploadFilePipe } from "@/common/pipes/upload-file.pipe";
 import { ValidateService } from "@/common/decorators/validate-service.decorator";
 
-import type { CreateUserRequest } from "./types/dto/create-user-request.dto";
+import { UserService } from "./user.service";
 
+import type { CreateUserDto, CreateUserFileDto } from "./types";
 import {
   CreateUserInputSchema,
   CreateUserOutputSchema,
   GetUsersOutputSchema,
-} from "./types/schema";
+} from "./types";
 
 @Controller("/users")
 export class UserController {
@@ -46,8 +44,8 @@ export class UserController {
         fileRequired: false,
       }),
     )
-    photo: Express.Multer.File,
-    @Body() request: CreateUserRequest,
+    photo: CreateUserFileDto,
+    @Body() request: CreateUserDto,
   ) {
     return await this.userService.createUser(photo, request);
   }

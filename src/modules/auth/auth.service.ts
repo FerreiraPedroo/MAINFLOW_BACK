@@ -1,36 +1,29 @@
-import { UserActivityService } from "./../user/user-activity.service";
-import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-import { JwtService } from "@nestjs/jwt";
+import { UserService } from "./../user/user.service";
 import {
   Inject,
   Injectable,
   UnauthorizedException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-
-import { EncryptService } from "@common/service/encrypt.service";
+import { JwtService } from "@nestjs/jwt";
+import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { UserRepository } from "@modules/user/repositories/user.repository";
+import { EncryptService } from "@common/service/encrypt.service";
+import { UserActivityService } from "./../user/user-activity.service";
 
-import {
-  AuthUserActivitiesData,
-  SectorItem,
-} from "./data/user-activities.data";
-import { UserRecord } from "../user/types/data/user-record";
-import { AuthLoginInput } from "./types";
-export interface JwtPayload {
-  user: string;
-  businessId: number;
-}
+import { SectorItem } from "./data/user-activities.data";
+import { UserRecord } from "../user/types/record/user-record";
+
+import { AuthLoginInput, AuthLoginOutput, UserActivitiesInfo } from "./types";
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
     private readonly encryptService: EncryptService,
-    private readonly userRepository: UserRepository,
     private readonly userActivityService: UserActivityService,
   ) {}
 
@@ -72,12 +65,10 @@ export class AuthService {
     }
   }
 
-  async signIn(userInput: AuthLoginInput) {
+  async signIn(userInput: AuthLoginInput): Promise<AuthLoginOutput> {
     let userRecord: UserRecord | null;
     try {
-      userRecord = await this.userRepository.getLoginUserByEmail(
-        userInput.email,
-      );
+      userRecord = await this.userService.getUserByEmail(userInput.email);
     } catch (error) {
       this.prismaErrors(error);
     }
@@ -106,7 +97,7 @@ export class AuthService {
       userRecord.id,
     );
 
-    const userActivityInfo: AuthUserActivitiesData[] = [];
+    const userActivityInfo: UserActivitiesInfo[] = [];
 
     if (userActivities) {
       for (const userActivity of userActivities) {
@@ -133,21 +124,15 @@ export class AuthService {
             foundDepartmentInfo.activities.push(userActivity.activity);
           }
         } else {
-          const newDepartment: AuthUserActivitiesData = {
-            id: userActivity.id,
-            title: userActivity.department.title,
-            url: userActivity.department.url,
-            icon: userActivity.department.icon,
+          const newDepartment: UserActivitiesInfo = {
+            ...userActivity.department,
             activities: [],
           };
 
           if (userActivity.sector) {
             newDepartment.activities.push({
-              id: userActivity.sector.id,
-              department_id: userActivity.sector.department_id,
-              title: userActivity.sector.title,
-              icon: userActivity.sector.icon,
-              activities: [userActivity.activity],
+              ...userActivity.sector,
+              activities: [],
             });
           } else {
             newDepartment.activities.push(userActivity.activity);

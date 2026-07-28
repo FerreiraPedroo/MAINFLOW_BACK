@@ -1,9 +1,10 @@
-import { PrismaService } from "@/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 
-import { UserActivityRecord } from "../types/record/find-user-activities-by-email.record";
+import { PrismaService } from "@/database/prisma/prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
-import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+
+// import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { UserActivityRecord } from "../types/record/find-user-activities-by-email.record";
 
 @Injectable()
 export class UserActivityRepository {
@@ -15,14 +16,8 @@ export class UserActivityRepository {
   async findUserActivities(
     user_id: number,
   ): Promise<UserActivityRecord[] | null> {
-    const requestContext =
-      this.requestContext.getStore() as LocalStorageContextData;
-
     return await this.prisma.userActivity.findMany({
-      where: {
-        user_id: user_id,
-        business_unit_id: requestContext.business_unit_id,
-      },
+      where: { user_id },
       include: {
         department: true,
         sector: true,

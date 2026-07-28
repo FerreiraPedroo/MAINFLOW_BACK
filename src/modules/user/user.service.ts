@@ -1,20 +1,22 @@
-import { FileService } from "@common/modules/file/file.service";
 import { User } from "@prisma/client";
-import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 
+import { FileService } from "@common/modules/file/file.service";
 import { EncryptService } from "@common/service/encrypt.service";
+import { UnitOfWorkService } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 
 import { UserRepository } from "./repositories/user.repository";
 
-import { CreateUserRequest } from "./types/dto/create-user-request.dto";
+import { CreateUserInput, CreateUserFileInput } from "./types";
 
 @Injectable()
 export class UserService {
   constructor(
-    private userRepository: UserRepository,
-    private encryptService: EncryptService,
-    private fileService: FileService,
+    private readonly userRepository: UserRepository,
+    private readonly encryptService: EncryptService,
+    private readonly fileService: FileService,
+    private readonly unitOfWork: UnitOfWorkService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -63,7 +65,7 @@ export class UserService {
     }
   }
 
-  async createUser(photo: Express.Multer.File, request: CreateUserRequest) {
+  async createUser(photo: CreateUserFileInput, request: CreateUserInput) {
     const user = await this.userRepository.getUserByEmail(request.email);
     if (user) {
       if (photo) {
@@ -78,23 +80,23 @@ export class UserService {
       request.password,
     );
 
-    let photoUrl;
+    let photoUrl: string | null = null;
     if (photo) {
       photoUrl = await this.fileService.fileSave(photo, "users/avatar");
     }
 
-    const requestContext = {
-      email: request.email,
-      password: passwordHash,
-      name: request.name,
-      ...(request.birthDate && { birth_date: request.birthDate }),
-      ...(photoUrl && { photo: photoUrl }),
-    };
-
     let userRecord: User | null;
 
     try {
-      userRecord = await this.userRepository.createUser(requestContext);
+      await this.unitOfWork.runInTransaction(async () => {
+        const userData = {
+          ...request,
+          password: passwordHash,
+          photo: photoUrl,
+        };
+
+        userRecord = await this.userRepository.createUser(userData);
+      });
     } catch (error) {
       if (photoUrl) {
         await this.fileService.removeFile(photoUrl);
@@ -106,19 +108,13 @@ export class UserService {
       this.prismaErrors(error);
     }
 
-    if (!userRecord) {
+    if (!userRecord!) {
       throw new UnprocessableEntityException(
         "Não foi possivel criar o usuário.",
       );
     }
 
-    return {
-      id: userRecord.id,
-      email: userRecord.email,
-      name: userRecord.name,
-      birthDate: userRecord.birth_date,
-      photo: userRecord.photo,
-    };
+    return userRecord;
   }
 
   async getLoggedUser() {
@@ -137,13 +133,7 @@ export class UserService {
         throw new UnprocessableEntityException("Usuário não encontrado.");
       }
 
-      return {
-        id: userRecord.id,
-        email: userRecord.email,
-        name: userRecord.name,
-        birthDate: userRecord.birth_date,
-        photo: userRecord.photo,
-      };
+      return userRecord;
     } catch (error) {
       this.prismaErrors(error);
     }

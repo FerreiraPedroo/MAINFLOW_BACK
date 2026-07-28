@@ -4,7 +4,7 @@ import { UnitOfWork } from "./interfaces/unit-of-work.interface";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class PrismaUnitOfWork implements UnitOfWork {
+export class UnitOfWorkService implements UnitOfWork {
   constructor(
     private readonly prisma: PrismaService,
     private readonly requestContext: LocalStorageContextService,

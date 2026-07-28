@@ -3,15 +3,15 @@ import z from "zod";
 // INPUT
 
 // OUTPUT
-export const GetUsersOutputSchema = z.object({
+export const GetUsersOutput = z.object({
   id: z.number(),
   email: z.email(),
   name: z.string(),
-  birth_date: z.date(),
+  birth_date: z.date().nullable(),
   photo: z.string().nullable(),
 });
+export const GetUsersOutputSchema = z.array(GetUsersOutput);
 
 // CONTROLLER
 
 // SERVICE
-export type GetUsersOutput = z.infer<typeof GetUsersOutputSchema>;

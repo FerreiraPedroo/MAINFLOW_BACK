@@ -1,7 +1,7 @@
-export interface CreaterequestContext {
+export interface CreateUserData {
   email: string;
   password: string;
   name: string;
-  birthDate?: string;
-  photo?: string;
+  birth_date?: Date | null;
+  photo: string | null;
 }

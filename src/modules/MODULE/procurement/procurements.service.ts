@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { PrismaUnitOfWork } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
+import { UnitOfWorkService } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 import { ProcurementItemService } from "./procurements-item.service";
 import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
 
@@ -22,7 +22,7 @@ export class ProcurementService {
     @Inject("ProcurementRepository")
     private readonly procurementRepository: ProcurementPrismaRepository,
     private readonly procurementItemService: ProcurementItemService,
-    private readonly unitOfWork: PrismaUnitOfWork,
+    private readonly unitOfWork: UnitOfWorkService,
   ) {}
 
   private prismaErrors(error: any): never {

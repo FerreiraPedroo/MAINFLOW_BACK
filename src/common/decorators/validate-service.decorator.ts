@@ -21,10 +21,10 @@ export function ValidateService(options: ValidateServiceOptions) {
 
       // Se tiver validado de entrada.
       if (options.input) {
-        console.log("----------------------------------------------");
-        console.log({ propertyKey, args });
+        // console.log("----------------------------------------------");
+        // console.log({ propertyKey, args });
         const inputResult = options.input.safeParse(args);
-        console.log({ propertyKey, inputResult });
+        // console.log({ propertyKey, inputResult });
 
         if (!inputResult.success) {
           console.log({ inputResult });
@@ -38,6 +38,13 @@ export function ValidateService(options: ValidateServiceOptions) {
         // Se não tiver validador de entrada passa o argumento original;
         validateArgs = args;
       }
+
+      /**
+       * PARA TRANSFORMAR EM UM VALIDADOR DE SERVICE, PODE ADICIONAR A OPÇÃO
+       * options?: "SERVICE"
+       * E VERIFICAR SE HOUVER A OPÇÃO, VERIFICA SE O ARGUMENTO É UM ARRAY
+       * SE NÃO FOR CRIA UM COM OS DADOS DO ARGUMENTO.
+       */
       const result = await originalMethod.apply(this, validateArgs);
 
       // Se tiver validador de saida, retorna os dados validados.

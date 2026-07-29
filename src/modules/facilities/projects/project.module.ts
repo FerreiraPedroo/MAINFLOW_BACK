@@ -19,5 +19,6 @@ import { ProjectAllocationRepository, ProjectRepository } from "./repository";
     ProjectAllocationService,
     ProjectAllocationRepository,
   ],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

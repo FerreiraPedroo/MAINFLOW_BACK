@@ -97,52 +97,52 @@ export class ProcurementService {
     request: UpdateProcurementInput,
   ) {
     const procurementData = { ...request };
-    delete procurementData.itens;
+    delete procurementData.items;
 
-    const createItens: {
+    const createItems: {
       procurement_id: number;
       item_id: number;
       quantity: number;
     }[] = [];
-    const updateItens: { id: number; quantity: number }[] = [];
-    const deleteItens: number[] = [];
+    const updateItems: { id: number; quantity: number }[] = [];
+    const deleteItems: number[] = [];
 
     try {
-      const procurementItensRecords =
-        await this.procurementItemService.findProcurementItens(procurementId);
+      const procurementItemsRecords =
+        await this.procurementItemService.findProcurementItems(procurementId);
 
-      if (request.itens) {
-        procurementItensRecords.forEach((item) => {
-          // delete itens
+      if (request.items) {
+        procurementItemsRecords.forEach((item) => {
+          // delete items
           if (
-            !request.itens?.find((reqItem) => reqItem.item_id == item.item_id)
+            !request.items?.find((reqItem) => reqItem.item_id == item.item_id)
           ) {
-            deleteItens.push(item.id);
+            deleteItems.push(item.id);
           }
 
-          // update itens
-          const updateItem = request.itens?.find(
+          // update items
+          const updateItem = request.items?.find(
             (reqItem) =>
               reqItem.item_id == item.item_id &&
               reqItem.quantity != item.quantity,
           );
           if (updateItem) {
-            updateItens.push({
+            updateItems.push({
               id: item.id,
               quantity: updateItem.quantity,
             });
           }
         });
 
-        // create new itens
-        const itensToCreate = request.itens.filter(
+        // create new items
+        const itemsToCreate = request.items.filter(
           (reqItem) =>
-            !procurementItensRecords.find(
+            !procurementItemsRecords.find(
               (procItem) => procItem.item_id == reqItem.item_id,
             ),
         );
-        createItens.push(
-          ...itensToCreate.map((item) => ({
+        createItems.push(
+          ...itemsToCreate.map((item) => ({
             procurement_id: procurementId,
             ...item,
           })),
@@ -157,18 +157,18 @@ export class ProcurementService {
           ),
         ];
 
-        if (deleteItens.length) {
+        if (deleteItems.length) {
           promises.push(
-            this.procurementItemService.deleteProcurementItens(deleteItens),
+            this.procurementItemService.deleteProcurementItems(deleteItems),
           );
         }
-        if (createItens.length) {
+        if (createItems.length) {
           promises.push(
-            this.procurementItemService.createProcurementItens(createItens),
+            this.procurementItemService.createProcurementItems(createItems),
           );
         }
-        if (updateItens.length) {
-          for (const item of updateItens) {
+        if (updateItems.length) {
+          for (const item of updateItems) {
             promises.push(
               await this.procurementItemService.updateProcurementItem({
                 ...item,

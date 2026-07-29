@@ -1,4 +1,3 @@
-
 export type SectorItem = {
   id: number;
   department_id: number;

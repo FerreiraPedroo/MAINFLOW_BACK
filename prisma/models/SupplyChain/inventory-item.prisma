@@ -1,4 +1,4 @@
-model Item {
+model InventoryItem {
   id                          Int     @id @default(autoincrement())
   title                       String
   code                        String
@@ -17,7 +17,7 @@ model Item {
   manufacturer_data_sheet     String?
   manufacturer_image_path     String?
 
-  procurementItens            ProcurementItem[]
+  procurement_items           ProcurementItem[]
 
   business_unit_id            Int
   business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

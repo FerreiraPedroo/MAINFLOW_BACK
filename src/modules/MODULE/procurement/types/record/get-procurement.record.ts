@@ -11,9 +11,9 @@ export type GetProcurementRecord = Prettify<
     include: {
       cost_center: true;
       project: true;
-      itens: {
+      inventory_items: {
         include: {
-          item: {
+          inventory_item: {
             include: {
               manufacturer: true;
             };

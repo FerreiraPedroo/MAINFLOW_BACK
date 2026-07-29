@@ -13,7 +13,7 @@ const UpdateProcurementInput = z.object({
   status: z.string().optional(),
   cost_center_id: z.coerce.number().positive().optional(),
   project_id: z.coerce.number().positive().optional(),
-  itens: z.array(item).optional(),
+  items: z.array(item).optional(),
 });
 
 const UpdateProcurementOutput = z.object({

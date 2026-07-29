@@ -5,8 +5,11 @@ import {
 } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
+import { ProjectService } from "@/modules/facilities/projects/project.service";
+
 import { UnitOfWorkService } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 import { ProcurementItemService } from "./procurements-item.service";
+
 import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
 
 import type {
@@ -23,6 +26,7 @@ export class ProcurementService {
     private readonly procurementRepository: ProcurementPrismaRepository,
     private readonly procurementItemService: ProcurementItemService,
     private readonly unitOfWork: UnitOfWorkService,
+    private readonly projectService: ProjectService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -83,10 +87,28 @@ export class ProcurementService {
       this.prismaErrors(error);
     }
   }
-  async createProcurement(procurementData: CreateProcurementInput) {
+  async createProcurement(procurementInput: CreateProcurementInput) {
+    // SE FOR ASSOCIADO A UM PROJETO, PEGAR O CENTRO DE CUSTO E ASSOCIAR A PROCUREMENT.
+    if (procurementInput.project_id) {
+      const projectRecord = await this.projectService.getProjectById(
+        procurementInput.project_id,
+      );
+
+      if (!projectRecord) {
+        throw new UnprocessableEntityException("Projeto não encontrado.");
+      }
+
+      procurementInput.cost_center_id = projectRecord.cost_center_id;
+    } else if (!procurementInput.cost_center_id) {
+      // DEVE SER OBRIGATÓRIO O CENTRO DE CUSTO, SE NÃO TIVER PROJETO ASSOCIADO.
+      throw new UnprocessableEntityException(
+        "Centro de custo não selecionado.",
+      );
+    }
+
     try {
       return await this.procurementRepository.createProcurement(
-        procurementData,
+        procurementInput,
       );
     } catch (error) {
       this.prismaErrors(error);
@@ -94,55 +116,75 @@ export class ProcurementService {
   }
   async updateProcurement(
     procurementId: number,
-    request: UpdateProcurementInput,
+    procurementInput: UpdateProcurementInput,
   ) {
-    const procurementData = { ...request };
-    delete procurementData.itens;
+    const procurementData = { ...procurementInput };
+    delete procurementData.items;
 
-    const createItens: {
+    // SE FOR ASSOCIADO A UM PROJETO, PEGAR O CENTRO DE CUSTO E ASSOCIAR A PROCUREMENT.
+    if (procurementData.project_id) {
+      const projectRecord = await this.projectService.getProjectById(
+        procurementData.project_id,
+      );
+
+      if (!projectRecord) {
+        throw new UnprocessableEntityException("Projeto não encontrado.");
+      }
+
+      procurementData.cost_center_id = projectRecord.cost_center_id;
+    } else if (!procurementData.cost_center_id) {
+      // DEVE SER OBRIGATÓRIO O CENTRO DE CUSTO, SE NÃO TIVER PROJETO ASSOCIADO.
+      throw new UnprocessableEntityException(
+        "Centro de custo não selecionado.",
+      );
+    }
+
+    const createItems: {
       procurement_id: number;
       item_id: number;
       quantity: number;
     }[] = [];
-    const updateItens: { id: number; quantity: number }[] = [];
-    const deleteItens: number[] = [];
+    const updateItems: { id: number; quantity: number }[] = [];
+    const deleteItems: number[] = [];
 
     try {
-      const procurementItensRecords =
-        await this.procurementItemService.findProcurementItens(procurementId);
+      const procurementItemsRecords =
+        await this.procurementItemService.findProcurementItems(procurementId);
 
-      if (request.itens) {
-        procurementItensRecords.forEach((item) => {
-          // delete itens
+      if (procurementInput.items) {
+        procurementItemsRecords.forEach((item) => {
+          // delete items
           if (
-            !request.itens?.find((reqItem) => reqItem.item_id == item.item_id)
+            !procurementInput.items?.find(
+              (reqItem) => reqItem.item_id == item.item_id,
+            )
           ) {
-            deleteItens.push(item.id);
+            deleteItems.push(item.id);
           }
 
-          // update itens
-          const updateItem = request.itens?.find(
+          // update items
+          const updateItem = procurementInput.items?.find(
             (reqItem) =>
               reqItem.item_id == item.item_id &&
               reqItem.quantity != item.quantity,
           );
           if (updateItem) {
-            updateItens.push({
+            updateItems.push({
               id: item.id,
               quantity: updateItem.quantity,
             });
           }
         });
 
-        // create new itens
-        const itensToCreate = request.itens.filter(
+        // create new items
+        const itemsToCreate = procurementInput.items.filter(
           (reqItem) =>
-            !procurementItensRecords.find(
+            !procurementItemsRecords.find(
               (procItem) => procItem.item_id == reqItem.item_id,
             ),
         );
-        createItens.push(
-          ...itensToCreate.map((item) => ({
+        createItems.push(
+          ...itemsToCreate.map((item) => ({
             procurement_id: procurementId,
             ...item,
           })),
@@ -157,18 +199,18 @@ export class ProcurementService {
           ),
         ];
 
-        if (deleteItens.length) {
+        if (deleteItems.length) {
           promises.push(
-            this.procurementItemService.deleteProcurementItens(deleteItens),
+            this.procurementItemService.deleteProcurementItems(deleteItems),
           );
         }
-        if (createItens.length) {
+        if (createItems.length) {
           promises.push(
-            this.procurementItemService.createProcurementItens(createItens),
+            this.procurementItemService.createProcurementItems(createItems),
           );
         }
-        if (updateItens.length) {
-          for (const item of updateItens) {
+        if (updateItems.length) {
+          for (const item of updateItems) {
             promises.push(
               await this.procurementItemService.updateProcurementItem({
                 ...item,

@@ -6,7 +6,7 @@ model ProcurementItem {
   procurement           Procurement   @relation(fields:[procurement_id], references:[id], onDelete: Restrict)
 
   item_id               Int
-  item                  Item          @relation(fields:[item_id], references:[id], onDelete: Restrict)
+  inventory_item        InventoryItem @relation(fields:[item_id], references:[id], onDelete: Restrict)
 
   business_unit_id      Int
   business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

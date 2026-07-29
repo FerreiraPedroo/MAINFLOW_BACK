@@ -15,6 +15,7 @@ export function ValidateService(options: ValidateServiceOptions) {
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
+    console.log(descriptor.value);
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any) {
       let validateArgs;
@@ -47,10 +48,10 @@ export function ValidateService(options: ValidateServiceOptions) {
        */
       const result = await originalMethod.apply(this, validateArgs);
 
+
       // Se tiver validador de saida, retorna os dados validados.
       if (options.output) {
         const outputResult = options.output.safeParse(result);
-
         if (!outputResult.success) {
           console.log({ outputResult });
           throw new InternalServerErrorException({

@@ -1,17 +1,15 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { BusinessUnit, BusinessUnitActivity } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { AdminRepository } from "./repositories/admin.repository";
 
-import { Activity, SectorItem } from "./data/business-activities.data";
-
-import { CreateDepartmentRequest } from "./dto/create-department.request.dto";
-
-import { CreateSectorRequest } from "./dto/create-sector.request";
-
 import {
+  Activity,
+  SectorItem,
   AddActivityToBusinessInput,
+  CreateDepartmentInput,
+  CreateSectorInput,
   FindBusinessActivitiesRecord,
   FindDepartmentsOutput,
   GetBusinessActivitiesOutput,
@@ -80,11 +78,14 @@ export class AdminService {
 
     return businessUnit;
   }
-  async updateBusiness(business_id: number, businessData: UpdateBusinessInput) {
+  async updateBusiness(
+    business_id: number,
+    businessInput: UpdateBusinessInput,
+  ) {
     try {
       return await this.adminRepository.updateBusiness(
         business_id,
-        businessData,
+        businessInput,
       );
     } catch (error) {
       this.prismaErrors(error);
@@ -258,50 +259,22 @@ export class AdminService {
     return departmentsInfo;
   }
 
-  async createDepartment(request: CreateDepartmentRequest) {
-    const departmentData = {
-      title: request.title,
-      url: request.url,
-      icon: request.icon,
-    };
-
+  async createDepartment(departmentInput: CreateDepartmentInput) {
     try {
-      return await this.adminRepository.createDepartment(departmentData);
+      return await this.adminRepository.createDepartment(departmentInput);
     } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code == "P2002"
-      ) {
-        throw new UnprocessableEntityException(
-          "Existe um departamento com esse nome.",
-        );
-      } else {
-        throw new UnprocessableEntityException("Erro ao criar o departamento.");
-      }
+      this.prismaErrors(error);
     }
   }
-  ///////////////////////////////////////////////////////////////////
-  // SECTOR
-  async createSector(request: CreateSectorRequest) {
-    const sectorData = {
-      title: request.title,
-      icon: request.icon ?? null,
-      department_id: request.departmentId,
-    };
 
+  ///////////////////////////////////////////////////////////////////////
+  // SECTOR
+  ///////////////////////////////////////////////////////////////////////
+  async createSector(sectorInput: CreateSectorInput) {
     try {
-      await this.adminRepository.createSector(sectorData);
+      return await this.adminRepository.createSector(sectorInput);
     } catch (error) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code == "P2002"
-      ) {
-        throw new UnprocessableEntityException(
-          "Existe um setor com esse nome.",
-        );
-      } else {
-        throw new UnprocessableEntityException("Erro ao criar o setor.");
-      }
+      this.prismaErrors(error);
     }
   }
 }

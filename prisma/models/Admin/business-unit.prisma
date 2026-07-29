@@ -33,9 +33,9 @@ model BusinessUnit {
 
   // SUPPLY-CHAIN
   procurements     Procurement[]
-  procurementItens ProcurementItem[]
+  procurementItems ProcurementItem[]
   suppliers        Supplier[]
-  itens            Item[]
+  inventory_items  InventoryItem[]
 
   //SOFT DELETE
   created_at DateTime @default(now())

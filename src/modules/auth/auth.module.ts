@@ -3,11 +3,13 @@ import { JwtModule } from "@nestjs/jwt";
 
 import { jwtConstants } from "./constants/constants";
 
+import { UserModule } from "../user/user.module";
+
 import { AuthController } from "./auth.controller";
 
 import { AuthService } from "./auth.service";
 import { EncryptService } from "@/common/service/encrypt.service";
-import { UserModule } from "../user/user.module";
+
 
 @Module({
   imports: [

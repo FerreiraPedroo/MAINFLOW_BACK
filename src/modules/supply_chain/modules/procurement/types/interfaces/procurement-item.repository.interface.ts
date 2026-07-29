@@ -1,15 +1,15 @@
 import { ProcurementItem } from "@prisma/client";
 import {
-  CreateProcurementItensInput,
-  UpdateProcurementItensInput,
+  CreateProcurementItemsInput,
+  UpdateProcurementItemsInput,
 } from "../schemas";
 
 export interface ProcurementItemRepository {
-  findProcurementItens(procurement: number): Promise<ProcurementItem[]>;
-  createProcurementItens(
-    procurementData: CreateProcurementItensInput[],
+  findProcurementItems(procurement: number): Promise<ProcurementItem[]>;
+  createProcurementItems(
+    procurementData: CreateProcurementItemsInput[],
   ): Promise<ProcurementItem[]>;
   updateProcurementItem(
-    procurementData: UpdateProcurementItensInput,
+    procurementData: UpdateProcurementItemsInput,
   ): Promise<void>;
 }

@@ -12,16 +12,19 @@ import { ValidateService } from "@/common/decorators/validate-service.decorator"
 
 import { AdminService } from "./admin.service";
 
-import type { CreateDepartmentRequest } from "./dto/create-department.request.dto";
-import type { CreateSectorRequest } from "./dto/create-sector.request";
-
 import type {
   AddActivityToBusinessInputDto,
+  CreateDepartmentInputDto,
+  CreateSectorInputDto,
   UpdateBusinessInputDto,
 } from "./types";
 import {
   AddActivityToBusinessInputSchema,
   AddActivityToBusinessOutputSchema,
+  CreateDepartmentInputSchema,
+  CreateDepartmentOutputSchema,
+  CreateSectorInputSchema,
+  CreateSectorOutputSchema,
   FindBusinessOutputSchema,
   FindDepartmentsOutputSchema,
   GetBusinessActivitiesInputSchema,
@@ -118,14 +121,23 @@ export class AdminController {
     return await this.adminService.findDepartments();
   }
   @Post("departments")
-  async createDepartment(@Body() request: CreateDepartmentRequest) {
+  @ValidateService({
+    input: CreateDepartmentInputSchema,
+    output: CreateDepartmentOutputSchema,
+  })
+  async createDepartment(@Body() request: CreateDepartmentInputDto) {
     return await this.adminService.createDepartment(request);
   }
 
-  //
+  ///////////////////////////////////////////////////////////////////////
   // SECTOR
-  @Post("sector")
-  async createSector(@Body() request: CreateSectorRequest) {
+  ///////////////////////////////////////////////////////////////////////
+  @Post("sectors")
+  @ValidateService({
+    input: CreateSectorInputSchema,
+    output: CreateSectorOutputSchema,
+  })
+  async createSector(@Body() request: CreateSectorInputDto) {
     return await this.adminService.createSector(request);
   }
 }

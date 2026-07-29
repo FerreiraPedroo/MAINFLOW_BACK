@@ -10,7 +10,7 @@ model Supplier {
   phone                       String?
   billing_address             String  // Endereço de faturamento
 
-  itens                       Item[]
+  inventory_item              InventoryItem[]
 
   business_unit_id            Int
   business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

@@ -8,8 +8,8 @@ import { ProcurementItem } from "@prisma/client";
 
 import {
   ProcurementItemRepository,
-  CreateProcurementItensInput,
-  UpdateProcurementItensInput,
+  CreateProcurementItemsInput,
+  UpdateProcurementItemsInput,
 } from "../types";
 
 @Injectable()
@@ -19,7 +19,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     private requestContext: LocalStorageContextService,
   ) {}
 
-  async findProcurementItens(
+  async findProcurementItems(
     procurementId: number,
   ): Promise<ProcurementItem[]> {
     const requestContext =
@@ -34,15 +34,15 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
       },
     });
   }
-  async createProcurementItens(
-    procurementItensData: CreateProcurementItensInput[],
+  async createProcurementItems(
+    procurementItemsData: CreateProcurementItemsInput[],
   ): Promise<ProcurementItem[]> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     const client = requestContext?.tx || this.prisma;
 
-    const data = procurementItensData.map((pid) => ({
+    const data = procurementItemsData.map((pid) => ({
       ...pid,
       created_by: requestContext.user_id,
       business_unit_id: requestContext.business_unit_id,
@@ -52,8 +52,8 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
       data,
     });
   }
-  async deleteProcurementItens(
-    procurementItensIds: number[],
+  async deleteProcurementItems(
+    procurementItemsIds: number[],
   ): Promise<ProcurementItem[]> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
@@ -62,12 +62,12 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
 
     return await client.procurementItem.deleteMany({
       where: {
-        id: { in: procurementItensIds },
+        id: { in: procurementItemsIds },
         business_unit_id: requestContext.business_unit_id,
       },
     });
   }
-  async updateProcurementItem(procurementItem: UpdateProcurementItensInput) {
+  async updateProcurementItem(procurementItem: UpdateProcurementItemsInput) {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 

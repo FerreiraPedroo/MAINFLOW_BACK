@@ -7,3 +7,6 @@ export * from "./business/add-business-activity.schema";
 export * from "./business/remove-busines-activity.schema";
 
 export * from "./department/find-department.schema";
+export * from "./department/create-department.schema";
+
+export * from "./sector/create-sector.schema";

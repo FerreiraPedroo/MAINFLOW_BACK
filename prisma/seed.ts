@@ -483,7 +483,7 @@ async function main() {
         },
       ],
     },
-    item: {
+    inventoryItem: {
       data: [
         {
           title: "LÂMPADA FLUORESCENTE TUBULAR 40W",
@@ -594,7 +594,7 @@ async function main() {
     await prisma.localization.createMany(seeds.localization);
     await prisma.people.createMany(seeds.people);
     await prisma.supplier.createMany(seeds.supplier);
-    await prisma.item.createMany(seeds.item);
+    await prisma.inventoryItem.createMany(seeds.inventoryItem);
 
     console.log({
       address,

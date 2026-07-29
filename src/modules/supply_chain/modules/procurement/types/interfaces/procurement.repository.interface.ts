@@ -10,7 +10,7 @@ export interface ProcurementRepository {
   createProcurement(
     procurementData: CreateProcurementInput,
   ): Promise<Procurement>;
-  procurementItens(procurementId: number): Promise<ProcurementItem[]>;
+  procurementItems(procurementId: number): Promise<ProcurementItem[]>;
   updateProcurement(
     procurementId: number,
     procurementData: UpdateProcurementInput,

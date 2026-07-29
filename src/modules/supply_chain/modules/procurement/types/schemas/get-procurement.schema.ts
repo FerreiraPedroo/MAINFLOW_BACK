@@ -25,7 +25,7 @@ const item = z.object({
   image_path: z.string().nullable(),
   hs_code: z.string().nullable(),
 });
-const itens = z
+const items = z
   .object({
     id: z.number(),
     item_id: z.number(),
@@ -57,7 +57,7 @@ const GetProcurementOutput = z.object({
   send_date: z.string().nullable(),
   project: project,
   cost_center: costCenter,
-  itens: z.array(itens),
+  items: z.array(items),
 });
 
 // SCHEMA > For Validation Service

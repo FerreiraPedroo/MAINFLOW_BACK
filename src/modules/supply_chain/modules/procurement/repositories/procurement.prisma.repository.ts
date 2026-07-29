@@ -34,9 +34,9 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
       include: {
         cost_center: true,
         project: true,
-        itens: {
+        inventory_items: {
           include: {
-            item: {
+            inventory_item: {
               include: {
                 manufacturer: true,
               },
@@ -139,7 +139,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
       data,
     });
   }
-  async procurementItens(procurementId: number): Promise<ProcurementItem[]> {
+  async procurementItems(procurementId: number): Promise<ProcurementItem[]> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 

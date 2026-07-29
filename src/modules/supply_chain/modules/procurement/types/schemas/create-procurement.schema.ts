@@ -5,7 +5,7 @@ const CreateProcurementInput = z.object({
   description: z.string().optional(),
   type: z.string(),
   status: z.string(),
-  cost_center_id: z.coerce.number().positive(),
+  cost_center_id: z.coerce.number().positive().optional(),
   project_id: z.coerce.number().positive().optional(),
 });
 const CreateProcurementOutput = z.object({

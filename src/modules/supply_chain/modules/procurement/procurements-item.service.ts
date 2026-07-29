@@ -11,12 +11,12 @@ import { ValidateService } from "@/common/decorators/validate-service.decorator"
 import { ProcurementItemPrismaRepository } from "./repositories/procurement-item.prisma.repository";
 
 import type {
-  CreateProcurementItensInput,
-  UpdateProcurementItensInput,
+  CreateProcurementItemsInput,
+  UpdateProcurementItemsInput,
 } from "./types";
 import {
-  CreateProcurementItensInputSchema,
-  UpdateProcurementItensInputSchema,
+  CreateProcurementItemsInputSchema,
+  UpdateProcurementItemsInputSchema,
 } from "./types";
 
 @Injectable()
@@ -63,11 +63,11 @@ export class ProcurementItemService {
     }
   }
 
-  async findProcurementItens(
+  async findProcurementItems(
     procurementId: number,
   ): Promise<ProcurementItem[]> {
     try {
-      return await this.procurementItemRepository.findProcurementItens(
+      return await this.procurementItemRepository.findProcurementItems(
         procurementId,
       );
     } catch (error) {
@@ -76,14 +76,14 @@ export class ProcurementItemService {
   }
 
   @ValidateService({
-    input: CreateProcurementItensInputSchema,
+    input: CreateProcurementItemsInputSchema,
   })
-  async createProcurementItens(
-    procurementItensInput: CreateProcurementItensInput[],
+  async createProcurementItems(
+    procurementItemsInput: CreateProcurementItemsInput[],
   ) {
     try {
-      return await this.procurementItemRepository.createProcurementItens(
-        procurementItensInput,
+      return await this.procurementItemRepository.createProcurementItems(
+        procurementItemsInput,
       );
     } catch (error) {
       this.prismaErrors(error);
@@ -91,23 +91,23 @@ export class ProcurementItemService {
   }
 
   @ValidateService({
-    input: UpdateProcurementItensInputSchema,
+    input: UpdateProcurementItemsInputSchema,
   })
   async updateProcurementItem(
-    procurementItensInput: UpdateProcurementItensInput,
+    procurementItemsInput: UpdateProcurementItemsInput,
   ) {
     try {
       return await this.procurementItemRepository.updateProcurementItem(
-        procurementItensInput,
+        procurementItemsInput,
       );
     } catch (error) {
       this.prismaErrors(error);
     }
   }
 
-  async deleteProcurementItens(procurementItemIds: number[]) {
+  async deleteProcurementItems(procurementItemIds: number[]) {
     try {
-      return await this.procurementItemRepository.deleteProcurementItens(
+      return await this.procurementItemRepository.deleteProcurementItems(
         procurementItemIds,
       );
     } catch (error) {

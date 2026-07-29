@@ -5,15 +5,13 @@ import { PrismaService } from "@/database/prisma/prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
-import { UpdateBusinessData } from "../types/data/update-business-unit.data";
-
-import { DepartmentData } from "../data/department-data.interface";
-import { CreateDepartmentData } from "../data/create-department.data";
-
-import { CreateSectorData } from "../data/create-sector.data";
 import {
   AddActivityToBusinessInput,
+  CreateDepartmentInput,
+  CreateSectorInput,
+  DepartmentRecord,
   FindBusinessActivitiesRecord,
+  UpdateBusinessInput,
 } from "../types";
 
 @Injectable()
@@ -36,7 +34,7 @@ export class AdminRepository {
   }
   async updateBusiness(
     business_id: number,
-    businessData: UpdateBusinessData,
+    businessInput: UpdateBusinessInput,
   ): Promise<BusinessUnit | null> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
@@ -44,7 +42,7 @@ export class AdminRepository {
     return await this.prisma.businessUnit.update({
       where: { id: business_id },
       data: {
-        ...businessData,
+        ...businessInput,
         updated_by: requestContext.user_id,
       },
     });
@@ -86,7 +84,7 @@ export class AdminRepository {
   ///////////////////////////////////////////////////////////////////////
   // DEPARTMENT
   ///////////////////////////////////////////////////////////////////////
-  async findDepartments(): Promise<DepartmentData[]> {
+  async findDepartments(): Promise<DepartmentRecord[]> {
     return await this.prisma.department.findMany({
       include: {
         sectors: true,
@@ -94,22 +92,20 @@ export class AdminRepository {
       },
     });
   }
-  async createDepartment(data: CreateDepartmentData): Promise<Department> {
+  async createDepartment(
+    departmentInput: CreateDepartmentInput,
+  ): Promise<Department> {
     return await this.prisma.department.create({
-      data: {
-        title: data.title,
-        url: data.url,
-        icon: data.icon,
-      },
+      data: { ...departmentInput },
     });
   }
 
+  ///////////////////////////////////////////////////////////////////////
   // SECTOR
-  async createSector(data: CreateSectorData) {
+  ///////////////////////////////////////////////////////////////////////
+  async createSector(sectorInput: CreateSectorInput) {
     return await this.prisma.sector.create({
-      data: {
-        ...data,
-      },
+      data: { ...sectorInput },
     });
   }
 }

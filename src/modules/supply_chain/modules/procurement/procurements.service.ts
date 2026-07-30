@@ -5,9 +5,10 @@ import {
 } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
+
 import { ProjectService } from "@/modules/facilities/projects/project.service";
 
-import { UnitOfWorkService } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 import { ProcurementItemService } from "./procurements-item.service";
 
 import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
@@ -25,7 +26,7 @@ export class ProcurementService {
     @Inject("ProcurementRepository")
     private readonly procurementRepository: ProcurementPrismaRepository,
     private readonly procurementItemService: ProcurementItemService,
-    private readonly unitOfWork: UnitOfWorkService,
+    private readonly db: DatabaseService,
     private readonly projectService: ProjectService,
   ) {}
 
@@ -191,7 +192,7 @@ export class ProcurementService {
         );
       }
 
-      await this.unitOfWork.runInTransaction(async () => {
+      await this.db.client.runInTransaction(async () => {
         const promises: Promise<any>[] = [
           this.procurementRepository.updateProcurement(
             procurementId,

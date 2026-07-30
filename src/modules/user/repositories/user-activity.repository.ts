@@ -1,22 +1,22 @@
 import { Injectable } from "@nestjs/common";
 
-import { PrismaService } from "@/database/prisma/prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 // import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { UserActivityRecord } from "../types/record/find-user-activities-by-email.record";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 @Injectable()
 export class UserActivityRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
   async findUserActivities(
     user_id: number,
   ): Promise<UserActivityRecord[] | null> {
-    return await this.prisma.userActivity.findMany({
+    return await this.db.client.userActivity.findMany({
       where: { user_id },
       include: {
         department: true,

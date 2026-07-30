@@ -1,4 +1,3 @@
-import { UnitOfWork } from "./common/infrastructure/unit-of-work/interfaces/unit-of-work.interface";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { CacheModule } from "@nestjs/cache-manager";
 
@@ -6,7 +5,6 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
 import { AuthModule } from "@modules/auth/auth.module";
-import { PrismaModule } from "@database/prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
 
 import { FileModule } from "@common/modules/file/file.module";
@@ -20,8 +18,8 @@ import { PeopleModule } from "@modules/people/people.module";
 import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
-import { SupplyChainModule } from "@/modules/supply_chain/supply-chain.module";
-import { UnitOfWorkModule } from "./common/infrastructure/unit-of-work/unit-of-work.module";
+import { SupplyChainModule } from "@modules/supply_chain/supply-chain.module";
+import { DatabaseModule } from "@common/infrastructure/database/prisma/database.module";
 
 @Module({
   imports: [
@@ -31,8 +29,7 @@ import { UnitOfWorkModule } from "./common/infrastructure/unit-of-work/unit-of-w
     CacheModule.register({ isGlobal: true }),
     LocalStorageContextModule,
     MulterConfigModule,
-    PrismaModule,
-    UnitOfWorkModule,
+    DatabaseModule,
     FileModule,
     AdminModule,
     AuthModule,

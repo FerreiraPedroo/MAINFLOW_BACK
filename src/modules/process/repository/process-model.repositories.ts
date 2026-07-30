@@ -1,4 +1,4 @@
-import { PrismaService } from "@/database/prisma/prisma.service";
+import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
 import { ProcessModelData } from "../data/process-model.data";
 import { CreateProcessModelData } from "../data/create-process-model-data";

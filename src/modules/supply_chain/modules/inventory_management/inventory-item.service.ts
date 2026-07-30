@@ -5,7 +5,6 @@ import {
 } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { UnitOfWorkService } from "@/common/infrastructure/unit-of-work/unit-of-work.infrastructure";
 import { InventoryItemPrismaRepository } from "./repositories/inventory-item.prisma.repository";
 
 import { GetInventoryItemRecord } from "./types/record/get-inventory-item.record";
@@ -14,13 +13,14 @@ import type {
   CreateInventoryItemInput,
   UpdateInventoryItemInput,
 } from "./types";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 @Injectable()
 export class InventoryItemService {
   constructor(
     @Inject("InventoryItemRepository")
     private readonly inventoryItemRepository: InventoryItemPrismaRepository,
-    private readonly unitOfWork: UnitOfWorkService,
+    private readonly db: DatabaseService,
   ) {}
 
   private prismaErrors(error: any): never {

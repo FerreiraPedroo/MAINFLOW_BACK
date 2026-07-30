@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CostCenter } from "@prisma/client";
 
-import { PrismaService } from "@/database/prisma/prisma.service";
+import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
 
 import { CreateCostCenterData } from "../types/data/create-cost-center.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";

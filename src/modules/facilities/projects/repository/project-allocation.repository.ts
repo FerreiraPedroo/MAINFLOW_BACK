@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ProjectAllocation } from "@prisma/client";
 
-import { PrismaService } from "@/database/prisma/prisma.service";
+import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";

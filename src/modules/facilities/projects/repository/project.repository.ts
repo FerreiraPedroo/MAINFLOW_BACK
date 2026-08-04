@@ -12,9 +12,6 @@ import {
   UpdateProjectInput,
 } from "../types";
 
-/**
- * A definição do BUSINESS_UNIT_ID é feito no repositório.
- */
 @Injectable()
 export class ProjectRepository {
   constructor(

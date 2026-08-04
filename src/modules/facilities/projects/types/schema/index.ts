@@ -7,3 +7,5 @@ export * from "./create-allocate-people-project.schema";
 export * from "./get-allocate-month-project.schema";
 export * from "./update-allocate-Day-project.schema";
 export * from "./delete-allocate-day-project.schema";
+
+export * from "./upload-project-document.schema";

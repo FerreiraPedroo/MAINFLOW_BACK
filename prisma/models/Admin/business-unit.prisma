@@ -26,6 +26,7 @@ model BusinessUnit {
   // FACILITIES
   projects            Project[]
   project_allocations ProjectAllocation[]
+  project_documents   ProjectDocument[]
 
   // PEOPLE
   peoples     People[]

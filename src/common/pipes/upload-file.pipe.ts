@@ -16,9 +16,9 @@ const FILE_TYPES = {
 export class UploadFilePipe implements PipeTransform {
   constructor(
     private readonly config: {
-      fileType: keyof typeof FILE_TYPES;
-      fileSize: number;
-      fileRequired: boolean;
+      fileType?: keyof typeof FILE_TYPES;
+      fileSize?: number;
+      fileRequired?: boolean;
     },
   ) {}
 
@@ -32,14 +32,14 @@ export class UploadFilePipe implements PipeTransform {
     if (!file) return file;
 
     // 2. Valida o tipo do arquivo (mimetype)
-    const regex = FILE_TYPES[this.config.fileType];
+    const regex = FILE_TYPES[this.config.fileType!];
     if (!regex.test(file.mimetype)) {
       throw new BadRequestException("O tipo do arquivo não é válido.");
     }
 
     // 3. Valida o tamanho máximo
-    if (file.size > this.config.fileSize) {
-      const maxKb = (this.config.fileSize / 1024).toFixed(0);
+    if (file.size > this.config.fileSize!) {
+      const maxKb = (this.config.fileSize! / 1024).toFixed(0);
       throw new BadRequestException(
         `Tamanho do arquivo excedido, limite máximo: ${maxKb}KB`,
       );
@@ -51,7 +51,7 @@ export class UploadFilePipe implements PipeTransform {
 
 // Helper para manter exatamente a mesma sintaxe de chamada que você já usa no Controller
 export const uploadFilePipe = (options: {
-  fileType: keyof typeof FILE_TYPES;
-  fileSize: number;
-  fileRequired: boolean;
+  fileType?: keyof typeof FILE_TYPES;
+  fileSize?: number;
+  fileRequired?: boolean;
 }) => new UploadFilePipe(options);

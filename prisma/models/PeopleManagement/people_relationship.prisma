@@ -1,0 +1,26 @@
+model PeopleRelationship {
+  id                Int       @id   @default(autoincrement())
+  people_id         Int
+  people            People    @relation(fields:[people_id],references: [id])
+  kinship           String    // Parentesco
+  related_person_id Int?
+  related_person    People?    @relation(fields:[related_person_id],references: [id])
+
+  name              String?
+  photo             String?
+  start_date        DateTime?
+  end_date          DateTime?
+  comment           String
+
+
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
+
+}

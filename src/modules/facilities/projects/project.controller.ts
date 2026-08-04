@@ -6,7 +6,10 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 import { ProjectService } from "./project.service";
 import { ProjectAllocationService } from "./project-allocation.service";
@@ -19,6 +22,8 @@ import type {
   UpdateProjectDto,
   CreateAllocatePeopleToProjectDto,
   UpdateAllocateDayProjectDto,
+  UploadProjectDocumentFileDto,
+  UploadProjectDocumentDto,
 } from "./types";
 import {
   FindProjectsOutputSchema,
@@ -36,6 +41,8 @@ import {
   UpdateAllocateDayProjectOutputSchema,
   DeleteAllocateDayProjectInputSchema,
   DeleteAllocateDayProjectOutputSchema,
+  UploadProjectDocumentInputSchema,
+  UploadProjectDocumentOutputSchema,
 } from "./types";
 
 @Controller("facilities/projects")
@@ -83,6 +90,7 @@ export class ProjectController {
 
   /////////////////////////////////////////////////////////////////////////////////
   // ALLOCATIONS
+  /////////////////////////////////////////////////////////////////////////////////
   @Post("allocate")
   @ValidateService({
     input: CreateAllocatePeopleToInputSchema,
@@ -131,5 +139,22 @@ export class ProjectController {
   })
   async deleteAlocallocateDay(@Param("allocateId") allocateId: number) {
     return this.projectAllocationService.deleteAlocallocateDay(allocateId);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // DOCUMENTS
+  /////////////////////////////////////////////////////////////////////////////////
+  @Post("documents")
+  @UseInterceptors(FileInterceptor("document"))
+  @ValidateService({
+    input: UploadProjectDocumentInputSchema,
+    output: UploadProjectDocumentOutputSchema,
+  })
+  async uploadDocument(
+    @UploadedFile()
+    document: UploadProjectDocumentFileDto,
+    @Body() request: UploadProjectDocumentDto,
+  ) {
+    return await this.projectService.uploadDocument(document, request);
   }
 }

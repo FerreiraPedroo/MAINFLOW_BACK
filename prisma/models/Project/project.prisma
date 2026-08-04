@@ -17,6 +17,7 @@ model Project {
   
   procurements        Procurement[]
   project_allocations ProjectAllocation[]
+  project_documents   ProjectDocument[]
   
   @@unique([business_unit_id, title])
 

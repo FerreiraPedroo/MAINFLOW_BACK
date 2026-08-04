@@ -1,15 +1,24 @@
+import { FileService } from "@common/modules/file/file.service";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { PeopleRepository } from "./repository/people.repository";
+import { PeopleRelationshipRepository, PeopleRepository } from "../repository";
 
-import { CreatePeopleRequest } from "./types/dto/create-people-request.dto";
-import { UpdatePeopleRequest } from "./types/dto/update-people-request.dto";
+import { CreatePeopleRequest } from "../types/dto/create-people-request.dto";
+import { UpdatePeopleRequest } from "../types/dto/update-people-request.dto";
 import { People } from "@prisma/client";
+import {
+  CreatePeopleRelationShipFileInput,
+  CreatePeopleRelationShipInput,
+} from "../types";
 
 @Injectable()
 export class PeopleService {
-  constructor(private peopleRepository: PeopleRepository) {}
+  constructor(
+    private readonly peopleRepository: PeopleRepository,
+    private readonly peopleRelationshipRepository: PeopleRelationshipRepository,
+    private readonly fileService: FileService,
+  ) {}
 
   private prismaErrors(error: any): never {
     if (error instanceof PrismaClientKnownRequestError) {
@@ -51,6 +60,7 @@ export class PeopleService {
 
   ////////////////////////////////////////////////////////////////////////////////
   // PEOPLE
+  ////////////////////////////////////////////////////////////////////////////////
   async getPeople(peopleId: number) {
     let peopleRecord: People | null;
     try {
@@ -88,35 +98,9 @@ export class PeopleService {
       this.prismaErrors(error);
     }
   }
-  async createPeople(request: CreatePeopleRequest) {
-    const peopleData = {
-      name: request.name,
-      birth_date: request.birth_date,
-      status: request.status,
-      ...(request.registration_number && {
-        registration_number: request.registration_number,
-      }),
-      ...(request.photo && { photo: request.photo }),
-      ...(request.sex && { sex: request.sex }),
-      ...(request.hire_date && { hire_date: request.hire_date }),
-      ...(request.termination_date && {
-        termination_date: request.termination_date,
-      }),
-    };
-
+  async createPeople(peopleInput: CreatePeopleRequest) {
     try {
-      const peopleRecord = await this.peopleRepository.createPeople(peopleData);
-
-      return {
-        id: peopleRecord.id,
-        name: peopleRecord.name,
-        registration_number: peopleRecord.registration_number,
-        photo: peopleRecord.photo,
-        sex: peopleRecord.sex,
-        status: peopleRecord.status,
-        hire_date: peopleRecord.hire_date,
-        termination_date: peopleRecord.termination_date,
-      };
+      return await this.peopleRepository.createPeople(peopleInput);
     } catch (error) {
       this.prismaErrors(error);
     }
@@ -154,6 +138,56 @@ export class PeopleService {
         terminationDate: peopleRecord.termination_date,
       };
     } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // PEOPLE > RELATIONSHIP
+  ////////////////////////////////////////////////////////////////////////////////
+  async createPeopleRelationship(
+    photo: CreatePeopleRelationShipFileInput,
+    peopleRelationshipInput: CreatePeopleRelationShipInput,
+  ) {
+    let photoUrl: string | null = null;
+    if (photo) {
+      photoUrl = await this.fileService.fileSave(photo, "people/relationship");
+    }
+
+    // Se não tiver o id da pessoa do relacionamento, tem que ter o name e o grau de relacionamento.
+    if (
+      !peopleRelationshipInput.related_person_id &&
+      (!peopleRelationshipInput.name || !peopleRelationshipInput.kinship)
+    ) {
+      throw new UnprocessableEntityException(
+        "Falta ou o nome ou o grau de relacionamento.",
+      );
+    }
+
+    try {
+      const peopleRelationshipData = {
+        ...peopleRelationshipInput,
+        ...(photoUrl && { photo: photoUrl }),
+      };
+
+      const peopleRelationshipRecord =
+        await this.peopleRelationshipRepository.createPeopleRelationship(
+          peopleRelationshipData,
+        );
+
+      if (photo) {
+        await this.fileService.removeFile(photo.path);
+      }
+
+      return peopleRelationshipRecord;
+    } catch (error) {
+      if (photoUrl) {
+        await this.fileService.removeFile(photoUrl);
+      }
+      if (photo) {
+        await this.fileService.removeFile(photo.path);
+      }
+
       this.prismaErrors(error);
     }
   }

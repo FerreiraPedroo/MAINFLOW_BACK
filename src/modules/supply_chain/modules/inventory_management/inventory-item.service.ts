@@ -1,11 +1,7 @@
-import {
-  Inject,
-  Injectable,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { InventoryItemPrismaRepository } from "./repositories/inventory-item.prisma.repository";
+import { InventoryItemRepository } from "./repositories/inventory-item.repository";
 
 import { GetInventoryItemRecord } from "./types/record/get-inventory-item.record";
 
@@ -18,8 +14,7 @@ import { DatabaseService } from "@/common/infrastructure/database/prisma/databas
 @Injectable()
 export class InventoryItemService {
   constructor(
-    @Inject("InventoryItemRepository")
-    private readonly inventoryItemRepository: InventoryItemPrismaRepository,
+    private readonly inventoryItemRepository: InventoryItemRepository,
     private readonly db: DatabaseService,
   ) {}
 
@@ -60,19 +55,19 @@ export class InventoryItemService {
     }
   }
 
-  async getInventory(id: number) {
-    let InventoryRecord: GetInventoryItemRecord;
+  async getInventoryItem(id: number) {
+    let inventoryRecord: GetInventoryItemRecord;
     try {
-      InventoryRecord = await this.inventoryItemRepository.getInventoryItem(id);
+      inventoryRecord = await this.inventoryItemRepository.getInventoryItem(id);
     } catch (error) {
       this.prismaErrors(error);
     }
 
-    if (!InventoryRecord) {
+    if (!inventoryRecord) {
       throw new UnprocessableEntityException("Requisição não encontrada.");
     }
 
-    return InventoryRecord;
+    return inventoryRecord;
   }
   async findInventoryItems() {
     try {
@@ -81,7 +76,6 @@ export class InventoryItemService {
       this.prismaErrors(error);
     }
   }
-
   async createInventoryItem(inventoryItemInput: CreateInventoryItemInput) {
     try {
       return this.inventoryItemRepository.createInventoryItem(

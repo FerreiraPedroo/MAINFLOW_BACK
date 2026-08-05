@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { Procurement, ProcurementItem } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
@@ -12,13 +12,12 @@ import {
   CreateProcurementInput,
   UpdateProcurementInput,
   GetProcurementRecord,
-  ProcurementRepository,
 } from "../types";
 
 @Injectable()
-export class ProcurementPrismaRepository implements ProcurementRepository {
+export class ProcurementRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
@@ -26,7 +25,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.procurement.findUnique({
+    return await this.db.client.procurement.findUnique({
       where: {
         id: procurementId,
         business_unit_id: Number(requestContext.business_unit_id),
@@ -50,7 +49,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.procurement.findMany({
+    return await this.db.client.procurement.findMany({
       where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
@@ -66,11 +65,11 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
       created_by: requestContext.user_id,
     };
 
-    const xprisma = this.prisma.$extends((client) => {
+    const xprisma = this.db.client.$extends((client: any) => {
       return client.$extends({
         query: {
           procurement: {
-            async create({ args, query }) {
+            async create({ args, query }: any) {
               let retry = 15;
 
               while (retry > 0) {
@@ -143,7 +142,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.procurementItem.findMany({
+    return await this.db.client.procurementItem.findMany({
       where: {
         procurement_id: Number(procurementId),
         business_unit_id: Number(requestContext.business_unit_id),
@@ -157,9 +156,7 @@ export class ProcurementPrismaRepository implements ProcurementRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    const client = requestContext.tx || this.prisma;
-
-    return await client.procurement.update({
+    return await this.db.client.procurement.update({
       where: {
         id: Number(procurementId),
         business_unit_id: Number(requestContext.business_unit_id),

@@ -53,7 +53,7 @@ export class CostCenterService {
   ): Promise<FindCostCenterResponseDto[]> {
     const result = await this.costCenterRepository.findAll();
 
-    const costCenterList = result.map((cost) => ({
+    const costCenterList = result.map((cost: any) => ({
       id: cost.id,
       title: cost.title,
       status: cost.status,

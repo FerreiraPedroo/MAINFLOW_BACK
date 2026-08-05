@@ -8,7 +8,7 @@ import { ProcurementItem } from "@prisma/client";
 
 import { ValidateService } from "@/common/decorators/validate-service.decorator";
 
-import { ProcurementItemPrismaRepository } from "./repositories/procurement-item.prisma.repository";
+import { ProcurementItemPrismaRepository } from "./repositories/procurement-item.repository";
 
 import type {
   CreateProcurementItemsInput,

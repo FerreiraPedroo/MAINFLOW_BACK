@@ -7,8 +7,8 @@ const CreatePeopleRelationship = z.object({
   kinship: z.string(),
   related_person_id: z.coerce.number().optional(),
   name: z.string().optional(),
-  start_date: z.date().optional(),
-  end_date: z.date().optional(),
+  start_date: z.coerce.date().optional(),
+  end_date: z.coerce.date().optional(),
   comment: z.string().optional(),
 });
 export const CreatePeopleRelationshipSchema = z.tuple([

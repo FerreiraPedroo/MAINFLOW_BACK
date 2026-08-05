@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { BusinessUnit, BusinessUnitActivity, Department } from "@prisma/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class AdminRepository {
   constructor(
-    private prisma: PrismaService,
+    private readonly db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -25,10 +25,10 @@ export class AdminRepository {
   // BUSINESS
   ///////////////////////////////////////////////////////////////////////
   async findBusiness(): Promise<BusinessUnit[]> {
-    return await this.prisma.businessUnit.findMany();
+    return await this.db.client.businessUnit.findMany();
   }
   async getBusinessById(business_id: number): Promise<BusinessUnit | null> {
-    return await this.prisma.businessUnit.findUnique({
+    return await this.db.client.businessUnit.findUnique({
       where: { id: business_id },
     });
   }
@@ -39,7 +39,7 @@ export class AdminRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.businessUnit.update({
+    return await this.db.client.businessUnit.update({
       where: { id: business_id },
       data: {
         ...businessInput,
@@ -50,7 +50,7 @@ export class AdminRepository {
   async findBusinessActivities(
     business_id: number,
   ): Promise<FindBusinessActivitiesRecord[]> {
-    return await this.prisma.businessUnitActivity.findMany({
+    return await this.db.client.businessUnitActivity.findMany({
       where: { business_unit_id: business_id },
       include: {
         department: true,
@@ -64,7 +64,7 @@ export class AdminRepository {
     activity_id: number,
     businessActivity: AddActivityToBusinessInput,
   ): Promise<BusinessUnitActivity> {
-    return await this.prisma.businessUnitActivity.create({
+    return await this.db.client.businessUnitActivity.create({
       data: {
         business_unit_id: business_id,
         activity_id,
@@ -73,7 +73,7 @@ export class AdminRepository {
     });
   }
   async removeActivityFromBusiness(business_id: number, activity_id: number) {
-    return await this.prisma.businessUnitActivity.delete({
+    return await this.db.client.businessUnitActivity.delete({
       where: {
         id: activity_id,
         business_unit_id: business_id,
@@ -85,7 +85,7 @@ export class AdminRepository {
   // DEPARTMENT
   ///////////////////////////////////////////////////////////////////////
   async findDepartments(): Promise<DepartmentRecord[]> {
-    return await this.prisma.department.findMany({
+    return await this.db.client.department.findMany({
       include: {
         sectors: true,
         activities: true,
@@ -95,7 +95,7 @@ export class AdminRepository {
   async createDepartment(
     departmentInput: CreateDepartmentInput,
   ): Promise<Department> {
-    return await this.prisma.department.create({
+    return await this.db.client.department.create({
       data: { ...departmentInput },
     });
   }
@@ -104,7 +104,7 @@ export class AdminRepository {
   // SECTOR
   ///////////////////////////////////////////////////////////////////////
   async createSector(sectorInput: CreateSectorInput) {
-    return await this.prisma.sector.create({
+    return await this.db.client.sector.create({
       data: { ...sectorInput },
     });
   }

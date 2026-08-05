@@ -7,36 +7,37 @@ model BusinessUnit {
   business_unit_activity BusinessUnitActivity[]
 
   // ADMIN
-  users           User[]
-  group_users     GroupUser[]
-  user_sessions   UserSession[]
-  user_activities UserActivity[]
+  users                 User[]
+  group_users           GroupUser[]
+  user_sessions         UserSession[]
+  user_activities       UserActivity[]
 
   // MANAGEMENT
-  cost_centers      CostCenter[]
-  departments       Department[]
-  process_instances ProcessInstance[]
+  cost_centers          CostCenter[]
+  departments           Department[]
+  process_instances     ProcessInstance[]
 
-  localizations Localization[]
-  space_type    SpaceType[]
-  address       Address[]
-  block         Block[]
-  floor         Floor[]
+  localizations         Localization[]
+  space_type            SpaceType[]
+  address               Address[]
+  block                 Block[]
+  floor                 Floor[]
 
   // FACILITIES
-  projects            Project[]
-  project_allocations ProjectAllocation[]
-  project_documents   ProjectDocument[]
+  projects              Project[]
+  project_allocations   ProjectAllocation[]
+  project_documents     ProjectDocument[]
 
   // PEOPLE
-  peoples     People[]
-  allocations Allocation[]
+  peoples               People[]
+  allocations           Allocation[]
+  people_relationships  PeopleRelationship[]
 
   // SUPPLY-CHAIN
-  procurements     Procurement[]
-  procurementItems ProcurementItem[]
-  suppliers        Supplier[]
-  inventory_items  InventoryItem[]
+  procurements          Procurement[]
+  procurementItems      ProcurementItem[]
+  suppliers             Supplier[]
+  inventory_items       InventoryItem[]
 
   //SOFT DELETE
   created_at DateTime @default(now())

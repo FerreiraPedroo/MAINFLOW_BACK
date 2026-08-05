@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Project } from "@prisma/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
@@ -15,7 +15,7 @@ import {
 @Injectable()
 export class ProjectRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
@@ -23,7 +23,7 @@ export class ProjectRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.project.findUnique({
+    return await this.db.client.project.findUnique({
       where: {
         id: id,
         business_unit_id: requestContext.business_unit_id,
@@ -43,7 +43,7 @@ export class ProjectRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.project.findMany({
+    return await this.db.client.project.findMany({
       where: {
         business_unit_id: requestContext.business_unit_id,
       },
@@ -53,7 +53,7 @@ export class ProjectRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.project.create({
+    return await this.db.client.project.create({
       data: {
         ...projectData,
         business_unit_id: requestContext.business_unit_id,
@@ -68,7 +68,7 @@ export class ProjectRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return this.prisma.project.update({
+    return await this.db.client.project.update({
       where: {
         id: projectId,
         business_unit_id: requestContext.business_unit_id,
@@ -83,7 +83,7 @@ export class ProjectRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    await this.prisma.project.update({
+    await this.db.client.project.update({
       where: {
         id: projectId,
         business_unit_id: requestContext.business_unit_id,

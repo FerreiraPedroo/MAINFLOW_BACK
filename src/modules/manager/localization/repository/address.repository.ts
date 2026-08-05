@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { Address } from "@prisma/client";
 import { CreateAddressData } from "../types/data/create-address.data";
@@ -12,7 +12,7 @@ import { UpdateAddressData } from "../types/data/update-address.data";
 @Injectable()
 export class AddressRepository {
   constructor(
-    private prisma: PrismaService,
+    private db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -20,7 +20,7 @@ export class AddressRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.address.findMany({
+    return await this.db.client.address.findMany({
       where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
@@ -28,7 +28,7 @@ export class AddressRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.address.create({
+    return await this.db.client.address.create({
       data: {
         ...addressData,
         business_unit_id: Number(requestContext.business_unit_id),
@@ -42,7 +42,7 @@ export class AddressRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.address.update({
+    return await this.db.client.address.update({
       where: {
         id: Number(addressId),
         business_unit_id: Number(requestContext.business_unit_id),

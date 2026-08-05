@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ProjectDocument } from "@prisma/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
@@ -11,7 +11,7 @@ import { UploadProjectDocumentData } from "../types";
 @Injectable()
 export class ProjectDocumentRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
@@ -21,7 +21,7 @@ export class ProjectDocumentRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectDocument.create({
+    return await this.db.client.projectDocument.create({
       data: {
         ...documentData,
         business_unit_id: requestContext.business_unit_id,
@@ -33,7 +33,7 @@ export class ProjectDocumentRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectDocument.delete({
+    return await this.db.client.projectDocument.delete({
       where: {
         id: documentId,
         business_unit_id: requestContext.business_unit_id,

@@ -1,33 +1,27 @@
-import {
-  Inject,
-  Injectable,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { ProjectService } from "@/modules/facilities/projects/project.service";
-
 import { ProcurementItemService } from "./procurements-item.service";
 
-import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
+import { ProcurementRepository } from "../repositories";
 
 import type {
-  CreateProcurementInput,
   GetProcurementInput,
-  UpdateProcurementInput,
   GetProcurementRecord,
-} from "./types";
+  CreateProcurementInput,
+  UpdateProcurementInput,
+} from "../types";
 
 @Injectable()
 export class ProcurementService {
   constructor(
-    @Inject("ProcurementRepository")
-    private readonly procurementRepository: ProcurementPrismaRepository,
-    private readonly procurementItemService: ProcurementItemService,
     private readonly db: DatabaseService,
     private readonly projectService: ProjectService,
+    private readonly procurementRepository: ProcurementRepository,
+    private readonly procurementItemService: ProcurementItemService,
   ) {}
 
   private prismaErrors(error: any): never {

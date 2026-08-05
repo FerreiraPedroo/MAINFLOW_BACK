@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { CreateLocalizationData } from "../types/data/create-localization.data";
 import { LocalizationRecord } from "../types/record/localization.record";
@@ -12,7 +12,7 @@ import { UpdateLocalizationData } from "../types/data/update-localization.data";
 @Injectable()
 export class LocalizationRepository {
   constructor(
-    private prisma: PrismaService,
+    private db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -20,7 +20,7 @@ export class LocalizationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.localization.findMany({
+    return await this.db.client.localization.findMany({
       where: { business_unit_id: Number(requestContext.business_unit_id) },
       select: {
         id: true,
@@ -44,7 +44,7 @@ export class LocalizationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.localization.create({
+    return await this.db.client.localization.create({
       data: {
         ...localizationData,
         business_unit_id: Number(requestContext.business_unit_id),
@@ -73,7 +73,7 @@ export class LocalizationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.localization.update({
+    return await this.db.client.localization.update({
       where: {
         id: Number(localizationId),
         business_unit_id: Number(requestContext.business_unit_id),

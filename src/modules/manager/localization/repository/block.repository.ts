@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { Block } from "@prisma/client";
 import { CreateBlockData } from "../types/data/create-block.data";
@@ -11,7 +11,7 @@ import { CreateBlockData } from "../types/data/create-block.data";
 @Injectable()
 export class BlockRepository {
   constructor(
-    private prisma: PrismaService,
+    private db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -19,7 +19,7 @@ export class BlockRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.block.findMany({
+    return await this.db.client.block.findMany({
       where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
@@ -27,7 +27,7 @@ export class BlockRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.block.create({
+    return await this.db.client.block.create({
       data: {
         title: blockData.title,
         status: blockData.status.toUpperCase(),
@@ -40,7 +40,7 @@ export class BlockRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.block.update({
+    return await this.db.client.block.update({
       where: {
         id: Number(blockId),
         business_unit_id: Number(requestContext.business_unit_id),

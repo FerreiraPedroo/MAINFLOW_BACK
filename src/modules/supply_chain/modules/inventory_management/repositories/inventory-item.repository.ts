@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 // import { Inventory, InventoryItem } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
@@ -16,9 +16,9 @@ import {
 import { InventoryItem } from "@prisma/client";
 
 @Injectable()
-export class InventoryItemPrismaRepository {
+export class InventoryItemRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
@@ -28,7 +28,7 @@ export class InventoryItemPrismaRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.inventoryItem.findUnique({
+    return await this.db.client.inventoryItem.findUnique({
       where: {
         id: inventoryItemId,
         business_unit_id: requestContext.business_unit_id,
@@ -42,7 +42,7 @@ export class InventoryItemPrismaRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.inventoryItem.findMany({
+    return await this.db.client.inventoryItem.findMany({
       where: { business_unit_id: requestContext.business_unit_id },
     });
   }
@@ -58,11 +58,11 @@ export class InventoryItemPrismaRepository {
       created_by: requestContext.user_id,
     };
 
-    const xprisma = this.prisma.$extends((client) => {
+    const xprisma = this.db.client.$extends((client: any) => {
       return client.$extends({
         query: {
           inventoryItem: {
-            async create({ args, query }) {
+            async create({ args, query }: any) {
               let retry = 15;
 
               while (retry > 0) {
@@ -138,7 +138,7 @@ export class InventoryItemPrismaRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.inventoryItem.update({
+    return await this.db.client.inventoryItem.update({
       where: {
         id: inventoryId,
         business_unit_id: requestContext.business_unit_id,

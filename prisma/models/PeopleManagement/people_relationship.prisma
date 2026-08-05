@@ -1,10 +1,10 @@
 model PeopleRelationship {
   id                Int       @id   @default(autoincrement())
   people_id         Int
-  people            People    @relation(fields:[people_id],references: [id])
+  people            People    @relation("Person",fields:[people_id],references: [id])
   kinship           String    // Parentesco
   related_person_id Int?
-  related_person    People?    @relation(fields:[related_person_id],references: [id])
+  related_person    People?    @relation("Relative", fields:[related_person_id],references: [id])
 
   name              String?
   photo             String?
@@ -12,7 +12,9 @@ model PeopleRelationship {
   end_date          DateTime?
   comment           String
 
-
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
   //SOFT DELETE
   created_at            DateTime      @default(now())
   created_by            Int?

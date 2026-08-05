@@ -5,11 +5,13 @@ import { ProjectModule } from "@/modules/facilities/projects/project.module";
 
 import { ProcurementController } from "./procurement.controller";
 
-import { ProcurementService } from "./procurements.service";
+import { ProcurementService } from "./services/procurements.service";
 import { ProcurementItemService } from "./procurements-item.service";
 
-import { ProcurementPrismaRepository } from "./repositories/procurement.prisma.repository";
-import { ProcurementItemPrismaRepository } from "./repositories/procurement-item.prisma.repository";
+import {
+  ProcurementItemRepository,
+  ProcurementRepository,
+} from "./repositories";
 
 @Module({
   imports: [LocalStorageContextModule, ProjectModule],
@@ -17,14 +19,8 @@ import { ProcurementItemPrismaRepository } from "./repositories/procurement-item
   providers: [
     ProcurementService,
     ProcurementItemService,
-    {
-      provide: "ProcurementRepository",
-      useClass: ProcurementPrismaRepository,
-    },
-    {
-      provide: "ProcurementItemRepository",
-      useClass: ProcurementItemPrismaRepository,
-    },
+    ProcurementRepository,
+    ProcurementItemRepository,
   ],
 })
 export class ProcurementModule {}

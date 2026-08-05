@@ -33,7 +33,7 @@ export class InventoryController {
     output: GetInventoryItemOutputSchema,
   })
   async getInventoryItem(@Param("id") id: number) {
-    return await this.inventoryItemService.getInventory(id);
+    return await this.inventoryItemService.getInventoryItem(id);
   }
 
   @Post()

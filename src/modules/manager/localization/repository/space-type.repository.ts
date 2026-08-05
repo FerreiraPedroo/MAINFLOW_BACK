@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { SpaceType } from "@prisma/client";
 import { CreateSpaceTypeData } from "../types/data/space-type-block.data";
@@ -11,7 +11,7 @@ import { CreateSpaceTypeData } from "../types/data/space-type-block.data";
 @Injectable()
 export class SpaceTypeRepository {
   constructor(
-    private prisma: PrismaService,
+    private db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -19,7 +19,7 @@ export class SpaceTypeRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.spaceType.findMany({
+    return await this.db.client.spaceType.findMany({
       where: { business_unit_id: Number(requestContext.business_unit_id) },
     });
   }
@@ -29,7 +29,7 @@ export class SpaceTypeRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.spaceType.create({
+    return await this.db.client.spaceType.create({
       data: {
         title: spaceTypeData.title,
         status: spaceTypeData.status.toUpperCase(),
@@ -45,7 +45,7 @@ export class SpaceTypeRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.spaceType.update({
+    return await this.db.client.spaceType.update({
       where: {
         id: Number(spaceTypeId),
         business_unit_id: Number(requestContext.business_unit_id),

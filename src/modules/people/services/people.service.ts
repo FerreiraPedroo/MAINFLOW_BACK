@@ -191,4 +191,24 @@ export class PeopleService {
       this.prismaErrors(error);
     }
   }
+  async deletePeopleRelationship(relationshipId: number) {
+    try {
+      await this.peopleRelationshipRepository.deletePeopleRelationship(
+        relationshipId,
+      );
+
+      return "OK";
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async getPeopleRelationship(peopleId: number) {
+    try {
+      return await this.peopleRelationshipRepository.getPeopleRelationship(
+        peopleId,
+      );
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
 }

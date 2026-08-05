@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -20,7 +21,12 @@ import type {
   CreatePeopleRelationshipFileDto,
   CreatePeopleRelationshipDto,
 } from "./types";
-import { CreatePeopleRelationshipSchema } from "./types";
+import {
+  CreatePeopleRelationshipSchema,
+  DeletePeopleRelationshipSchema,
+  GetPeopleRelationshipInputSchema,
+  GetPeopleRelationshipOutputSchema,
+} from "./types";
 
 @Controller("peoples")
 export class Peoplecontroller {
@@ -47,7 +53,7 @@ export class Peoplecontroller {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // PARENTS
+  // RELATIONSHIP
   //////////////////////////////////////////////////////////////////////
   @Post("relationship")
   @UseInterceptors(FileInterceptor("photo"))
@@ -63,5 +69,17 @@ export class Peoplecontroller {
   }
 
   @Delete("relationship/:relation_id")
-  @ValidateService()
+  @ValidateService({ input: DeletePeopleRelationshipSchema })
+  async deletePeopleRealtionship(@Param("relation_id") relationshipId: number) {
+    return await this.peopleService.deletePeopleRelationship(relationshipId);
+  }
+
+  @Get(":relationshipId/relationship")
+  @ValidateService({
+    input: GetPeopleRelationshipInputSchema,
+    output: GetPeopleRelationshipOutputSchema,
+  })
+  async getPeopleRelationship(@Param("relationshipId") relationshipId: number) {
+    return this.peopleService.getPeopleRelationship(relationshipId);
+  }
 }

@@ -1,18 +1,22 @@
 import { Injectable } from "@nestjs/common";
-import { People } from "@prisma/client";
+import { People, PeopleRelationship } from "@prisma/client";
 
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
-import { CreatePeopleRelationshipData } from "../types";
+import {
+  CreatePeopleRelationshipData,
+  GetPeopleRelationshipRecord,
+} from "../types";
+import { includes } from "zod";
 
 @Injectable()
 export class PeopleRelationshipRepository {
   constructor(
     private readonly db: DatabaseService,
-    private requestContext: LocalStorageContextService,
+    private readonly requestContext: LocalStorageContextService,
   ) {}
 
   async createPeopleRelationship(
@@ -29,26 +33,36 @@ export class PeopleRelationshipRepository {
       },
     });
   }
+  async deletePeopleRelationship(
+    relationshipId: number,
+  ): Promise<PeopleRelationship> {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
-  // async getPeople(peopleId: number): Promise<People | null> {
-  //   const requestContext =
-  //     this.requestContext.getStore() as LocalStorageContextData;
+    return await this.db.client.peopleRelationship.delete({
+      where: {
+        id: relationshipId,
+        business_unit_id: requestContext.business_unit_id,
+      },
+    });
+  }
+  async getPeopleRelationship(
+    peopleId: number,
+  ): Promise<GetPeopleRelationshipRecord[]> {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
 
-  //   return await this.prisma.people.findUnique({
-  //     where: {
-  //       id: Number(peopleId),
-  //       business_unit_id: Number(requestContext.business_unit_id),
-  //     },
-  //   });
-  // }
-  // async findPeoples(): Promise<People[]> {
-  //   const requestContext =
-  //     this.requestContext.getStore() as LocalStorageContextData;
-
-  //   return await this.prisma.people.findMany({
-  //     where: { business_unit_id: Number(requestContext.business_unit_id) },
-  //   });
-  // }
+    return await this.db.client.peopleRelationship.findMany({
+      where: {
+        people_id: peopleId,
+        business_unit_id: requestContext.business_unit_id,
+      },
+      include: {
+        people: true,
+        related_person: true,
+      },
+    });
+  }
   // async updatePeople(
   //   peopleId: number,
   //   peopleData: UpdatePeopleData,
@@ -65,6 +79,15 @@ export class PeopleRelationshipRepository {
   //       ...peopleData,
   //       updated_by: Number(requestContext.user_id),
   //     },
+  //   });
+  // }
+
+  // async findPeoples(): Promise<People[]> {
+  //   const requestContext =
+  //     this.requestContext.getStore() as LocalStorageContextData;
+
+  //   return await this.prisma.people.findMany({
+  //     where: { business_unit_id: Number(requestContext.business_unit_id) },
   //   });
   // }
 }

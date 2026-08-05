@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { User } from "@prisma/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
@@ -11,7 +11,7 @@ import { CreateUserData, UserRecord } from "../types";
 @Injectable()
 export class UserRepository {
   constructor(
-    private prisma: PrismaService,
+    private readonly db: DatabaseService,
     private requestContext: LocalStorageContextService,
   ) {}
 
@@ -19,7 +19,7 @@ export class UserRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.user.findMany({
+    return await this.db.client.user.findMany({
       where: {
         business_unit_id: requestContext.business_unit_id,
       },
@@ -30,7 +30,7 @@ export class UserRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.user.create({
+    return await this.db.client.user.create({
       data: {
         ...user,
         created_by: requestContext.user_id,
@@ -39,10 +39,7 @@ export class UserRepository {
     });
   }
   async getUserByEmail(email: string): Promise<UserRecord | null> {
-    const requestContext =
-      this.requestContext.getStore() as LocalStorageContextData;
-
-    return await this.prisma.user.findUnique({
+    return await this.db.client.user.findUnique({
       where: {
         email,
       },
@@ -56,7 +53,7 @@ export class UserRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.user.findUnique({
+    return await this.db.client.user.findUnique({
       where: {
         id: Number(requestContext.user_id),
         business_unit_id: Number(requestContext.business_unit_id),
@@ -72,7 +69,7 @@ export class UserRepository {
   // SEM BUSINESS-ID
   // UTILIZADO PARA LOGIN
   async getLoginUserByEmail(email: string): Promise<UserRecord | null> {
-    return await this.prisma.user.findUnique({
+    return await this.db.client.user.findUnique({
       where: { email },
       include: {
         business_unit: true,

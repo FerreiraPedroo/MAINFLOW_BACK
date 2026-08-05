@@ -1,26 +1,14 @@
-/**
-  PESSOA
-  - inicialmente são somente os funcionários.
-*/
-model People {
+model Job {
   id                    Int      @id @default(autoincrement())
   name                  String   @unique
-  birth_date            String
-  registration_number   String?  @unique
-  photo                 String?
-  sex                   String?
+  cbo                   String?
   status                String
-  hire_date             String?
-  termination_date      String?
+  description           String?
 
-  allocation            Allocation?
-  project_allocations   ProjectAllocation[]
+  perfil_pro
 
   business_unit_id      Int
   business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
-  
-  relatives             PeopleRelationship[] @relation("Person")
-  relatedBy             PeopleRelationship[] @relation("Relative")
 
   //SOFT DELETE
   created_at            DateTime      @default(now())

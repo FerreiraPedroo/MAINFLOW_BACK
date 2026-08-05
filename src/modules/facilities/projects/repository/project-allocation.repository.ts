@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ProjectAllocation } from "@prisma/client";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
@@ -16,7 +16,7 @@ import {
 @Injectable()
 export class ProjectAllocationRepository {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
@@ -26,7 +26,7 @@ export class ProjectAllocationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectAllocation.create({
+    return await this.db.client.projectAllocation.create({
       data: {
         ...allocateData,
         business_unit_id: requestContext.business_unit_id,
@@ -42,7 +42,7 @@ export class ProjectAllocationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectAllocation.findMany({
+    return await this.db.client.projectAllocation.findMany({
       where: {
         assign_date: {
           gte: startDate,
@@ -63,7 +63,7 @@ export class ProjectAllocationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectAllocation.update({
+    return await this.db.client.projectAllocation.update({
       where: {
         id: allocateId,
         business_unit_id: requestContext.business_unit_id,
@@ -78,7 +78,7 @@ export class ProjectAllocationRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.prisma.projectAllocation.delete({
+    return await this.db.client.projectAllocation.delete({
       where: {
         id: allocateId,
         business_unit_id: requestContext.business_unit_id,

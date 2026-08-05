@@ -1,22 +1,21 @@
 import { Injectable } from "@nestjs/common";
 
-import { PrismaService } from "@/common/infrastructure/database/prisma/prisma.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
 import { ProcurementItem } from "@prisma/client";
 
 import {
-  ProcurementItemRepository,
   CreateProcurementItemsInput,
   UpdateProcurementItemsInput,
 } from "../types";
 
 @Injectable()
-export class ProcurementItemPrismaRepository implements ProcurementItemRepository {
+export class ProcurementItemRepository {
   constructor(
-    private prisma: PrismaService,
-    private requestContext: LocalStorageContextService,
+    private readonly db: DatabaseService,
+    private readonly requestContext: LocalStorageContextService,
   ) {}
 
   async findProcurementItems(
@@ -25,9 +24,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    const client = requestContext.tx || this.prisma;
-
-    return await client.procurementItem.findMany({
+    return await this.db.client.procurementItem.findMany({
       where: {
         procurement_id: procurementId,
         business_unit_id: requestContext.business_unit_id,
@@ -40,15 +37,13 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    const client = requestContext?.tx || this.prisma;
-
     const data = procurementItemsData.map((pid) => ({
       ...pid,
       created_by: requestContext.user_id,
       business_unit_id: requestContext.business_unit_id,
     }));
 
-    return await client.procurementItem.createMany({
+    return await this.db.client.procurementItem.createMany({
       data,
     });
   }
@@ -58,9 +53,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    const client = requestContext?.tx || this.prisma;
-
-    return await client.procurementItem.deleteMany({
+    return await this.db.client.procurementItem.deleteMany({
       where: {
         id: { in: procurementItemsIds },
         business_unit_id: requestContext.business_unit_id,
@@ -71,9 +64,7 @@ export class ProcurementItemPrismaRepository implements ProcurementItemRepositor
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    const client = requestContext.tx || this.prisma;
-
-    return await client.procurementItem.update({
+    return await this.db.client.procurementItem.update({
       where: {
         id: procurementItem.id,
         business_unit_id: requestContext.business_unit_id,

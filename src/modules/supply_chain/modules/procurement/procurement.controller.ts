@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 
-import { ProcurementService } from "./procurements.service";
+import { ProcurementService } from "./services/procurements.service";
 import { ValidateService } from "@/common/decorators/validate-service.decorator";
 
 import type {

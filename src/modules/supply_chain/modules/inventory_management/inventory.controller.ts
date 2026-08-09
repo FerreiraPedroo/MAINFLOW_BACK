@@ -4,7 +4,7 @@ import { InventoryItemService } from "./inventory-item.service";
 
 import { ValidateService } from "@/common/decorators/validate-service.decorator";
 
-import type { CreateInventoryItemDto, UpdateInventoryItemDto } from "./types";
+import type { CreateInventoryItemDto, UpdateInventoryItemDto } from "./contracts";
 import {
   FindInventoryItemsOutputSchema,
   GetInventoryItemInputSchema,
@@ -13,7 +13,7 @@ import {
   CreateInventoryItemOutputSchema,
   UpdateInventoryItemInputSchema,
   UpdateInventoryItemOutputSchema,
-} from "./types";
+} from "./contracts";
 
 @Controller("/supply-chain/inventory-items")
 export class InventoryController {

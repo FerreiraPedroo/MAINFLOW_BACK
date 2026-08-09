@@ -7,7 +7,7 @@ import type {
   CreateProcurementDto,
   GetProcurementDto,
   UpdateProcurementDto,
-} from "./types";
+} from "./contracts";
 import {
   GetProcurementInputSchema,
   GetProcurementOutputSchema,
@@ -15,8 +15,7 @@ import {
   CreateProcurementOutputSchema,
   FindProcurementsOutputSchema,
   UpdateProcurementInputSchema,
-  UpdateProcurementOutputSchema,
-} from "./types";
+} from "./contracts";
 
 @Controller("/supply-chain/procurements")
 export class ProcurementController {
@@ -51,7 +50,6 @@ export class ProcurementController {
   @Put(":procurementId")
   @ValidateService({
     input: UpdateProcurementInputSchema,
-    output: UpdateProcurementOutputSchema,
   })
   async updateProcurement(
     @Param("procurementId") procurementId: number,

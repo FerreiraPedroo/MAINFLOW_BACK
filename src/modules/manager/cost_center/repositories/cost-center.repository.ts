@@ -11,15 +11,15 @@ import { LocalStorageContextData } from "@/common/context/interfaces/local-stora
 export class CostCenterRepository {
   constructor(
     private readonly db: DatabaseService,
-    private requestContext: LocalStorageContextService,
+    private readonly requestContext: LocalStorageContextService,
   ) {}
 
-  async findById(id: number) {
+  async findById(id: number): Promise<CostCenter | null> {
     return await this.db.client.costCenter.findUnique({
       where: { id },
     });
   }
-  async findAll() {
+  async findAll(): Promise<CostCenter[]> {
     return await this.db.client.costCenter.findMany();
   }
   async create(costCenterData: CreateCostCenterData): Promise<CostCenter> {

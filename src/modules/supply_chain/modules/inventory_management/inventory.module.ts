@@ -5,8 +5,7 @@ import { LocalStorageContextModule } from "@common/context/local-storage-context
 import { InventoryController } from "./inventory.controller";
 
 import { InventoryItemService } from "./inventory-item.service";
-import { InventoryItemRepository } from "./repositories/inventory-item.repository";
-
+import { InventoryItemRepository } from "./infrastructure/repositories/inventory-item.repository";
 @Module({
   imports: [LocalStorageContextModule],
   controllers: [InventoryController],

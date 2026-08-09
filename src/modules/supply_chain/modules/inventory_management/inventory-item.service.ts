@@ -1,14 +1,14 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { InventoryItemRepository } from "./repositories/inventory-item.repository";
+import { InventoryItemRepository } from "./infrastructure/repositories/inventory-item.repository";
 
-import { GetInventoryItemRecord } from "./types/record/get-inventory-item.record";
+import { GetInventoryItemRecord } from "./contracts";
 
 import type {
   CreateInventoryItemInput,
   UpdateInventoryItemInput,
-} from "./types";
+} from "./contracts";
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 @Injectable()
@@ -78,7 +78,7 @@ export class InventoryItemService {
   }
   async createInventoryItem(inventoryItemInput: CreateInventoryItemInput) {
     try {
-      return this.inventoryItemRepository.createInventoryItem(
+      return await this.inventoryItemRepository.createInventoryItem(
         inventoryItemInput,
       );
     } catch (error) {

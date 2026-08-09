@@ -4,11 +4,11 @@ import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 
 import { FileService } from "@common/modules/file/file.service";
 import { EncryptService } from "@common/service/encrypt.service";
-
-import { UserRepository } from "./repositories/user.repository";
-
-import { CreateUserInput, CreateUserFileInput } from "./types";
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
+
+import { UserRepository } from "./infrastructure/repositories/user.repository";
+
+import { CreateUserInput, CreateUserFileInput } from "./contracts";
 
 @Injectable()
 export class UserService {
@@ -16,7 +16,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly encryptService: EncryptService,
     private readonly fileService: FileService,
-    private readonly db: DatabaseService,
+    private readonly database: DatabaseService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -88,7 +88,7 @@ export class UserService {
     let userRecord: User | null;
 
     try {
-      await this.db.client.runInTransaction(async () => {
+      await this.database.transaction(async () => {
         const userData = {
           ...request,
           password: passwordHash,

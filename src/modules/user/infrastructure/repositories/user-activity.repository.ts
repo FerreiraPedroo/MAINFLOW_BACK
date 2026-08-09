@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
 // import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
-import { UserActivityRecord } from "../types/record/find-user-activities-by-email.record";
+import { UserActivityRecord } from "../../contracts";
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 @Injectable()

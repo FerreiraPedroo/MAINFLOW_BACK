@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BusinessUnit, BusinessUnitActivity, Department } from "@prisma/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
+
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
@@ -18,7 +19,7 @@ import {
 export class AdminRepository {
   constructor(
     private readonly db: DatabaseService,
-    private requestContext: LocalStorageContextService,
+    private readonly requestContext: LocalStorageContextService,
   ) {}
 
   ///////////////////////////////////////////////////////////////////////

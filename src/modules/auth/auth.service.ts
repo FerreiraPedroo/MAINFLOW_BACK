@@ -13,7 +13,7 @@ import { EncryptService } from "@common/service/encrypt.service";
 import { UserActivityService } from "./../user/user-activity.service";
 
 import { SectorItem } from "./data/user-activities.data";
-import { UserRecord } from "../user/types/record/user-record";
+import { UserRecord } from "../user/contracts";
 
 import { AuthLoginInput, AuthLoginOutput, UserActivitiesInfo } from "./types";
 

@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { UserActivityRepository } from "./repositories";
+import { UserActivityRepository } from "./infrastructure/repositories";
 
 @Injectable()
 export class UserActivityService {

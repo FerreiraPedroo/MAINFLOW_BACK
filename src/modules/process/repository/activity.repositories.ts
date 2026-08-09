@@ -1,13 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
+
 @Injectable()
 export class ActivityRepository {
-  // constructor(private prisma: PrismaService) {}
+  constructor(private readonly db: DatabaseService) {}
 
   // async getProcessModelById(
   //   processModelId: number,
   // ): Promise<ProcessModelData | null> {
-  //   return await this.prisma.processModel.findUnique({
+  //   return await this.db.client.processModel.findUnique({
   //     where: { id: processModelId },
   //     include: {
   //       activity: true,
@@ -16,17 +18,17 @@ export class ActivityRepository {
   //   });
   // }
   async findProcessModels(): Promise<any> {
-    // return await this.prisma.activity.findMany();
+    return await this.db.client.activity.findMany();
   }
   // async createProcessModel(data: CreateProcessModelData) {
-  //   return await this.prisma.processModel.create({
+  //   return await this.db.client.processModel.create({
   //     data: {
   //       ...data,
   //     },
   //   });
   // }
   // async updateProcessModel(data: UpdateProcessModelData) {
-  //   return this.prisma.processModel.update({
+  //   return this.db.client.processModel.update({
   //     where: { id: data.id },
   //     data: {
   //       ...data,

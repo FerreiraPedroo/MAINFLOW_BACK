@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
-import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { ProcurementItem } from "@prisma/client";
 
 import {
   CreateProcurementItemsInput,
   UpdateProcurementItemsInput,
-} from "../types";
+} from "../../contracts";
 
 @Injectable()
 export class ProcurementItemRepository {
@@ -33,7 +33,7 @@ export class ProcurementItemRepository {
   }
   async createProcurementItems(
     procurementItemsData: CreateProcurementItemsInput[],
-  ): Promise<ProcurementItem[]> {
+  ) {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
@@ -47,9 +47,7 @@ export class ProcurementItemRepository {
       data,
     });
   }
-  async deleteProcurementItems(
-    procurementItemsIds: number[],
-  ): Promise<ProcurementItem[]> {
+  async deleteProcurementItems(procurementItemsIds: number[]) {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 

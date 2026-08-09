@@ -54,7 +54,7 @@ export class ProcessModelRepository {
   }
 
   // async findProcessModelByActivity(activityId: number) {
-  //   return this.prisma.processModel.findFirst({
+  //   return this.db.client.processModel.findFirst({
   //     where: { activity_id: activityId },
   //   });
   // }

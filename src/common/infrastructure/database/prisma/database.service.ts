@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
+import { Prisma, PrismaClient } from "@prisma/client";
+
+type DbClient = Prisma.TransactionClient | PrismaClient;
 
 @Injectable()
 export class DatabaseService {
@@ -9,22 +12,20 @@ export class DatabaseService {
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
-  get client() {
+  get client(): DbClient {
     return (
-      this.requestContext.getStore()?.tx ?? this.prismaService
-      // this.requestContext.getStore()?.tx ?? this.prismaService.prismaInstance
+      this.requestContext.getStore()?.tx ?? this.prismaService.prismaInstance
     );
   }
 
-  async runInTransaction<T>(work: () => Promise<T>): Promise<T> {
+  async transaction<T>(work: () => Promise<T>): Promise<T> {
     const store = this.requestContext.getStore();
 
     if (store?.tx) {
       return work();
     }
 
-    // return this.prismaService.prismaInstance.$transaction(async (tx) => {
-    return this.prismaService.$transaction(async (tx) => {
+    return this.prismaService.prismaInstance.$transaction(async (tx) => {
       if (store) {
         store.tx = tx;
       }

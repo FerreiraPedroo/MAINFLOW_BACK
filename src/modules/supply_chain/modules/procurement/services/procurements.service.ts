@@ -2,18 +2,15 @@ import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
-
 import { ProjectService } from "@/modules/facilities/projects/project.service";
 import { ProcurementItemService } from "./procurements-item.service";
-
-import { ProcurementRepository } from "../repositories";
-
-import type {
+import { ProcurementRepository } from "../infrastructure/repositories";
+import {
+  CreateProcurementInput,
   GetProcurementInput,
   GetProcurementRecord,
-  CreateProcurementInput,
   UpdateProcurementInput,
-} from "../types";
+} from "../contracts";
 
 @Injectable()
 export class ProcurementService {
@@ -186,7 +183,7 @@ export class ProcurementService {
         );
       }
 
-      await this.db.client.runInTransaction(async () => {
+      await this.db.transaction(async () => {
         const promises: Promise<any>[] = [
           this.procurementRepository.updateProcurement(
             procurementId,
@@ -207,9 +204,7 @@ export class ProcurementService {
         if (updateItems.length) {
           for (const item of updateItems) {
             promises.push(
-              await this.procurementItemService.updateProcurementItem({
-                ...item,
-              }),
+              this.procurementItemService.updateProcurementItem(item),
             );
           }
         }
@@ -217,7 +212,7 @@ export class ProcurementService {
         return await Promise.all(promises);
       });
 
-      return true;
+      return "OK";
     } catch (error) {
       this.prismaErrors(error);
     }

@@ -8,7 +8,10 @@ import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
 import { UserActivityService } from "./user-activity.service";
 
-import { UserActivityRepository, UserRepository } from "./repositories";
+import {
+  UserActivityRepository,
+  UserRepository,
+} from "./infrastructure/repositories";
 
 @Module({
   imports: [LocalStorageContextModule],

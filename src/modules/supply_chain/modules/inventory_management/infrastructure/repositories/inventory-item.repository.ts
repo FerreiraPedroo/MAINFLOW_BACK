@@ -1,7 +1,5 @@
 import { Injectable } from "@nestjs/common";
-
-import { Procurement, ProcurementItem } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
+import { InventoryItem } from "@prisma/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
@@ -9,58 +7,50 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 
 import {
-  CreateProcurementInput,
-  UpdateProcurementInput,
-  GetProcurementRecord,
-} from "../types";
+  CreateInventoryItemInput,
+  UpdateInventoryItemInput,
+  GetInventoryItemRecord,
+} from "../../contracts";
 
 @Injectable()
-export class ProcurementRepository {
+export class InventoryItemRepository {
   constructor(
     private readonly db: DatabaseService,
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
-  async getProcurement(procurementId: number): Promise<GetProcurementRecord> {
+  async getInventoryItem(
+    inventoryItemId: number,
+  ): Promise<GetInventoryItemRecord> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.db.client.procurement.findUnique({
+    return await this.db.client.inventoryItem.findUnique({
       where: {
-        id: procurementId,
-        business_unit_id: Number(requestContext.business_unit_id),
+        id: inventoryItemId,
+        business_unit_id: requestContext.business_unit_id,
       },
       include: {
-        cost_center: true,
-        project: true,
-        inventory_items: {
-          include: {
-            inventory_item: {
-              include: {
-                manufacturer: true,
-              },
-            },
-          },
-        },
+        manufacturer: true,
       },
     });
   }
-  async findProcurements(): Promise<Procurement[]> {
+  async findInventoryItems(): Promise<InventoryItem[]> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.db.client.procurement.findMany({
-      where: { business_unit_id: Number(requestContext.business_unit_id) },
+    return await this.db.client.inventoryItem.findMany({
+      where: { business_unit_id: requestContext.business_unit_id },
     });
   }
-  async createProcurement(
-    procurementData: CreateProcurementInput,
-  ): Promise<Procurement> {
+  async createInventoryItem(
+    inventoryItemInput: CreateInventoryItemInput,
+  ): Promise<InventoryItem> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     const data: any = {
-      ...procurementData,
+      ...inventoryItemInput,
       business_unit_id: requestContext.business_unit_id,
       created_by: requestContext.user_id,
     };
@@ -68,7 +58,7 @@ export class ProcurementRepository {
     const xprisma = this.db.client.$extends((client: any) => {
       return client.$extends({
         query: {
-          procurement: {
+          inventoryItem: {
             async create({ args, query }: any) {
               let retry = 15;
 
@@ -76,7 +66,7 @@ export class ProcurementRepository {
                 try {
                   let code: string;
 
-                  const procurementRecord = await client.procurement.findFirst({
+                  const inventoryRecord = await client.inventoryItem.findFirst({
                     orderBy: {
                       id: "desc",
                     },
@@ -86,11 +76,11 @@ export class ProcurementRepository {
                     },
                   });
 
-                  if (!procurementRecord) {
+                  if (!inventoryRecord) {
                     code = "R-00001";
                   } else {
                     const codeNumber = Number(
-                      procurementRecord.code.split("-")[1],
+                      inventoryRecord.code.split("-")[1],
                     );
                     if (codeNumber <= 9) {
                       code = `R-${"0".repeat(4)}${codeNumber + 1}`;
@@ -134,35 +124,25 @@ export class ProcurementRepository {
       });
     });
 
-    return await xprisma.procurement.create({
+    return await xprisma.inventoryItem.create({
       data,
     });
   }
-  async procurementItems(procurementId: number): Promise<ProcurementItem[]> {
+  async updateInventoryItem(
+    inventoryId: number,
+    inventoryItemInput: UpdateInventoryItemInput,
+  ): Promise<InventoryItem> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return await this.db.client.procurementItem.findMany({
+    return await this.db.client.inventoryItem.update({
       where: {
-        procurement_id: Number(procurementId),
-        business_unit_id: Number(requestContext.business_unit_id),
-      },
-    });
-  }
-  async updateProcurement(
-    procurementId: number,
-    procurementData: UpdateProcurementInput,
-  ): Promise<Procurement> {
-    const requestContext =
-      this.requestContext.getStore() as LocalStorageContextData;
-
-    return await this.db.client.procurement.update({
-      where: {
-        id: Number(procurementId),
-        business_unit_id: Number(requestContext.business_unit_id),
+        id: inventoryId,
+        business_unit_id: requestContext.business_unit_id,
+        updated_by: requestContext.user_id,
       },
       data: {
-        ...procurementData,
+        ...inventoryItemInput,
       },
     });
   }

@@ -6,7 +6,7 @@ import { DatabaseService } from "@/common/infrastructure/database/prisma/databas
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 
-import { CreateUserData, UserRecord } from "../types";
+import { CreateUserData, UserRecord } from "../../contracts";
 
 @Injectable()
 export class UserRepository {

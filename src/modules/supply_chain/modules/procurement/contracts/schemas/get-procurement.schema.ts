@@ -30,21 +30,21 @@ const items = z
     id: z.number(),
     item_id: z.number(),
     quantity: z.number(),
-    item: item,
+    inventory_item: item,
   })
   .transform((obj) => {
-    const { item, ...rest } = obj;
+    const { inventory_item, ...rest } = obj;
     return {
       ...rest,
-      title: item.title,
-      code: item.code,
-      unit_measure: item.unit_measure,
-      category: item.category,
-      sub_category: item.sub_category,
-      type: item.type,
-      description: item.description,
-      image_path: item.image_path,
-      hs_code: item.hs_code,
+      title: inventory_item.title,
+      code: inventory_item.code,
+      unit_measure: inventory_item.unit_measure,
+      category: inventory_item.category,
+      sub_category: inventory_item.sub_category,
+      type: inventory_item.type,
+      description: inventory_item.description,
+      image_path: inventory_item.image_path,
+      hs_code: inventory_item.hs_code,
     };
   });
 const GetProcurementOutput = z.object({
@@ -57,7 +57,7 @@ const GetProcurementOutput = z.object({
   send_date: z.string().nullable(),
   project: project,
   cost_center: costCenter,
-  items: z.array(items),
+  inventory_items: z.array(items),
 });
 
 // SCHEMA > For Validation Service

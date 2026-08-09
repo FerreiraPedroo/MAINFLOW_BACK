@@ -15,7 +15,7 @@ export function ValidateService(options: ValidateServiceOptions) {
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    console.log(descriptor.value);
+    // console.log(descriptor.value);
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: any) {
       let validateArgs;

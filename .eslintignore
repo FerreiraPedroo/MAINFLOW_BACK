@@ -8,6 +8,7 @@ build/
 out/
 .next/
 .nuxt/
+.vite/
 target/
 
 # Arquivos de log e relatórios de cobertura

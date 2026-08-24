@@ -13,6 +13,9 @@ model People {
   hire_date             String?
   termination_date      String?
 
+  job_id                Int
+  job                   Job          @relation(fields:[job_id], references:[id], onDelete: Restrict)
+
   allocation            Allocation?
   project_allocations   ProjectAllocation[]
 

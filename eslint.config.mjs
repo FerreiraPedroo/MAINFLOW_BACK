@@ -36,4 +36,7 @@ export default tseslint.config(
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
+  {
+    ignores: ["dist/*", "build/*", "node_modules/*"],
+  },
 );

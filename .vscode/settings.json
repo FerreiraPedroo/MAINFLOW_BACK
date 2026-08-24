@@ -1,0 +1,25 @@
+{
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/node_modules/.prisma": true,
+    "**/dist": true,
+    "**/build": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/node_modules/.prisma": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/.vite": true,
+    "**/coverage": true,
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.next/**": true,
+    "**/.vite/**": true,
+    "**/coverage/**": true,
+  }
+}

@@ -154,17 +154,17 @@ export class PeopleService {
       photoUrl = await this.fileService.fileSave(photo, "people/relationship");
     }
 
-    // Se não tiver o id da pessoa do relacionamento, tem que ter o name e o grau de relacionamento.
-    if (
-      !peopleRelationshipInput.related_person_id &&
-      (!peopleRelationshipInput.name || !peopleRelationshipInput.kinship)
-    ) {
-      throw new UnprocessableEntityException(
-        "Falta ou o nome ou o grau de relacionamento.",
-      );
-    }
-
     try {
+      // Se não tiver o id da pessoa do relacionamento, tem que ter o name e o grau de relacionamento.
+      if (
+        !peopleRelationshipInput.related_person_id &&
+        (!peopleRelationshipInput.name || !peopleRelationshipInput.kinship)
+      ) {
+        throw new UnprocessableEntityException(
+          "Falta ou o nome ou o grau de relacionamento.",
+        );
+      }
+
       const peopleRelationshipData = {
         ...peopleRelationshipInput,
         ...(photoUrl && { photo: photoUrl }),

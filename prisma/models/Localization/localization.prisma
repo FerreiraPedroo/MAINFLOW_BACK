@@ -14,6 +14,8 @@ model Localization {
   business_unit_id  Int
   business_unit     BusinessUnit @relation(fields: [business_unit_id], references: [id])
   
+  maintenance       Maintenance[]
+
   @@unique([business_unit_id, title])
 
   //SOFT DELETE

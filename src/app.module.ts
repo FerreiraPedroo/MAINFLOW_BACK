@@ -19,6 +19,7 @@ import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
 import { SupplyChainModule } from "@modules/supply_chain/supply-chain.module";
+import { MaintenanceModule } from "@modules/facilities/maintenace/maintenance.module";
 import { DatabaseModule } from "@common/infrastructure/database/prisma/database.module";
 
 @Module({
@@ -39,6 +40,7 @@ import { DatabaseModule } from "@common/infrastructure/database/prisma/database.
     ProcessModule,
     SupplyChainModule,
     UserModule,
+    MaintenanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

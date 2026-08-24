@@ -21,7 +21,7 @@ export class PeopleRelationshipRepository {
 
   async createPeopleRelationship(
     peopleRelationshipData: CreatePeopleRelationshipData,
-  ): Promise<People> {
+  ): Promise<PeopleRelationship> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 

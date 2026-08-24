@@ -32,12 +32,16 @@ model BusinessUnit {
   peoples               People[]
   allocations           Allocation[]
   people_relationships  PeopleRelationship[]
+  jobs                  Job[]
 
   // SUPPLY-CHAIN
   procurements          Procurement[]
   procurementItems      ProcurementItem[]
   suppliers             Supplier[]
   inventory_items       InventoryItem[]
+
+  // MAINTENANCE
+  maintenance           Maintenance[]
 
   //SOFT DELETE
   created_at DateTime @default(now())

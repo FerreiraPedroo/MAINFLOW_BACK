@@ -15,20 +15,15 @@ export function ValidateService(options: ValidateServiceOptions) {
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    // console.log(descriptor.value);
     const originalMethod = descriptor.value;
-    descriptor.value = async function (...args: any) {
+
+    descriptor.value = async function (...args: any[]) {
       let validateArgs;
 
-      // Se tiver validado de entrada.
       if (options.input) {
-        // console.log("----------------------------------------------");
-        // console.log({ propertyKey, args });
         const inputResult = options.input.safeParse(args);
-        // console.log({ propertyKey, inputResult });
 
         if (!inputResult.success) {
-          console.log({ inputResult });
           throw new BadRequestException({
             message: `Erro de validação.`,
           });
@@ -36,7 +31,6 @@ export function ValidateService(options: ValidateServiceOptions) {
 
         validateArgs = inputResult.data;
       } else {
-        // Se não tiver validador de entrada passa o argumento original;
         validateArgs = args;
       }
 
@@ -48,12 +42,11 @@ export function ValidateService(options: ValidateServiceOptions) {
        */
       const result = await originalMethod.apply(this, validateArgs);
 
-
       // Se tiver validador de saida, retorna os dados validados.
       if (options.output) {
         const outputResult = options.output.safeParse(result);
+
         if (!outputResult.success) {
-          console.log({ outputResult });
           throw new InternalServerErrorException({
             message: `Erro interno de validação`,
           });

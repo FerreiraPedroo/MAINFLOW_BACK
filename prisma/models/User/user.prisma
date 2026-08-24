@@ -16,6 +16,8 @@ model User {
 
   process_instances       ProcessInstance[]
   process_step_instances  ProcessStepInstance[]
+
+  maintenance             Maintenance[]
   
   @@unique([business_unit_id, email])
 

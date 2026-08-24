@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-// import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
+// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-});
 // export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 // });
+export const prisma: PrismaClient = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -126,31 +126,66 @@ async function main() {
     activity: {
       data: [
         {
-          title: "Centro de custo",
-          url: "/manager/cost-center",
+          title: "Gerenciamento",
+          url: "/manager",
           icon: null,
           department_id: 1,
         },
         {
-          title: "Painel de localização",
+          title: "Localização",
           url: "/manager/localizations",
+          icon: null,
           department_id: 1,
           sector_id: 1,
         },
         {
           title: "Prédio",
-          url: "/manager/buildings",
+          url: "/manager/localizations/buildings",
           department_id: 1,
           sector_id: 1,
         },
         {
           title: "Andar",
-          url: "/manager/floor",
+          url: "/manager/localizations/building-floors",
           department_id: 1,
           sector_id: 1,
         },
         {
-          title: "Projeto",
+          title: "Espaços",
+          url: "/manager/localizations/building-spaces",
+          department_id: 1,
+          sector_id: 1,
+        },
+        {
+          title: "Divisão",
+          url: "/manager/localizations/building-divisions",
+          department_id: 1,
+          sector_id: 1,
+        },
+        {
+          title: "Centro de custo",
+          url: "/manager/cost-center",
+          department_id: 1,
+        },
+        {
+          title: "Grupos de pagamentos",
+          url: "/manager/payment-groups",
+          department_id: 1,
+        },
+        {
+          title: "Facilities",
+          url: "/facilities",
+          department_id: 2,
+          sector_id: null,
+        },
+        {
+          title: "Manutenção",
+          url: "/facilities/maintenance",
+          department_id: 2,
+          sector_id: null,
+        },
+        {
+          title: "Projetos",
           url: "/facilities/projects",
           department_id: 2,
           sector_id: null,
@@ -567,6 +602,179 @@ async function main() {
         },
       ],
     },
+    userActivity: {
+      data: [
+        {
+          user_id: 1,
+          order: 1,
+          department_id: 1,
+          activity_id: 1,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 2,
+          department_id: 1,
+          activity_id: 2,
+          business_unit_id: 1,
+          sector_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 3,
+          department_id: 1,
+          activity_id: 3,
+          business_unit_id: 1,
+          sector_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 4,
+          department_id: 1,
+          activity_id: 4,
+          business_unit_id: 1,
+          sector_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 5,
+          department_id: 1,
+          activity_id: 5,
+          business_unit_id: 1,
+          sector_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 6,
+          department_id: 1,
+          activity_id: 6,
+          business_unit_id: 1,
+          sector_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 7,
+          department_id: 1,
+          activity_id: 7,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 8,
+          department_id: 1,
+          activity_id: 8,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 9,
+          department_id: 1,
+          activity_id: 9,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 10,
+          department_id: 1,
+          activity_id: 10,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+        {
+          user_id: 1,
+          order: 11,
+          department_id: 1,
+          activity_id: 11,
+          business_unit_id: 1,
+          // created_by: 1,
+        },
+      ],
+    },
+    maintenance: {
+      data: [
+        {
+          open_date: new Date().toISOString(),
+          description: "manutenção de porta de madeira.",
+          localization_id: 1,
+          classification: "MARCENARIA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "troca de móvel criado mudo.",
+          localization_id: 1,
+          classification: "MARCENARIA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "refletor queimado.",
+          localization_id: 1,
+          classification: "ELETRICA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "troca de interruptor.",
+          localization_id: 1,
+          classification: "ELETRICA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "manutenção de quadro eletrico.",
+          localization_id: 1,
+          classification: "ELETRICA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "manutenção troca de disjuntor.",
+          localization_id: 1,
+          classification: "ELETRICA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "troca de lâmpada.",
+          localization_id: 1,
+          classification: "ELETRICA",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          open_date: new Date().toISOString(),
+          description: "troca de bebedouro.",
+          localization_id: 1,
+          classification: "HIDRAULICO",
+          status: "OPEN",
+          user_id: 1,
+          business_unit_id: 1,
+        },
+      ],
+    },
   };
   try {
     const businessUnit = await prisma.businessUnit.createMany(
@@ -595,6 +803,8 @@ async function main() {
     await prisma.people.createMany(seeds.people);
     await prisma.supplier.createMany(seeds.supplier);
     await prisma.inventoryItem.createMany(seeds.inventoryItem);
+    await prisma.userActivity.createMany(seeds.userActivity);
+    await prisma.maintenance.createMany(seeds.maintenance);
 
     console.log({
       address,

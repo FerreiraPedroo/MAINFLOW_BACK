@@ -1,5 +1,5 @@
 export interface CreatePeopleRelationshipData {
-  people_id?: number;
+  people_id: number;
   kinship: string;
   related_person_id?: number;
   name?: string;

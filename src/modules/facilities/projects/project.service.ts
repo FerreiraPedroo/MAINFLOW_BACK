@@ -62,16 +62,17 @@ export class ProjectService {
 
   async getProjectById(projectId: number): Promise<GetProjectOutput> {
     let project;
+
     try {
       project = await this.projectRepository.getProjectsById(projectId);
     } catch (error) {
       this.prismaErrors(error);
     }
 
-    if (!project) {
-      throw new UnprocessableEntityException("Projeto não encontrado.");
-    } else {
+    if (project) {
       return project;
+    } else {
+      throw new UnprocessableEntityException("Projeto não encontrado.");
     }
   }
   async findProjects(): Promise<FindProjectsOutput> {
@@ -115,7 +116,7 @@ export class ProjectService {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // 
+  //
   ////////////////////////////////////////////////////////////////////////////////
 
   ////////////////////////////////////////////////////////////////////////////////

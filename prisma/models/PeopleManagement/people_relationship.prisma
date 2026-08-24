@@ -10,7 +10,7 @@ model PeopleRelationship {
   photo             String?
   start_date        DateTime?
   end_date          DateTime?
-  comment           String
+  comment           String?
 
   business_unit_id      Int
   business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

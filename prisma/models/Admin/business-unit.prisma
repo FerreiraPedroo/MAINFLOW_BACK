@@ -33,6 +33,7 @@ model BusinessUnit {
   allocations           Allocation[]
   people_relationships  PeopleRelationship[]
   jobs                  Job[]
+  people_jobs           PeopleJob[]
 
   // SUPPLY-CHAIN
   procurements          Procurement[]

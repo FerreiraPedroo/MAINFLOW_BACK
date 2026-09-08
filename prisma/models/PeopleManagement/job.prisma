@@ -5,7 +5,7 @@ model Job {
   status                String
   description           String?
 
-  people                People
+  people_jobs           PeopleJob[]
 
   business_unit_id      Int
   business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

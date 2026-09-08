@@ -1,13 +1,20 @@
-import { FileService } from "@common/modules/file/file.service";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { PeopleRelationshipRepository, PeopleRepository } from "../repository";
+import { FileService } from "@common/modules/file/file.service";
+import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
+
+import {
+  PeopleRepository,
+  PeopleRelationshipRepository,
+  PeopleJobRepository,
+} from "../repository";
 
 import { CreatePeopleRequest } from "../types/dto/create-people-request.dto";
 import { UpdatePeopleRequest } from "../types/dto/update-people-request.dto";
-import { People } from "@prisma/client";
+import { People, PeopleJob } from "@prisma/client";
 import {
+  ChangePeopleJobInput,
   CreatePeopleRelationShipFileInput,
   CreatePeopleRelationShipInput,
 } from "../types";
@@ -16,8 +23,10 @@ import {
 export class PeopleService {
   constructor(
     private readonly peopleRepository: PeopleRepository,
+    private readonly peopleJobRepository: PeopleJobRepository,
     private readonly peopleRelationshipRepository: PeopleRelationshipRepository,
     private readonly fileService: FileService,
+    private readonly db: DatabaseService,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -207,6 +216,51 @@ export class PeopleService {
       return await this.peopleRelationshipRepository.getPeopleRelationship(
         peopleId,
       );
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // PEOPLE > JOB
+  ////////////////////////////////////////////////////////////////////////////////
+
+  async changePeopleJob(changeJob: ChangePeopleJobInput) {
+    try {
+      const changePeopleJob = {
+        ...changeJob,
+        ...(changeJob.start_date && {
+          start_date: new Date(changeJob.start_date),
+        }),
+      };
+      const peopleJob = await this.peopleJobRepository.findJobsByPeopleId(
+        changeJob.people_id,
+      );
+
+      let peopleJobActive: PeopleJob[] = [];
+      if (peopleJob.length) {
+        peopleJobActive = peopleJob.filter((job: any) => job.end_date == null);
+      }
+
+      return await this.db.transaction(async () => {
+        const promises: Promise<any>[] = [];
+
+        if (peopleJobActive.length) {
+          for (const peopleJob of peopleJobActive) {
+            promises.push(
+              this.peopleJobRepository.updatePeopleJob(peopleJob.id, {
+                start_end: new Date(),
+              }),
+            );
+          }
+        }
+
+        promises.push(
+          this.peopleJobRepository.changePeopleJob(changePeopleJob),
+        );
+
+        return await Promise.all(promises);
+      });
     } catch (error) {
       this.prismaErrors(error);
     }

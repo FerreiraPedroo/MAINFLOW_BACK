@@ -20,8 +20,10 @@ import type { UpdatePeopleRequest } from "./types/dto/update-people-request.dto"
 import type {
   CreatePeopleRelationshipFileDto,
   CreatePeopleRelationshipDto,
+  ChangePeopleJobInputDto,
 } from "./types";
 import {
+  ChangePeopleJobInputSchema,
   CreatePeopleRelationshipSchema,
   DeletePeopleRelationshipSchema,
   GetPeopleRelationshipInputSchema,
@@ -81,5 +83,14 @@ export class Peoplecontroller {
   })
   async getPeopleRelationship(@Param("relationshipId") relationshipId: number) {
     return this.peopleService.getPeopleRelationship(relationshipId);
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // JOB
+  //////////////////////////////////////////////////////////////////////
+  @Post(":peopleId/job")
+  @ValidateService({ input: ChangePeopleJobInputSchema })
+  async changePeopleJob(@Body() request: ChangePeopleJobInputDto) {
+    return await this.peopleService.changePeopleJob(request);
   }
 }

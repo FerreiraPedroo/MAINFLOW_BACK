@@ -21,6 +21,7 @@ import { FacilitiesModule } from "@modules/facilities/facilities.module";
 import { SupplyChainModule } from "@modules/supply_chain/supply-chain.module";
 import { MaintenanceModule } from "@modules/facilities/maintenace/maintenance.module";
 import { DatabaseModule } from "@common/infrastructure/database/prisma/database.module";
+import { ContractModule } from "./modules/manager/contract";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DatabaseModule } from "@common/infrastructure/database/prisma/database.
     SupplyChainModule,
     UserModule,
     MaintenanceModule,
+    ContractModule,
   ],
   controllers: [AppController],
   providers: [AppService],

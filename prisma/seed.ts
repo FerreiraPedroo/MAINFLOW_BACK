@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+// import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-// export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-// });
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 });
+// export const prisma: PrismaClient = new PrismaClient({
+//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+// });
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -775,7 +775,83 @@ async function main() {
         },
       ],
     },
+    contract: {
+      data: [
+        {
+          title: "OI",
+          status: "ATIVO",
+          description: "Contrato de limpeza e manutenção.",
+          financial_type: "RECEITA" as any,
+          billing: 500000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "AGUAS DO RIO",
+          status: "ATIVO",
+          description:
+            "Contrato de limpeza e manutenção de estações de tratamento de agua.",
+          financial_type: "RECEITA" as any,
+          billing: 1500000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "MI",
+          status: "ATIVO",
+          description: "Contrato manutenção de estradas.",
+          financial_type: "RECEITA" as any,
+          billing: 7500000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "PETROBRAS",
+          status: "ATIVO",
+          description: "Contrato manutenção.",
+          financial_type: "RECEITA" as any,
+          billing: 57500000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "ENERGISA",
+          status: "ATIVO",
+          description: "Contrato de manutenção de subestações.",
+          financial_type: "RECEITA" as any,
+          billing: 2500000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "SUPERMERCADOS GUANABARA",
+          status: "ATIVO",
+          description: "Contrato de manutenção predial.",
+          financial_type: "RECEITA" as any,
+          billing: 330000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+        {
+          title: "STONE",
+          status: "ATIVO",
+          description: "Contrato de manutenção predial.",
+          financial_type: "RECEITA" as any,
+          billing: 730000.0,
+          recurrence_frequency: "MENSAL" as any,
+          start_date: new Date("2026-12-01"),
+          business_unit_id: 1,
+        },
+      ],
+    },
   };
+
   try {
     const businessUnit = await prisma.businessUnit.createMany(
       seeds.businessUnit,
@@ -805,6 +881,7 @@ async function main() {
     await prisma.inventoryItem.createMany(seeds.inventoryItem);
     await prisma.userActivity.createMany(seeds.userActivity);
     await prisma.maintenance.createMany(seeds.maintenance);
+    await prisma.contract.createMany(seeds.contract);
 
     console.log({
       address,

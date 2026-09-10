@@ -4,7 +4,7 @@ import z from "zod";
 const ChangePeopleJob = z.object({
   people_id: z.coerce.number(),
   job_id: z.coerce.number(),
-  start_date: z.coerce.date().optional(),
+  start_date: z.date(),
   comment: z.string().optional(),
 });
 export const ChangePeopleJobInputSchema = z.tuple([ChangePeopleJob]);

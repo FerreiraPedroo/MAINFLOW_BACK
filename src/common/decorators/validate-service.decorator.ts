@@ -24,6 +24,7 @@ export function ValidateService(options: ValidateServiceOptions) {
         const inputResult = options.input.safeParse(args);
 
         if (!inputResult.success) {
+          console.log(inputResult);
           throw new BadRequestException({
             message: `Erro de validação.`,
           });
@@ -47,6 +48,7 @@ export function ValidateService(options: ValidateServiceOptions) {
         const outputResult = options.output.safeParse(result);
 
         if (!outputResult.success) {
+          console.log(outputResult);
           throw new InternalServerErrorException({
             message: `Erro interno de validação`,
           });

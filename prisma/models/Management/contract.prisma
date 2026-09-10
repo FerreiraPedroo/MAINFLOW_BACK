@@ -1,0 +1,43 @@
+enum ContractFinancialType {
+  RECEITA
+  DESPESA
+}
+
+enum RecurrenceFrequency {
+  MENSAL
+  BIMENSTRAL
+  TRIMESTRAL
+  SEMESTRAL
+  ANUAL
+}
+
+model Contract {
+  id          Int     @id @default(autoincrement())
+  title       String
+  status      String
+  description String?
+
+  financial_type       ContractFinancialType // Tipo de contraro, se é faturamento ou é despesa.
+  billing              Float // Valor de faturamento definido no contrato.
+  recurrence_frequency RecurrenceFrequency // Qual é a frequencia de faturamento.
+
+  link_contract Json? // Link para o arquivo fisico do contrato
+
+  start_date DateTime?
+  end_date   DateTime?
+
+  business_unit_id Int
+  business_unit    BusinessUnit @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+
+  //SOFT DELETE
+  created_at DateTime @default(now())
+  created_by Int?
+
+  updated_at DateTime? @updatedAt
+  updated_by Int?
+
+  deleted_at DateTime?
+  deleted_by Int?
+
+  @@unique([business_unit_id, title])
+}

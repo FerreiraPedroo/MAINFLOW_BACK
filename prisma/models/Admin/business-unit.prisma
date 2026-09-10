@@ -14,6 +14,7 @@ model BusinessUnit {
 
   // MANAGEMENT
   cost_centers          CostCenter[]
+  contract              Contract[]
   departments           Department[]
   process_instances     ProcessInstance[]
 

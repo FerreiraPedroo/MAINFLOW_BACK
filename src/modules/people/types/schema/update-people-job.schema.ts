@@ -2,8 +2,8 @@ import z from "zod";
 
 // INPUT
 const UpdatePeopleJob = z.object({
-  start_date: z.coerce.date().optional(),
-  start_end: z.coerce.date().optional(),
+  start_date: z.date().optional(),
+  start_end: z.date().optional(),
   comment: z.string().optional(),
 });
 export const UpdatePeopleJobInputSchema = z.tuple([

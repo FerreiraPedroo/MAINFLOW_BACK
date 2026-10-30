@@ -1,0 +1,32 @@
+/*
+  BUILDING CONTRACT AMMENDMENT - Aditivo de contrato da unidade(building)
+  Essa tabela fica subordinada a building_lease_contract, que é o contrato principal.
+*/
+model BuildingContractAmendment {
+  id                  Int           @id @default(autoincrement())
+  contract_lease_id   Int
+  contract_lease      BuildingLeaseContract @relation(fields:[contract_lease_id], references:[id])
+  start_contract      DateTime // inicio do contrato
+  end_contract        DateTime // fim do contrato
+  value               Int // valor mensal do contrato
+  discount_percent    Int // pocentagem de desconto
+  discount_start_date DateTime // mês que inicia o desconto
+  discount_end_date   DateTime // mês em que termina o desconto
+  adjustment_month    Int // mês que será reajustado o valor do contrato
+  adjustment_index    String
+  description         String
+  status              String        // Sttus: ATIVO, INATIVO
+  
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields:[business_unit_id], references:[id])
+  
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
+}

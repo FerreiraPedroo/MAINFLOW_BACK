@@ -26,7 +26,7 @@ const LocalizationOutput = z.object({
   space_type: {
     title: z.string(),
   },
-  address: {
+  building: {
     short_address: z.string(),
   },
 });

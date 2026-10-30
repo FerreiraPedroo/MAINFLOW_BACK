@@ -7,43 +7,51 @@ model BusinessUnit {
   business_unit_activity BusinessUnitActivity[]
 
   // ADMIN
-  users                 User[]
-  group_users           GroupUser[]
-  user_sessions         UserSession[]
-  user_activities       UserActivity[]
+  departments       Department[]
+  group_users       GroupUser[]
+  process_instances ProcessInstance[]
 
-  // MANAGEMENT
-  cost_centers          CostCenter[]
-  contract              Contract[]
-  departments           Department[]
-  process_instances     ProcessInstance[]
+  // AUTH
+  users           User[]
+  user_sessions   UserSession[]
+  user_activities UserActivity[]
 
-  localizations         Localization[]
-  space_type            SpaceType[]
-  address               Address[]
-  block                 Block[]
-  floor                 Floor[]
+  // ORGANIZATION
+  buildings                   Building[]
+  building_lease_contract     BuildingLeaseContract[]
+  building_contract_amendment BuildingContractAmendment[]
+  localizations               Localization[]
+  space_type                  SpaceType[]
+  blocks                      Block[]
+  floors                      Floor[]
+
+  cost_centers                CostCenter[]
+  payment_control             PaymentControl[]
+
+  contracts                   Contract[]
 
   // FACILITIES
-  projects              Project[]
-  project_allocations   ProjectAllocation[]
-  project_documents     ProjectDocument[]
+  projects            Project[]
+  project_allocations ProjectAllocation[]
+  project_documents   ProjectDocument[]
+
+  // SERVIÇES
 
   // PEOPLE
-  peoples               People[]
-  allocations           Allocation[]
-  people_relationships  PeopleRelationship[]
-  jobs                  Job[]
-  people_jobs           PeopleJob[]
+  peoples              People[]
+  allocations          Allocation[]
+  people_relationships PeopleRelationship[]
+  jobs                 Job[]
+  people_jobs          PeopleJob[]
 
   // SUPPLY-CHAIN
-  procurements          Procurement[]
-  procurementItems      ProcurementItem[]
-  suppliers             Supplier[]
-  inventory_items       InventoryItem[]
+  procurements      Procurement[]
+  procurement_items ProcurementItem[]
+  suppliers         Supplier[]
+  inventory_items   InventoryItem[]
 
   // MAINTENANCE
-  maintenance           Maintenance[]
+  maintenance Maintenance[]
 
   //SOFT DELETE
   created_at DateTime @default(now())

@@ -1,19 +1,20 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { CacheModule } from "@nestjs/cache-manager";
+import { ConfigModule } from "@nestjs/config";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-
-import { AuthModule } from "@modules/auth/auth.module";
-import { ConfigModule } from "@nestjs/config";
 
 import { FileModule } from "@common/modules/file/file.module";
 import { MulterConfigModule } from "@common/modules/multer.module";
 import { LoadUserCacheMiddlware } from "@/common/middlewares/load-user-cache.middleware";
 import { LocalStorageContextModule } from "@/common/context/local-storage-context.module";
 
-import { UserModule } from "@modules/user/user.module";
+import { AuthModule } from "@modules/auth/auth.module";
 import { AdminModule } from "@modules/admin/admin.module";
+import { OrganizationModule } from "@modules/organization/organization.module";
+
+import { UserModule } from "@modules/user/user.module";
 import { PeopleModule } from "@modules/people/people.module";
 import { ManagerModule } from "@modules/manager/manager.module";
 import { ProcessModule } from "@modules/process/process.module";
@@ -33,8 +34,12 @@ import { ContractModule } from "./modules/manager/contract";
     MulterConfigModule,
     DatabaseModule,
     FileModule,
-    AdminModule,
+
     AuthModule,
+    AdminModule,
+
+    OrganizationModule,
+
     FacilitiesModule,
     ManagerModule,
     PeopleModule,

@@ -4,13 +4,14 @@ model Supplier {
   trade_name                  String? // Nome fantasia (Opcional, pessoa fisica não pode ter.)
   tax_number                  String  // CNPJ ou CPF
   supplier_type               String  // Tipo de fornecedor (Pessoa Fisica ou Pessoa Juridica)
-  supplier_category           String  // Qual categoria: Distribuidor, Vendedor, Fabricante, Prestador de serviços
+  supplier_category           String  // Qual categoria: Distribuidor, Vendedor, Fabricante, Prestador de serviços, Locatario
   state_registration          String? // Inscrição estadual
   email                       String?
   phone                       String?
   billing_address             String  // Endereço de faturamento
 
   inventory_item              InventoryItem[]
+  payment_control             PaymentControl[]
 
   business_unit_id            Int
   business_unit               BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)

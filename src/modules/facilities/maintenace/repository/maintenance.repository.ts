@@ -36,7 +36,7 @@ export class MaintenanceRepository {
             block: true,
             floor: true,
             space_type: true,
-            address: true,
+            building: true,
           },
         },
       },

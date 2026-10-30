@@ -7,7 +7,7 @@ export type FindMaintenanceRecord = Prisma.MaintenanceGetPayload<{
         block: true;
         floor: true;
         space_type: true;
-        address: true;
+        building: true;
       };
     };
   };

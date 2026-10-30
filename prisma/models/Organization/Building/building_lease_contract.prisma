@@ -1,0 +1,32 @@
+model BuildingLeaseContract {
+  id                  Int           @id @default(autoincrement())
+  building_id         Int
+  building            Building @relation(fields:[building_id], references:[id])
+  company_id          Int // empresa que está locando
+  // company
+  start_contract      DateTime // inicio do contrato
+  end_contract        DateTime // fim do contrato
+  value               Int // valor mensal do contrato
+  discount_percent    Int // pocentagem de desconto
+  discount_start_date DateTime // mês que inicia o desconto
+  discount_end_date   DateTime // mês em que termina o desconto
+  adjustment_month    Int // mês que será reajustado o valor do contrato
+  adjustment_index    String
+  description         String
+  status              String        // Sttus: ATIVO, INATIVO
+  
+  building_contract_amendment BuildingContractAmendment[]
+  
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields:[business_unit_id], references:[id])
+  
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
+}

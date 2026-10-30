@@ -1,0 +1,35 @@
+/*
+  BUILDING - É a unidade
+  Pode ser unidade propria ou alugada.
+
+*/
+model Building {
+  id                  Int           @id @default(autoincrement())
+  type                String        // Ex: PROPRIO, ALUGADO
+  zone                String        // Área em que está. Ex: Zona Norte (ZN), ZonaOeste (ZO)
+  short_address       String        // Endereço curto. Ex: Av. Paris, 84
+  full_address        String        // Endereço completo. Ex: Avenida Paris, Nº84 - Bonsucesso - RJ
+  map_google          String?       // O link para o google maps mostrando o local.
+  coordinate          String?       // Coordenadas do GPS, latitude e longitude
+  photo               String?       // Quando for para postgres SQL
+  status              String        // Sttus: ATIVO, INATIVO
+  
+  building_lease_contracts  BuildingLeaseContract[]
+
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields:[business_unit_id], references:[id])
+
+  @@unique([business_unit_id, full_address, short_address])
+
+  localizations       Localization[]
+  
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
+}

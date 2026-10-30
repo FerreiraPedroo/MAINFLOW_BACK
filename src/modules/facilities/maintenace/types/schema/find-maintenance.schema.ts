@@ -32,7 +32,7 @@ const LocalizationOutput = z.object({
       title: z.string(),
     })
     .nullable(),
-  address: z
+  building: z
     .object({
       short_address: z.string(),
     })

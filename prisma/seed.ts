@@ -29,10 +29,11 @@ async function main() {
         },
       ],
     },
-    address: {
+    building: {
       data: [
         {
           zone: "ZONA NORTE",
+          type: "PROPRIO",
           short_address: "Av. Paris, nº84",
           full_address: "Avenida Paris, nº84 - Bonsucesso - RJ",
           business_unit_id: 1,
@@ -40,6 +41,7 @@ async function main() {
         },
         {
           zone: "ZONA NORTE",
+          type: "PROPRIO",
           short_address: "Av. Paris, nº121 - Fundos",
           full_address: "Avenida Paris, nº121 - Fundos - Bonsucesso - RJ",
           map_google: null,
@@ -49,6 +51,7 @@ async function main() {
         },
         {
           zone: "ZONA OESTE",
+          type: "ALUGADO",
           short_address: "Av. Cesário de Melo, nº2551",
           full_address:
             "Av. Cesário de Melo, nº2551 - Campo Grande, Rio de Janeiro - RJ, 23052-102",
@@ -59,6 +62,7 @@ async function main() {
         },
         {
           zone: "ZONA OESTE",
+          type: "ALUGADO",
           short_address: "R. da Feira, nº256",
           full_address:
             "Rua da Feira, nº256 - Bangu, Rio de Janeiro - RJ, 21820-030",
@@ -429,7 +433,7 @@ async function main() {
           block_id: 1,
           floor_id: 1,
           space_type_id: 1,
-          address_id: 1,
+          building_id: 1,
           status: "ATIVO",
           business_unit_id: 1,
           created_by: 1,
@@ -439,7 +443,7 @@ async function main() {
           block_id: 1,
           floor_id: 1,
           space_type_id: 1,
-          address_id: 1,
+          building_id: 1,
           status: "ATIVO",
           business_unit_id: 1,
           created_by: 1,
@@ -449,7 +453,7 @@ async function main() {
           block_id: 1,
           floor_id: 1,
           space_type_id: 1,
-          address_id: 1,
+          building_id: 1,
           status: "ATIVO",
           business_unit_id: 1,
           created_by: 1,
@@ -856,7 +860,7 @@ async function main() {
     const businessUnit = await prisma.businessUnit.createMany(
       seeds.businessUnit,
     );
-    const address = await prisma.address.createMany(seeds.address);
+    const building = await prisma.building.createMany(seeds.building);
     const user = await prisma.user.createMany(seeds.user);
     const department = await prisma.department.createMany(seeds.department);
     const sector = await prisma.sector.createMany(seeds.sector);
@@ -884,7 +888,7 @@ async function main() {
     await prisma.contract.createMany(seeds.contract);
 
     console.log({
-      address,
+      building,
       businessUnit,
       department,
       sector,

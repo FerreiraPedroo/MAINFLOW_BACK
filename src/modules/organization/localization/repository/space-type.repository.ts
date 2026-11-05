@@ -6,7 +6,7 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { SpaceType } from "@prisma/client";
-import { CreateSpaceTypeData } from "../types/data/space-type-block.data";
+import { CreateSpaceTypeData } from "../types/data/create-space-type-block.data";
 
 @Injectable()
 export class SpaceTypeRepository {

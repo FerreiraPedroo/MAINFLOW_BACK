@@ -3,12 +3,13 @@ model Block {
   title               String
   status              String
 
+  localizations       Localization[]
+  rooms               Room[]
+
   business_unit_id    Int
   business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id])
 
   @@unique([business_unit_id, title])
-
-  Localization        Localization[]
 
   //SOFT DELETE
   created_at          DateTime      @default(now())

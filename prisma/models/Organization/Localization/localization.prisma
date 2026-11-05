@@ -5,6 +5,8 @@ model Localization {
   block             Block       @relation(fields: [block_id], references: [id])
   floor_id          Int
   floor             Floor       @relation(fields: [floor_id], references: [id])
+  room_id           Int?
+  room              Room?        @relation(fields: [room_id], references: [id])
   space_type_id     Int
   space_type        SpaceType   @relation(fields: [space_type_id], references: [id])
   building_id        Int

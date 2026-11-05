@@ -1,14 +1,22 @@
-import { LocalizationRepository } from "./repository/localization.repository";
-import { SpaceTypeRepository } from "./repository/space-type.repository";
-import { FloorRepository } from "./repository/floor.repository";
-import { BlockRepository } from "./repository/block.repository";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
+
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-import { CreateBlockRequest } from "./types/dto/create-block-request.dto";
-import { CreateFloorRequest } from "./types/dto/create-floor-request.dto";
-import { CreateSpaceTypeRequest } from "./types/dto/create-space-type-request.dto";
-import { CreateLocalizationRequest } from "./types/dto/create-localization-request.dto";
-import { UpdateLocalizationRequest } from "./types/dto/update-localization-request.dto";
+
+import {
+  CreateBlockRequest,
+  CreateFloorRequest,
+  CreateSpaceTypeRequest,
+  CreateLocalizationRequest,
+  UpdateLocalizationRequest,
+} from "./types";
+
+import {
+  LocalizationRepository,
+  SpaceTypeRepository,
+  FloorRepository,
+  BlockRepository,
+  RoomRepository,
+} from "./repository";
 
 @Injectable()
 export class LocalizationService {
@@ -17,6 +25,7 @@ export class LocalizationService {
     private floorRepository: FloorRepository,
     private spaceTypeRepository: SpaceTypeRepository,
     private localizationRepository: LocalizationRepository,
+    private roomRepository: RoomRepository,
   ) {}
 
   private prismaErrors(error: any): never {
@@ -238,7 +247,67 @@ export class LocalizationService {
   }
 
   ////////////////////////////////////////////////////////////////////////////////
-  // FlOOR
+  // ROOM
+  ////////////////////////////////////////////////////////////////////////////////
+  async findRooms() {
+    try {
+      const roomRecords = await this.roomRepository.findRooms();
+
+      return roomRecords.map((room) => ({
+        id: room.id,
+        title: room.title,
+        status: room.status,
+        floor: room.floor.title,
+        block: room.block.title,
+      }));
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+
+  async createRoom(request: CreateRoomRequest) {
+    const roomData = {
+      title: request.title,
+      status: request.status,
+      floor_id: request.floor_id,
+      block_id: request.block_id,
+    };
+
+    try {
+      const roomRecord = await this.blockRepository.createBlock(roomData);
+
+      return {
+        id: roomRecord.id,
+        title: roomRecord.title,
+        status: roomRecord.status,
+        floor: roomRecord.floor.title,
+        block: roomRecord.block.title,
+      };
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  async updateRoom(roomId: number, roomStatus: string) {
+    try {
+      const roomRecord = await this.roomRepository.updateRoom(
+        roomId,
+        roomStatus,
+      );
+
+      return {
+        id: roomRecord.id,
+        title: roomRecord.title,
+        status: roomRecord.status,
+        floor: roomRecord.floor.title,
+        block: roomRecord.block.title,
+      };
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // SPACE TYPES
   ////////////////////////////////////////////////////////////////////////////////
   async findSpaceTypes() {
     try {
@@ -288,4 +357,21 @@ export class LocalizationService {
       this.prismaErrors(error);
     }
   }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // LOCALIZATION BY BUILDING
+  ////////////////////////////////////////////////////////////////////////////////
+  async getLocalizationsByBuildingId(buildingId: number) {
+    try {
+      const localizationRecords =
+        await this.localizationRepository.findLocalizationsByBuildingId(
+          buildingId,
+        );
+
+      return localizationRecords;
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////
 }

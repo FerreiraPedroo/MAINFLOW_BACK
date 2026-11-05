@@ -38,6 +38,30 @@ export class LocalizationRepository {
     });
   }
 
+  async findLocalizationsByBuildingId(
+    buildingId: number,
+  ): Promise<LocalizationRecord[]> {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    return await this.db.client.localization.findMany({
+      where: {
+        building_id: buildingId,
+        business_unit_id: requestContext.business_unit_id,
+      },
+      include: {
+        block: {
+          select: { title: true },
+        },
+        floor: {
+          select: { title: true },
+        },
+        space_type: { select: { title: true } },
+        building: { select: { short_address: true } },
+      },
+    });
+  }
+
   async createLocalization(
     localizationData: CreateLocalizationData,
   ): Promise<LocalizationRecord> {

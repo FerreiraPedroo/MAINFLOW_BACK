@@ -1,0 +1,28 @@
+model Room {
+  id                  Int           @id @default(autoincrement())
+  title               String
+  status              String
+
+  floor_id            Int
+  floor               Floor         @relation(fields: [floor_id], references: [id])
+
+  block_id            Int
+  block               Block         @relation(fields: [block_id], references: [id])
+  
+  localization        Localization[]
+
+  business_unit_id    Int
+  business_unit       BusinessUnit  @relation(fields: [business_unit_id], references: [id])
+
+  @@unique([business_unit_id, floor_id, title])
+
+  //SOFT DELETE
+  created_at          DateTime      @default(now())
+  created_by          Int?
+
+  updated_at          DateTime?     @updatedAt
+  updated_by          Int?
+
+  deleted_at          DateTime?
+  deleted_by          Int?
+}

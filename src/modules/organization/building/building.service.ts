@@ -56,13 +56,25 @@ export class BuildingService {
       this.prismaErrors(error);
     }
   }
+
   async getBuilding(buildingId: number) {
     try {
-      return await this.buildingRepository.getBuilding(buildingId);
+      const buildingRecord =
+        await this.buildingRepository.getBuilding(buildingId);
+
+      const buildingInfo = {
+        ...buildingRecord,
+        localizations: buildingRecord?._count?.localizations || 0,
+        building_lease_contracts:
+          buildingRecord?._count?.building_lease_contracts || 0,
+      };
+
+      return buildingInfo;
     } catch (error) {
       this.prismaErrors(error);
     }
   }
+
   async createBuilding(request: CreateBuildingRequest) {
     const buildingData = {
       zone: request.zone,
@@ -93,6 +105,7 @@ export class BuildingService {
       this.prismaErrors(error);
     }
   }
+
   async updateBuilding(buildingId: number, request: UpdateBuildingRequest) {
     const buildingData = {
       ...(request.zone && { zone: request.zone }),

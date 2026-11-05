@@ -20,6 +20,7 @@ export class Buildingcontroller {
   async findBuilding() {
     return await this.buildingService.findBuilding();
   }
+
   @Get(":buildingId")
   @ValidateService({
     input: GetBuildingInputSchema,

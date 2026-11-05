@@ -14,9 +14,11 @@ const GetBuildingOutput = z.object({
   coordinate: z.string().nullable(),
   photo: z.string().nullable(),
   status: z.string().nullable(),
+  localizations: z.number(),
+  building_lease_contracts: z.number(),
 });
 
-export const GetBuildingOutputSchema = z.array(GetBuildingOutput);
+export const GetBuildingOutputSchema = GetBuildingOutput;
 
 // CONTROLLER
 

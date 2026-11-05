@@ -8,6 +8,7 @@ import { DatabaseService } from "@/common/infrastructure/database/prisma/databas
 import { CreateBuildingData } from "../types/data/create-building.data";
 import { UpdateBuildingData } from "../types/data/update-building.data";
 import { Building } from "@prisma/client";
+import { GetBuildingRecord } from "../types/record/get-building.record";
 
 @Injectable()
 export class BuildingRepository {
@@ -25,7 +26,7 @@ export class BuildingRepository {
     });
   }
 
-  async getBuilding(buildingId: number): Promise<Building | null> {
+  async getBuilding(buildingId: number): Promise<GetBuildingRecord | null> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
@@ -33,6 +34,11 @@ export class BuildingRepository {
       where: {
         id: buildingId,
         business_unit_id: requestContext.business_unit_id,
+      },
+      include: {
+        _count: {
+          select: { localizations: true, building_lease_contracts: true },
+        },
       },
     });
   }

@@ -24,6 +24,7 @@ model BusinessUnit {
   space_type                  SpaceType[]
   blocks                      Block[]
   floors                      Floor[]
+  rooms                       Room[]
 
   cost_centers                CostCenter[]
   payment_control             PaymentControl[]

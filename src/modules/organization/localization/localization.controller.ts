@@ -1,10 +1,20 @@
 import { LocalizationService } from "./localization.service";
 import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
-import type { CreateBlockRequest } from "./types/dto/create-block-request.dto";
-import type { CreateFloorRequest } from "./types/dto/create-floor-request.dto";
-import type { CreateSpaceTypeRequest } from "./types/dto/create-space-type-request.dto";
-import type { CreateLocalizationRequest } from "./types/dto/create-localization-request.dto";
-import type { UpdateLocalizationRequest } from "./types/dto/update-localization-request.dto";
+
+import { ValidateService } from "@/common/decorators/validate-service.decorator";
+
+import {
+  GetLocalizationByBuildingIdOutputSchema,
+  GetLocalizationByBuildingIdInputSchema,
+  CreateRoomInputSchema,
+  CreateRoomOutputSchema,
+  type CreateFloorRequest,
+  type CreateSpaceTypeRequest,
+  type CreateBlockRequest,
+  type CreateLocalizationRequest,
+  type UpdateLocalizationRequest,
+  type CreateRoomInputDto,
+} from "./types";
 
 @Controller("localizations")
 export class Localizationcontroller {
@@ -12,14 +22,11 @@ export class Localizationcontroller {
 
   ///////////////////////////////////////////////////////////////////////////////
   // LOCALIZATION
+  ///////////////////////////////////////////////////////////////////////////////
   @Get("")
   async findLocalization() {
     return await this.localizationService.findLocalization();
   }
-  // @Get("")
-  // async findLocalizationsByBuildingId() {
-  //   return await this.localizationService.findLocalizationsByBuildingId();
-  // }
   @Post("")
   async createLocalization(@Body() request: CreateLocalizationRequest) {
     return await this.localizationService.createLocalization(request);
@@ -37,6 +44,7 @@ export class Localizationcontroller {
 
   ///////////////////////////////////////////////////////////////////////////////
   // BLOCKS
+  ///////////////////////////////////////////////////////////////////////////////
   @Get("blocks")
   async findBlocks() {
     return await this.localizationService.findBlocks();
@@ -55,6 +63,7 @@ export class Localizationcontroller {
 
   ///////////////////////////////////////////////////////////////////////////////
   // FLOOR
+  ///////////////////////////////////////////////////////////////////////////////
   @Get("floors")
   async findFloors() {
     return await this.localizationService.findFloors();
@@ -72,7 +81,31 @@ export class Localizationcontroller {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
+  // ROOM
+  ///////////////////////////////////////////////////////////////////////////////
+  @Get("roms")
+  async findRooms() {
+    return await this.localizationService.findRooms();
+  }
+  @Post("rooms")
+  @ValidateService({
+    input: CreateRoomInputSchema,
+    output: CreateRoomOutputSchema,
+  })
+  async createRoom(@Body() request: CreateRoomInputDto) {
+    return await this.localizationService.createRoom(request);
+  }
+  @Put("rooms/:roomId")
+  async updateRoom(
+    @Param("roomId") roomId: number,
+    @Body("status") roomStatus: string,
+  ) {
+    return await this.localizationService.updateRoom(roomId, roomStatus);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
   // SPACE-TYPES
+  ///////////////////////////////////////////////////////////////////////////////
   @Get("space-types")
   async findSpaceTypes() {
     return await this.localizationService.findSpaceTypes();
@@ -90,5 +123,21 @@ export class Localizationcontroller {
       spaceTypeId,
       spaceTypeStatus,
     );
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // LOCALIZATIONS BY BUILDING ID
+  ///////////////////////////////////////////////////////////////////////////////
+  @Get("buildings/:buildingId")
+  @ValidateService({
+    input: GetLocalizationByBuildingIdInputSchema,
+    output: GetLocalizationByBuildingIdOutputSchema,
+  })
+  async getLocalizationsByBuildingId(@Param("buildingId") buildingId: number) {
+    const r =
+      await this.localizationService.getLocalizationsByBuildingId(buildingId);
+    console.log(r);
+
+    return r;
   }
 }

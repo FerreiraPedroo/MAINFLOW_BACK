@@ -56,6 +56,13 @@ export class MaintenanceService {
     }
   }
 
+  async getMaintenance(maintenanceId: number) {
+    try {
+      return await this.maintenanceRepository.getMaintenance(maintenanceId);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
   async findMaintenance({ year, month, week }: FindMaintenanceInput) {
     try {
       const weeks = getMonthWeeks(year, month);
@@ -69,7 +76,6 @@ export class MaintenanceService {
       this.prismaErrors(error);
     }
   }
-
   async createMaintenance(
     photo: CreateMaintenanceFileInput,
     maintenanceInput: CreateMaintenanceInput,
@@ -82,7 +88,7 @@ export class MaintenanceService {
       }
 
       const nowDate = new Date();
-      console.log(nowDate.toISOString());
+
       const maintenanceData = {
         status: "OPEN",
         open_date: nowDate.toISOString(),
@@ -106,6 +112,26 @@ export class MaintenanceService {
         await this.fileService.removeFile(photo.path);
       }
 
+      this.prismaErrors(error);
+    }
+  }
+
+  async openMaintenance(maintenanceId: number) {
+    try {
+      const openDate = new Date();
+
+      const maintenanceRecord =
+        await this.maintenanceRepository.getMaintenance(maintenanceId);
+
+      if (!maintenanceRecord) {
+        throw new Error("Manutenção não encontrada.");
+      }
+
+      return await this.maintenanceRepository.openMaintenance(
+        maintenanceId,
+        openDate.toISOString(),
+      );
+    } catch (error) {
       this.prismaErrors(error);
     }
   }

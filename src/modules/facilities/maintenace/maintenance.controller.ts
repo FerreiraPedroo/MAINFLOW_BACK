@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   UploadedFile,
@@ -19,6 +20,7 @@ import {
   FindMaintenanceOutputSchema,
 } from "./types";
 import type { CreateMaintenanceDto, CreateMaintenanceFileDto } from "./types";
+import { GetMaintenanceInputSchema, GetMaintenanceOutputSchema } from "./types/schema/get-maintenance.schema";
 
 @Controller("facilities/maintenance")
 export class MaintenanceController {
@@ -26,10 +28,19 @@ export class MaintenanceController {
 
   @Get()
   @ValidateService({
+    input: GetMaintenanceInputSchema,
+    output: GetMaintenanceOutputSchema,
+  })
+  async GetMaintenance(@Param("maintenanceId") maintenanceId: number) {
+    return await this.maintenanceService.getMaintenance(maintenanceId);
+  }
+
+  @Get()
+  @ValidateService({
     input: FindMaintenanceInputSchema,
     output: FindMaintenanceOutputSchema,
   })
-  async getMaintenance(
+  async findMaintenance(
     @Query("year") year: number,
     @Query("month") month: number,
     @Query("week") week: number,

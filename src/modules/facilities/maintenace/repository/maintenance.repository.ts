@@ -15,6 +15,17 @@ export class MaintenanceRepository {
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
+  async getMaintenance(maintenanceId: number) {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    return this.db.client.maintenance.findUnique({
+      where: {
+        id: maintenanceId,
+        business_unit_id: requestContext.business_unit_id,
+      },
+    });
+  }
   async findMaintenance(
     startDate: Date,
     endDate: Date,
@@ -22,7 +33,7 @@ export class MaintenanceRepository {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
-    return this.db.client.maintenance.findMany({
+    return await this.db.client.maintenance.findMany({
       where: {
         AND: [
           { open_date: { gte: startDate } },
@@ -42,7 +53,6 @@ export class MaintenanceRepository {
       },
     });
   }
-
   async createMaintenance(maintenanceData: MaintenanceData) {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
@@ -52,6 +62,20 @@ export class MaintenanceRepository {
         ...maintenanceData,
         business_unit_id: requestContext.business_unit_id,
         user_id: requestContext.user_id,
+      },
+    });
+  }
+  async openMaintenance(maintenanceId: number, openDate: string) {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    return await this.db.client.maintenance.update({
+      where: {
+        id: maintenanceId,
+        business_unit_id: requestContext.business_unit_id,
+      },
+      data: {
+        open_date: openDate,
       },
     });
   }

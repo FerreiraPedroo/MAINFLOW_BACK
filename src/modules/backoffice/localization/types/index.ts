@@ -10,6 +10,7 @@ export * from "./dto/create-floor-request.dto";
 export * from "./dto/create-localization-request.dto";
 export * from "./dto/create-space-type-request.dto";
 export * from "./dto/update-localization-request.dto";
+export * from "./dto/create-room-request.dto";
 
 export * from "./record/localization.record";
 export * from "./record/room.record";

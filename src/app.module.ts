@@ -16,13 +16,12 @@ import { OrganizationModule } from "@modules/organization/organization.module";
 
 import { UserModule } from "@modules/user/user.module";
 import { PeopleModule } from "@modules/people/people.module";
-import { ManagerModule } from "@modules/manager/manager.module";
+import { BackOfficeModule } from "@modules/backoffice/backoffice.module";
 import { ProcessModule } from "@modules/process/process.module";
 import { FacilitiesModule } from "@modules/facilities/facilities.module";
-import { SupplyChainModule } from "@modules/supply_chain/supply-chain.module";
+import { SupplyChainModule } from "@/modules/supply-chain/supply-chain.module";
 import { MaintenanceModule } from "@modules/facilities/maintenace/maintenance.module";
 import { DatabaseModule } from "@common/infrastructure/database/prisma/database.module";
-import { ContractModule } from "./modules/manager/contract";
 
 @Module({
   imports: [
@@ -35,19 +34,19 @@ import { ContractModule } from "./modules/manager/contract";
     DatabaseModule,
     FileModule,
 
+    BackOfficeModule,
+
     AuthModule,
     AdminModule,
 
     OrganizationModule,
 
     FacilitiesModule,
-    ManagerModule,
     PeopleModule,
     ProcessModule,
     SupplyChainModule,
     UserModule,
     MaintenanceModule,
-    ContractModule,
   ],
   controllers: [AppController],
   providers: [AppService],

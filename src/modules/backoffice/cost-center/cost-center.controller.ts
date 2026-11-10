@@ -5,7 +5,7 @@ import { CostCenterService } from "./cost-center.service";
 import type { FindCostCenterDto } from "./types/dto/find-cost-center.dto";
 import type { CreateCostCenterRequest } from "./types/dto/create-cost-center-request.dto";
 
-@Controller("cost-centers")
+@Controller("backoffice/cost-centers")
 export class CostCenterController {
   constructor(private costCenterService: CostCenterService) {}
 

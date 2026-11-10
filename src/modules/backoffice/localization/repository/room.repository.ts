@@ -6,7 +6,7 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { Room } from "@prisma/client";
-import { CreateRoomData, FindRoomRecord } from "../types";
+import { CreateRoomData, FindRoomRecord, UpdateRoomRecord } from "../types";
 
 @Injectable()
 export class RoomRepository {
@@ -35,23 +35,32 @@ export class RoomRepository {
       data: {
         title: roomData.title,
         status: roomData.status.toUpperCase(),
-        business_unit_id: Number(requestContext.business_unit_id),
-        created_by: Number(requestContext.user_id),
+        floor_id: roomData.floor_id,
+        block_id: roomData.block_id,
+        business_unit_id: requestContext.business_unit_id,
+        created_by: requestContext.user_id,
       },
     });
   }
-  async updateRoom(roomId: number, roomStatus: string): Promise<Room> {
+  async updateRoom(
+    roomId: number,
+    roomStatus: string,
+  ): Promise<UpdateRoomRecord> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.db.client.room.update({
       where: {
-        id: Number(roomId),
-        business_unit_id: Number(requestContext.business_unit_id),
+        id: roomId,
+        business_unit_id: requestContext.business_unit_id,
       },
       data: {
         status: roomStatus.toUpperCase(),
-        updated_by: Number(requestContext.user_id),
+        updated_by: requestContext.user_id,
+      },
+      include: {
+        floor: true,
+        block: true,
       },
     });
   }

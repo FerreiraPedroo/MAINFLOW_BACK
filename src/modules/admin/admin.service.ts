@@ -258,7 +258,6 @@ export class AdminService {
 
     return departmentsInfo;
   }
-
   async createDepartment(departmentInput: CreateDepartmentInput) {
     try {
       return await this.adminRepository.createDepartment(departmentInput);

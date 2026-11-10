@@ -8,6 +8,7 @@ import {
   CreateSpaceTypeRequest,
   CreateLocalizationRequest,
   UpdateLocalizationRequest,
+  type CreateRoomRequest,
 } from "./types";
 
 import {
@@ -264,7 +265,6 @@ export class LocalizationService {
       this.prismaErrors(error);
     }
   }
-
   async createRoom(request: CreateRoomRequest) {
     const roomData = {
       title: request.title,
@@ -274,19 +274,20 @@ export class LocalizationService {
     };
 
     try {
-      const roomRecord = await this.blockRepository.createBlock(roomData);
+      const roomRecord = await this.roomRepository.createRoom(roomData);
 
       return {
         id: roomRecord.id,
         title: roomRecord.title,
         status: roomRecord.status,
-        floor: roomRecord.floor.title,
-        block: roomRecord.block.title,
+        floor_id: roomRecord.floor_id,
+        block_id: roomRecord.block_id,
       };
     } catch (error) {
       this.prismaErrors(error);
     }
   }
+
   async updateRoom(roomId: number, roomStatus: string) {
     try {
       const roomRecord = await this.roomRepository.updateRoom(

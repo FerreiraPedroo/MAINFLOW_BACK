@@ -4,8 +4,8 @@ import z from "zod";
 export const Room = z.object({
   title: z.string(),
   status: z.string(),
-  block_id: z.string(),
-  floor_id: z.string(),
+  block_id: z.coerce.number(),
+  floor_id: z.coerce.number(),
 });
 
 export const CreateRoomInputSchema = z.tuple([Room]);

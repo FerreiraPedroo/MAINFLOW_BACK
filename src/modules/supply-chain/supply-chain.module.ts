@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { ProcurementModule } from "@modules/supply_chain/modules/procurement/procurement.module";
-import { InventoryModule } from "@modules/supply_chain/modules/inventory_management/inventory.module";
+import { ProcurementModule } from "@/modules/supply-chain/modules/procurement/procurement.module";
+import { InventoryModule } from "@/modules/supply-chain/modules/inventory_management/inventory.module";
 
 @Module({
   imports: [ProcurementModule, InventoryModule],

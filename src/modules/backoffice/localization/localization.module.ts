@@ -9,16 +9,18 @@ import { BlockRepository } from "./repository/block.repository";
 import { FloorRepository } from "./repository/floor.repository";
 import { SpaceTypeRepository } from "./repository/space-type.repository";
 import { LocalizationRepository } from "./repository/localization.repository";
+import { RoomRepository } from "./repository";
 
 @Module({
   imports: [LocalStorageContextModule],
   controllers: [Localizationcontroller],
   providers: [
     LocalizationService,
+    LocalizationRepository,
+    RoomRepository,
     BlockRepository,
     FloorRepository,
     SpaceTypeRepository,
-    LocalizationRepository,
   ],
 })
 export class LocalizationModule {}

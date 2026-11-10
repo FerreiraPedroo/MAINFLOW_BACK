@@ -13,7 +13,7 @@ import {
   UpdateContractOutputSchema,
 } from "./types";
 
-@Controller("contracts")
+@Controller("backoffice/contracts")
 export class ContractController {
   constructor(private readonly contractService: ContractService) {}
 

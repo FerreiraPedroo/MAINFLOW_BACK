@@ -16,6 +16,10 @@ model BusinessUnit {
   user_sessions   UserSession[]
   user_activities UserActivity[]
 
+  //BACKOFFICE
+  parties             Party[]
+  payment_submissions PaymentSubmission[]
+  
   // ORGANIZATION
   buildings                   Building[]
   building_lease_contract     BuildingLeaseContract[]
@@ -27,7 +31,6 @@ model BusinessUnit {
   rooms                       Room[]
 
   cost_centers                CostCenter[]
-  payment_control             PaymentControl[]
 
   contracts                   Contract[]
 

@@ -1,0 +1,32 @@
+
+model PaymentSubmission {
+  id                    Int     @id @default(autoincrement())
+
+  invoice_number        String    // Numero da NF/FATURA/BOLETO/Etc. que identifica aquele pagamento.
+  invoice_type          String    // Tipo de documento.
+  invoice_date          DateTime  // Data de emissão do documento.
+  due_date              DateTime  // Data de vencimento
+  billing_period        DateTime  // Referente ao faturamento.
+  total_amount          Float     // Valor da NF/FATURA/BOLETO/etc.
+
+  payment_send_date     DateTime  // Data de envio da NF/FATURA/BOLETO para o financeiro.
+  attached_document     Json?     // Um array de strings com a url do documento.
+  
+  description           String?
+
+  party_id              Int
+  party                 Party     @relation(fields:[party_id], references:[id], onDelete: Restrict)
+
+  business_unit_id      Int
+  business_unit         BusinessUnit  @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+  
+  //SOFT DELETE
+  created_at            DateTime      @default(now())
+  created_by            Int?
+
+  updated_at            DateTime?     @updatedAt
+  updated_by            Int?
+
+  deleted_at            DateTime?
+  deleted_by            Int?
+}

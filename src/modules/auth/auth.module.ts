@@ -8,8 +8,7 @@ import { UserModule } from "../user/user.module";
 import { AuthController } from "./auth.controller";
 
 import { AuthService } from "./auth.service";
-import { EncryptService } from "@/common/service/encrypt.service";
-
+import { EncryptUtil } from "@/common/util/encrypt.util";
 
 @Module({
   imports: [
@@ -21,6 +20,6 @@ import { EncryptService } from "@/common/service/encrypt.service";
     }),
   ],
   controllers: [AuthController],
-  providers: [EncryptService, AuthService],
+  providers: [EncryptUtil, AuthService],
 })
 export class AuthModule {}

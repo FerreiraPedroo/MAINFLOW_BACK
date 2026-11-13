@@ -5,3 +5,5 @@ prisma/
 .vscode/
 temp/
 test/
+/node_modules
+node_modules\.prisma

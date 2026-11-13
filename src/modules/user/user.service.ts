@@ -3,7 +3,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 
 import { FileService } from "@common/modules/file/file.service";
-import { EncryptService } from "@common/service/encrypt.service";
+import { EncryptUtilfrom "@common/service/encrypt.service";
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
 import { UserRepository } from "./infrastructure/repositories/user.repository";
@@ -14,7 +14,7 @@ import { CreateUserInput, CreateUserFileInput } from "./contracts";
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly encryptService: EncryptService,
+    private readonly EncryptUtil: EncryptUtil,
     private readonly fileService: FileService,
     private readonly database: DatabaseService,
   ) {}
@@ -76,7 +76,7 @@ export class UserService {
       );
     }
 
-    const passwordHash = await this.encryptService.generateHash(
+    const passwordHash = await this.EncryptUtil.generateHash(
       request.password,
     );
 

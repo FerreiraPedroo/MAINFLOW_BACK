@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
-export class EncryptService {
+export class EncryptUtil {
   private readonly saltRounds = 10;
 
   constructor() {}

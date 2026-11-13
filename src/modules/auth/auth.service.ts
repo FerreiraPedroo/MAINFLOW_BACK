@@ -9,7 +9,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { EncryptService } from "@common/service/encrypt.service";
+import { EncryptUtil } from "@/common/util/encrypt.util";
 import { UserActivityService } from "./../user/user-activity.service";
 
 import { SectorItem } from "./data/user-activities.data";
@@ -23,7 +23,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    private readonly encryptService: EncryptService,
+    private readonly EncryptUtil: EncryptUtil,
     private readonly userActivityService: UserActivityService,
   ) {}
 
@@ -77,7 +77,7 @@ export class AuthService {
       throw new UnauthorizedException("Usuário ou senha errados.");
     }
 
-    const passwordCompare = await this.encryptService.compareHash(
+    const passwordCompare = await this.EncryptUtil.compareHash(
       userInput.password,
       userRecord.password,
     );

@@ -2,7 +2,11 @@ import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { PaymentSubmissionRepository } from "./repositories/payment-submission.repository";
-import { FindPaymentSubmissionResponseDto, type FindPaymentSubmissionInputDto } from "./types";
+import {
+  FindPaymentSubmissionResponseDto,
+  type FindPaymentSubmissionInputDto,
+} from "./types";
+import { searchQueryBuild } from "@/common/utils/search-query-builder.util";
 
 @Injectable()
 export class PaymentSubmissionService {
@@ -47,13 +51,10 @@ export class PaymentSubmissionService {
     }
   }
 
-  async findAll(
+  async find(
     query: FindPaymentSubmissionInputDto,
   ): Promise<FindPaymentSubmissionResponseDto[]> {
-
-    const queryBuild = 
-
-
+    const queryBuild = searchQueryBuild<FindPaymentSubmissionInputDto>(query);
     const result = await this.paymentSubmissionRepository.findAll();
 
     const paymentSubmissionList = result.map((payment: any) => ({

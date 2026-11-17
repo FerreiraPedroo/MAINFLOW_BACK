@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { EncryptUtil } from "@/common/util/encrypt.util";
+import { EncryptUtil } from "@/common/utils/encrypt.util";
 import { LocalStorageContextModule } from "@/common/context/local-storage-context.module";
 
 import { UserController } from "./user.controller";
@@ -8,10 +8,7 @@ import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
 import { UserActivityService } from "./user-activity.service";
 
-import {
-  UserActivityRepository,
-  UserRepository,
-} from "./infrastructure/repositories";
+import { UserActivityRepository, UserRepository } from "./repositories";
 
 @Module({
   imports: [LocalStorageContextModule],

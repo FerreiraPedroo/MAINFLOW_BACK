@@ -5,6 +5,7 @@ const CreateSectorInput = z.object({
   title: z.string(),
   department_id: z.coerce.number(),
   icon: z.string().nullable().optional(),
+  url: z.string(),
 });
 export const CreateSectorInputSchema = z.tuple([CreateSectorInput]);
 
@@ -13,6 +14,7 @@ export const CreateSectorOutputSchema = z.object({
   title: z.string(),
   department_id: z.coerce.number(),
   icon: z.string().nullable().optional(),
+  url: z.string(),
 });
 
 // CONTROLLER

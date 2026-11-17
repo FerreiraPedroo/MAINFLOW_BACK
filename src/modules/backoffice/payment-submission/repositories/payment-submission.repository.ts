@@ -3,7 +3,7 @@ import { PaymentSubmission } from "@prisma/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
-import { CreatePaymentSubmissionData } from "../types/data/create-payment-submission.data";
+import { CreatePaymentSubmissionData } from "../types";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
 

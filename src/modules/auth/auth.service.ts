@@ -1,4 +1,3 @@
-import { UserService } from "./../user/user.service";
 import {
   Inject,
   Injectable,
@@ -9,11 +8,12 @@ import { JwtService } from "@nestjs/jwt";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { EncryptUtil } from "@/common/util/encrypt.util";
-import { UserActivityService } from "./../user/user-activity.service";
+import { EncryptUtil } from "@/common/utils/encrypt.util";
+import { UserActivityService } from "@modules/user";
+import { UserService } from "@modules/user";
 
-import { SectorItem } from "./data/user-activities.data";
-import { UserRecord } from "../user/contracts";
+import { UserRecord } from "@modules/user/index";
+import { SectorItem } from "./types";
 
 import { AuthLoginInput, AuthLoginOutput, UserActivitiesInfo } from "./types";
 
@@ -74,7 +74,7 @@ export class AuthService {
     }
 
     if (!userRecord) {
-      throw new UnauthorizedException("Usuário ou senha errados.");
+      throw new UnauthorizedException("Usuário e(ou) senha errado(s).");
     }
 
     const passwordCompare = await this.EncryptUtil.compareHash(
@@ -83,7 +83,7 @@ export class AuthService {
     );
 
     if (!passwordCompare) {
-      throw new UnauthorizedException("Senha ou usuário errados.");
+      throw new UnauthorizedException("Usuário e(ou) senha errado(s).");
     }
 
     const userInfo = {
@@ -93,14 +93,13 @@ export class AuthService {
       email: userRecord.email,
     };
 
-    const userActivities = await this.userActivityService.findUserActivities(
-      userRecord.id,
-    );
+    const userActivitiesRecord =
+      await this.userActivityService.findUserActivities(userRecord.id);
 
     const userActivityInfo: UserActivitiesInfo[] = [];
 
-    if (userActivities) {
-      for (const userActivity of userActivities) {
+    if (userActivitiesRecord) {
+      for (const userActivity of userActivitiesRecord) {
         const foundDepartmentInfo = userActivityInfo.find(
           (dpto) => dpto.id == userActivity.department_id,
         );
@@ -146,13 +145,13 @@ export class AuthService {
     const tokenInfo = await this.jwtService.signAsync({
       payload: {
         user_id: userRecord.id,
-        business_id: userRecord.business_unit_id,
+        business_unit_id: userRecord.business_unit_id,
       },
     });
 
     await this.cacheManager.set(
-      `user_id:${userRecord.id}:business_id:${userRecord.business_unit_id}`,
-      userActivities,
+      `user_id:${userRecord.id}:business_unit_id:${userRecord.business_unit_id}`,
+      userActivitiesRecord,
     );
 
     return { userInfo, tokenInfo, userActivityInfo };

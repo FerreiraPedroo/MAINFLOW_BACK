@@ -1,4 +1,4 @@
-import { UserActivityData } from "@/modules/user/contracts";
+import { UserActivityData } from "@modules/user";
 
 export interface LocalStorageContextData {
   user_id: number;

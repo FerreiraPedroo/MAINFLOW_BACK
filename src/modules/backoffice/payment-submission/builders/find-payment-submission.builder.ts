@@ -1,7 +1,3 @@
-
-export function findPaymentSubmissionQueryBuild(query) {
-  const { filter, sort, pagination } = query;
-
-
-
+export function findPaymentSubmissionQueryBuild() {
+  // const { filter, sort, pagination } = query;
 }

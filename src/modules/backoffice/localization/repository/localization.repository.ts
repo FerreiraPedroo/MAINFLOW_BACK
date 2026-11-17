@@ -5,9 +5,9 @@ import { LocalStorageContextService } from "@/common/context/local-storage-conte
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
-import { CreateLocalizationData } from "../types/data/create-localization.data";
-import { LocalizationRecord } from "../types/record/localization.record";
-import { UpdateLocalizationData } from "../types/data/update-localization.data";
+import { CreateLocalizationData } from "../types";
+import { LocalizationRecord } from "../types";
+import { UpdateLocalizationData } from "../types";
 
 @Injectable()
 export class LocalizationRepository {
@@ -21,7 +21,7 @@ export class LocalizationRepository {
       this.requestContext.getStore() as LocalStorageContextData;
 
     return await this.db.client.localization.findMany({
-      where: { business_unit_id: Number(requestContext.business_unit_id) },
+      where: { business_unit_id: requestContext.business_unit_id },
       select: {
         id: true,
         title: true,

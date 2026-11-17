@@ -11,21 +11,24 @@ export const AuthLoginInputSchema = z.tuple([AuthLogin]);
 const activity = z.object({
   id: z.number(),
   title: z.string(),
-  url: z.string().optional(),
+  order: z.number().optional(),
   icon: z.string().nullable(),
+  url: z.string().optional(),
 });
 const sectorItem = z.object({
   id: z.number(),
   department_id: z.number(),
   title: z.string(),
+  order: z.number().optional(),
   icon: z.string().nullable(),
+  url: z.string(),
   activities: z.array(activity),
 });
 const userDepartment = z.object({
   id: z.number(),
   title: z.string(),
-  url: z.string(),
   icon: z.string().nullable(),
+  url: z.string(),
   activities: z.array(z.union([sectorItem, activity])),
 });
 export const AuthLoginOutputSchema = z.object({

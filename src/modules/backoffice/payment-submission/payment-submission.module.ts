@@ -4,13 +4,13 @@ import { LocalStorageContextModule } from "@/common/context/local-storage-contex
 
 import { PaymentSubmissionService } from "./payment-submission.service";
 
-import { PaymentSubmissionionionRepository } from "./repositories/payment-submission.repository";
-import { PaymentSubmissionionionController } from "./payment-submission.controller";
+import { PaymentSubmissionRepository } from "./repositories/payment-submission.repository";
+import { PaymentSubmissionController } from "./payment-submission.controller";
 
 @Module({
   imports: [LocalStorageContextModule],
-  controllers: [PaymentSubmissionionionController],
-  providers: [PaymentSubmissionionionSerPayPaymentSubmissionontrolRepository],
+  controllers: [PaymentSubmissionController],
+  providers: [PaymentSubmissionService, PaymentSubmissionRepository],
   exports: [PaymentSubmissionRepository],
 })
 export class PaymentSubmissionModule {}

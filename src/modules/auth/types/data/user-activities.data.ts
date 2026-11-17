@@ -11,6 +11,7 @@ export type SectorItem = {
   department_id: number;
   title: string;
   icon: string | null;
+  url: string;
   activities: Activity[];
 };
 

@@ -1,7 +1,7 @@
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-import { UserActivityRepository } from "./infrastructure/repositories";
+import { UserActivityRepository } from "./repositories";
 
 @Injectable()
 export class UserActivityService {
@@ -14,7 +14,7 @@ export class UserActivityService {
       switch (error.code) {
         case "P2001": {
           throw new UnprocessableEntityException(
-            `O bloco a ser excluído não encontrado.`,
+            `O registro a ser excluído não encontrado.`,
           );
           break;
         }
@@ -25,7 +25,7 @@ export class UserActivityService {
             .toUpperCase();
 
           throw new UnprocessableEntityException(
-            `Existe um block com esses dados: ${fields}`,
+            `Existe um registro com esses dados: ${fields}`,
           );
           break;
         }
@@ -49,7 +49,7 @@ export class UserActivityService {
 
   async findUserActivities(user_id: number) {
     try {
-      return this.userActivityRepository.findUserActivities(user_id);
+      return await this.userActivityRepository.findUserActivities(user_id);
     } catch (error) {
       this.prismaErrors(error);
     }

@@ -119,7 +119,7 @@ export class AdminService {
               foundSector.activities.push(activitiesRecord.activity);
             } else {
               foundActivityInfo.activities.push({
-                ...(activitiesRecord.sector as SectorItem),
+                ...(activitiesRecord.sector as unknown as SectorItem),
                 activities: [activitiesRecord.activity],
               });
             }

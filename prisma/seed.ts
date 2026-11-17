@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-// import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
+// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-});
 // export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 // });
+export const prisma: PrismaClient = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -23,9 +23,14 @@ async function main() {
           cnpj: "01.002.004/0001-02",
         },
         {
-          title: "MAUA",
+          title: "Diferencia Service",
           photos: "",
-          cnpj: "09.009.009/0009-09",
+          cnpj: "01.001.001/0001-01",
+        },
+        {
+          title: "MA Engenharia",
+          photos: "",
+          cnpj: "02.002.002/0002-02",
         },
       ],
     },
@@ -79,8 +84,17 @@ async function main() {
           email: "email@email.com",
           password:
             "$2b$10$Y7JL8xYn5y.dkdSm7UKbXeBfz9F.N9NmBSOvswOKvZInFwA0RchRW",
-          name: "Usuário Admin",
-          birth_date: null,
+          name: "Usuário",
+          birth_date: "2026-05-30T00:00:00.000Z",
+          photo: null,
+          business_unit_id: 1,
+        },
+        {
+          email: "master@master.com",
+          password:
+            "$2b$10$Y7JL8xYn5y.dkdSm7UKbXeBfz9F.N9NmBSOvswOKvZInFwA0RchRW",
+          name: "Usuário Master",
+          birth_date: "2030-05-30T00:00:00.000Z",
           photo: null,
           business_unit_id: 1,
         },
@@ -89,13 +103,23 @@ async function main() {
     department: {
       data: [
         {
-          title: "Gerenciamento",
-          url: "/management",
+          title: "Backoffice",
+          url: "/backoffice",
           icon: null,
         },
         {
           title: "Facilities",
           url: "/facilities",
+          icon: null,
+        },
+        {
+          title: "Suprimentos",
+          url: "/supply",
+          icon: null,
+        },
+        {
+          title: "Segurança do Trabalho",
+          url: "/safety",
           icon: null,
         },
       ],
@@ -105,10 +129,130 @@ async function main() {
         {
           title: "Localização",
           icon: null,
+          url: "/localizations",
           department_id: 1,
         },
       ],
     },
+    activity: {
+      data: [
+        {
+          title: "Centro de custo",
+          url: "/cost-centers",
+          icon: "cost_centers",
+          department_id: 1,
+        },
+        {
+          title: "Grupos de pagamentos",
+          url: "/payment-groups",
+          icon: "payment_groups",
+          department_id: 1,
+        },
+        {
+          title: "Controle de pagamentos",
+          url: "/payment-controls",
+          icon: "payment_controls",
+          department_id: 1,
+        },
+        // {
+        //   title: "Localização",
+        //   url: "/manager/localizations",
+        //   icon: null,
+        //   department_id: 1,
+        //   sector_id: 1,
+        // },
+        // {
+        //   title: "Prédio",
+        //   url: "/manager/localizations/buildings",
+        //   department_id: 1,
+        //   sector_id: 1,
+        // },
+        // {
+        //   title: "Andar",
+        //   url: "/manager/localizations/building-floors",
+        //   department_id: 1,
+        //   sector_id: 1,
+        // },
+        // {
+        //   title: "Espaços",
+        //   url: "/manager/localizations/building-spaces",
+        //   department_id: 1,
+        //   sector_id: 1,
+        // },
+        // {
+        //   title: "Divisão",
+        //   url: "/manager/localizations/building-divisions",
+        //   department_id: 1,
+        //   sector_id: 1,
+        // },
+        // {
+        //   title: "Facilities",
+        //   url: "/facilities",
+        //   department_id: 2,
+        //   sector_id: null,
+        // },
+        // {
+        //   title: "Manutenção",
+        //   url: "/facilities/maintenance",
+        //   department_id: 2,
+        //   sector_id: null,
+        // },
+        // {
+        //   title: "Projetos",
+        //   url: "/facilities/projects",
+        //   department_id: 2,
+        //   sector_id: null,
+        // },
+      ],
+    },
+    businessUnitActivity: {
+      data: [
+        {
+          department_id: 1,
+          sector_id: null,
+          activity_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          department_id: 1,
+          sector_id: null,
+          activity_id: 2,
+          business_unit_id: 1,
+        },
+        {
+          department_id: 1,
+          sector_id: null,
+          activity_id: 3,
+          business_unit_id: 1,
+        },
+      ],
+    },
+    userActivity: {
+      data: [
+        {
+          user_id: 1,
+          order: 1,
+          department_id: 1,
+          activity_id: 1,
+          business_unit_id: 1,
+        },
+        {
+          user_id: 1,
+          order: 2,
+          department_id: 1,
+          activity_id: 2,
+          business_unit_id: 1,
+        },
+        {
+          user_id: 1,
+          order: 3,
+          department_id: 1,
+          activity_id: 3,
+          business_unit_id: 1,
+        },
+      ],
+    },
+
     centerCost: {
       data: [
         {
@@ -126,104 +270,7 @@ async function main() {
           business_unit_id: 1,
         },
       ],
-    },
-    activity: {
-      data: [
-        {
-          title: "Gerenciamento",
-          url: "/manager",
-          icon: null,
-          department_id: 1,
-        },
-        {
-          title: "Localização",
-          url: "/manager/localizations",
-          icon: null,
-          department_id: 1,
-          sector_id: 1,
-        },
-        {
-          title: "Prédio",
-          url: "/manager/localizations/buildings",
-          department_id: 1,
-          sector_id: 1,
-        },
-        {
-          title: "Andar",
-          url: "/manager/localizations/building-floors",
-          department_id: 1,
-          sector_id: 1,
-        },
-        {
-          title: "Espaços",
-          url: "/manager/localizations/building-spaces",
-          department_id: 1,
-          sector_id: 1,
-        },
-        {
-          title: "Divisão",
-          url: "/manager/localizations/building-divisions",
-          department_id: 1,
-          sector_id: 1,
-        },
-        {
-          title: "Centro de custo",
-          url: "/manager/cost-center",
-          department_id: 1,
-        },
-        {
-          title: "Grupos de pagamentos",
-          url: "/manager/payment-groups",
-          department_id: 1,
-        },
-        {
-          title: "Facilities",
-          url: "/facilities",
-          department_id: 2,
-          sector_id: null,
-        },
-        {
-          title: "Manutenção",
-          url: "/facilities/maintenance",
-          department_id: 2,
-          sector_id: null,
-        },
-        {
-          title: "Projetos",
-          url: "/facilities/projects",
-          department_id: 2,
-          sector_id: null,
-        },
-      ],
-    },
-    businessUnitActivity: {
-      data: [
-        {
-          department_id: 1,
-          sector_id: null,
-          activity_id: 1,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          activity_id: 2,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          activity_id: 3,
-          business_unit_id: 1,
-        },
-        {
-          department_id: 1,
-          sector_id: 1,
-          activity_id: 4,
-          business_unit_id: 1,
-        },
-      ],
-    },
+    },    
     processStepModel: {
       data: [
         {
@@ -603,103 +650,6 @@ async function main() {
             "https://gmidistribuidora.agilecdn.com.br/203-1_1.jpg",
           business_unit_id: 1,
           created_by: 1,
-        },
-      ],
-    },
-    userActivity: {
-      data: [
-        {
-          user_id: 1,
-          order: 1,
-          department_id: 1,
-          activity_id: 1,
-          business_unit_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 2,
-          department_id: 1,
-          activity_id: 2,
-          business_unit_id: 1,
-          sector_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 3,
-          department_id: 1,
-          activity_id: 3,
-          business_unit_id: 1,
-          sector_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 4,
-          department_id: 1,
-          activity_id: 4,
-          business_unit_id: 1,
-          sector_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 5,
-          department_id: 1,
-          activity_id: 5,
-          business_unit_id: 1,
-          sector_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 6,
-          department_id: 1,
-          activity_id: 6,
-          business_unit_id: 1,
-          sector_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 7,
-          department_id: 1,
-          activity_id: 7,
-          business_unit_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 8,
-          department_id: 1,
-          activity_id: 8,
-          business_unit_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 9,
-          department_id: 1,
-          activity_id: 9,
-          business_unit_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 10,
-          department_id: 1,
-          activity_id: 10,
-          business_unit_id: 1,
-          // created_by: 1,
-        },
-        {
-          user_id: 1,
-          order: 11,
-          department_id: 1,
-          activity_id: 11,
-          business_unit_id: 1,
-          // created_by: 1,
         },
       ],
     },

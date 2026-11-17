@@ -13,12 +13,12 @@ import { ValidateService } from "@/common/decorators/validate-service.decorator"
 
 import { UserService } from "./user.service";
 
-import type { CreateUserDto, CreateUserFileDto } from "./contracts";
+import type { CreateUserDto, CreateUserFileDto } from "./types";
 import {
   CreateUserInputSchema,
   CreateUserOutputSchema,
   GetUsersOutputSchema,
-} from "./contracts";
+} from "./types";
 
 @Controller("/users")
 export class UserController {

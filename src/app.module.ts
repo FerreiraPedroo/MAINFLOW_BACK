@@ -12,7 +12,6 @@ import { LocalStorageContextModule } from "@/common/context/local-storage-contex
 
 import { AuthModule } from "@modules/auth/auth.module";
 import { AdminModule } from "@modules/admin/admin.module";
-import { OrganizationModule } from "@modules/organization/organization.module";
 
 import { UserModule } from "@modules/user/user.module";
 import { PeopleModule } from "@modules/people/people.module";
@@ -38,8 +37,6 @@ import { DatabaseModule } from "@common/infrastructure/database/prisma/database.
 
     AuthModule,
     AdminModule,
-
-    OrganizationModule,
 
     FacilitiesModule,
     PeopleModule,

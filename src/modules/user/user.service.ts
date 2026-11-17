@@ -3,12 +3,12 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 import { Injectable, UnprocessableEntityException } from "@nestjs/common";
 
 import { FileService } from "@common/modules/file/file.service";
-import { EncryptUtilfrom "@common/service/encrypt.service";
+import { EncryptUtil } from "@/common/utils/encrypt.util";
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
-import { UserRepository } from "./infrastructure/repositories/user.repository";
+import { UserRepository } from "./repositories";
 
-import { CreateUserInput, CreateUserFileInput } from "./contracts";
+import { CreateUserInput, CreateUserFileInput } from "./types";
 
 @Injectable()
 export class UserService {
@@ -76,9 +76,7 @@ export class UserService {
       );
     }
 
-    const passwordHash = await this.EncryptUtil.generateHash(
-      request.password,
-    );
+    const passwordHash = await this.EncryptUtil.generateHash(request.password);
 
     let photoUrl: string | null = null;
     if (photo) {

@@ -1,15 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-// import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+// import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { UnprocessableEntityException } from "@nestjs/common";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-// export const prisma: PrismaClient = new PrismaClient({
-//   adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
-// });
 export const prisma: PrismaClient = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+  adapter: new PrismaBetterSqlite3({ url: "file:./dev.db" }),
 });
+// export const prisma: PrismaClient = new PrismaClient({
+//   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+// });
 
 async function main() {
   console.log("Iniciando o Seed do Prisma ORM");
@@ -249,6 +249,47 @@ async function main() {
           department_id: 1,
           activity_id: 3,
           business_unit_id: 1,
+        },
+      ],
+    },
+
+    businessPartner: {
+      data: [
+        {
+          legal_name: "3M BRASIL COMERCIALIZADORA DE MATERIAIS",
+          trade_name: "3M BRASIL",
+          business_partner_type: "PJ",
+          tax_number: "123123100001",
+          address: "Rua do Brasil, 666",
+          role: "['FORNECEDOR']",
+          contact: "[]",
+          logo: null,
+          created_by: 1,
+          business_unit_id: 1
+        },
+        {
+          legal_name: "AGUAS DO RIO 4 SPE S.A",
+          trade_name: "AGUAS DO RIO",
+          business_partner_type: "PJ",
+          tax_number: "42644220000106",
+          address: "Rua da Carioca",
+          role: "['CONCESSIONARIA']",
+          contact: "[]",
+          logo: null,
+          created_by: 1,
+          business_unit_id: 1
+        },
+        {
+          legal_name: "BMB MATERIAL DE CONSTRUCAO S.A.",
+          trade_name: "Obramax Atacado de Construção",
+          business_partner_type: "PJ",
+          tax_number: "23476033001775",
+          address: "Avenida Brasil, 22693, Glb 13 a Pal 17358",
+          role: "['FORNECEDOR']",
+          contact: "[]",
+          logo: null,
+          created_by: 1,
+          business_unit_id: 1
         },
       ],
     },
@@ -547,28 +588,7 @@ async function main() {
         },
       ],
     },
-    supplier: {
-      data: [
-        {
-          legal_name: "3M BRASIL",
-          tax_number: "123123100001",
-          supplier_type: "PESSOA JURIDICA",
-          supplier_category: "FORNECEDOR",
-          billing_address: "Escócia",
-          business_unit_id: 1,
-          created_by: 1,
-        },
-        {
-          legal_name: "OBRA MAX",
-          tax_number: "321321100044",
-          supplier_type: "PESSOA JURIDICA",
-          supplier_category: "FORNECEDOR",
-          billing_address: "Guadalupe/Brasil",
-          business_unit_id: 1,
-          created_by: 1,
-        },
-      ],
-    },
+
     inventoryItem: {
       data: [
         {
@@ -578,8 +598,8 @@ async function main() {
           category: "ELÉTRICO",
           sub_category: "LÂMPADAS",
           type: "MATERIAL",
-          business_unit_id: 1,
           created_by: 1,
+          business_unit_id: 1,
         },
         {
           title: "LÂMPADA FLUORESCENTE TUBULAR 20W",
@@ -641,7 +661,7 @@ async function main() {
           description:
             "Fita isolante de PVC para uso geral e instalações elétricas residenciais de baixa tensão. Possui propriedade antichama, excelente flexibilidade e ótima adesão. Indicada para isolamento de fios e cabos elétricos, emendas e reparos em circuitos de iluminação.",
           hs_code: "3919.10.20",
-          manufacturer_id: 1,
+          manufacturer_id: 3,
           manufacturer_part_number: "7891040004386",
           manufacturer_catalog: "JANEIRO 2020",
           manufacturer_data_sheet:
@@ -653,6 +673,7 @@ async function main() {
         },
       ],
     },
+    
     maintenance: {
       data: [
         {
@@ -831,7 +852,7 @@ async function main() {
     await prisma.spaceType.createMany(seeds.localizationSpaceTypes);
     await prisma.localization.createMany(seeds.localization);
     await prisma.people.createMany(seeds.people);
-    await prisma.supplier.createMany(seeds.supplier);
+    await prisma.businessPartner.createMany(seeds.businessPartner);
     await prisma.inventoryItem.createMany(seeds.inventoryItem);
     await prisma.userActivity.createMany(seeds.userActivity);
     await prisma.maintenance.createMany(seeds.maintenance);

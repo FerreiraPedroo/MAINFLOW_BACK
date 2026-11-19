@@ -3,9 +3,13 @@ import { PaymentSubmission } from "@prisma/client";
 
 import { DatabaseService } from "@/common/infrastructure/database/prisma/database.service";
 
-import { CreatePaymentSubmissionData } from "../types";
 import { LocalStorageContextService } from "@/common/context/local-storage-context.service";
 import { LocalStorageContextData } from "@/common/context/interfaces/local-storage-context.data";
+
+import {
+  CreatePaymentSubmissionRequest,
+  PaymentSubmissionRecord,
+} from "./../types";
 
 @Injectable()
 export class PaymentSubmissionRepository {
@@ -14,16 +18,31 @@ export class PaymentSubmissionRepository {
     private readonly requestContext: LocalStorageContextService,
   ) {}
 
-  async findById(id: number): Promise<PaymentSubmission | null> {
+  async getById(id: number): Promise<PaymentSubmission | null> {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
     return await this.db.client.paymentSubmission.findUnique({
-      where: { id },
+      where: { id, business_unit_id: requestContext.business_unit_id },
     });
   }
-  async findAll(): Promise<PaymentSubmission[]> {
-    return await this.db.client.paymentSubmission.findMany();
+
+  async find(): Promise<PaymentSubmissionRecord[]> {
+    const requestContext =
+      this.requestContext.getStore() as LocalStorageContextData;
+
+    return await this.db.client.paymentSubmission.findMany({
+      where: {
+        business_unit_id: requestContext.business_unit_id,
+      },
+      include: {
+        business_partner: true,
+      },
+    });
   }
+
   async create(
-    paymentSubmissionData: CreatePaymentSubmissionData,
+    paymentSubmissionData: CreatePaymentSubmissionRequest,
   ): Promise<PaymentSubmission> {
     const requestContext =
       this.requestContext.getStore() as LocalStorageContextData;
@@ -31,8 +50,8 @@ export class PaymentSubmissionRepository {
     return await this.db.client.paymentSubmission.create({
       data: {
         ...paymentSubmissionData,
-        business_unit_id: Number(requestContext.business_unit_id),
-        created_by: Number(requestContext.user_id),
+        business_unit_id: requestContext.business_unit_id,
+        created_by: requestContext.user_id,
       },
     });
   }

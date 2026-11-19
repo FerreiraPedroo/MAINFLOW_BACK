@@ -1,0 +1,28 @@
+model BusinessPartner {
+  id Int @id @default(autoincrement())
+
+  legal_name            String // Razão social ou Nome
+  trade_name            String? // Nome fantasia
+  business_partner_type String // Pessoa Jurídica, Pessoa Fisica
+  tax_number            String // CNPJ/CPF
+  address               String // endereço.
+  role                  String // Tipo de fornecedor CLIENT, SUPPLY
+  contact               Json // Contatos da empresa, nome, tel, email...
+  logo                  String? // Logo da empresa.
+
+  payment_submissions   PaymentSubmission[]
+  inventory_items       InventoryItem[]
+
+  business_unit_id Int
+  business_unit    BusinessUnit @relation(fields: [business_unit_id], references: [id], onDelete: Restrict)
+
+  //SOFT DELETE
+  created_at DateTime @default(now())
+  created_by Int?
+
+  updated_at DateTime? @updatedAt
+  updated_by Int?
+
+  deleted_at DateTime?
+  deleted_by Int?
+}

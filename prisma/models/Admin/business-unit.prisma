@@ -4,21 +4,21 @@ model BusinessUnit {
   photos String? //Quando for para postgres SQL
   cnpj   String
 
-  business_unit_activity BusinessUnitActivity[]
+  business_unit_activity      BusinessUnitActivity[]
 
   // ADMIN
-  departments       Department[]
-  group_users       GroupUser[]
-  process_instances ProcessInstance[]
+  departments                 Department[]
+  group_users                 GroupUser[]
+  process_instances           ProcessInstance[]
 
   // AUTH
-  users           User[]
-  user_sessions   UserSession[]
-  user_activities UserActivity[]
+  users                       User[]
+  user_sessions               UserSession[]
+  user_activities             UserActivity[]
 
   //BACKOFFICE
-  parties             Party[]
-  payment_submissions PaymentSubmission[]
+  business_partners           BusinessPartner[]
+  payment_submissions         PaymentSubmission[]
   
   // ORGANIZATION
   buildings                   Building[]
@@ -35,27 +35,27 @@ model BusinessUnit {
   contracts                   Contract[]
 
   // FACILITIES
-  projects            Project[]
-  project_allocations ProjectAllocation[]
-  project_documents   ProjectDocument[]
+  projects                    Project[]
+  project_allocations         ProjectAllocation[]
+  project_documents           ProjectDocument[]
 
   // SERVIÇES
 
   // PEOPLE
-  peoples              People[]
-  allocations          Allocation[]
-  people_relationships PeopleRelationship[]
-  jobs                 Job[]
-  people_jobs          PeopleJob[]
+  peoples                     People[]
+  allocations                 Allocation[]
+  people_relationships        PeopleRelationship[]
+  jobs                        Job[]
+  people_jobs                 PeopleJob[]
 
   // SUPPLY-CHAIN
-  procurements      Procurement[]
-  procurement_items ProcurementItem[]
-  suppliers         Supplier[]
-  inventory_items   InventoryItem[]
+  procurements                Procurement[]
+  procurement_items           ProcurementItem[]
+  suppliers                   Supplier[]
+  inventory_items             InventoryItem[]
 
   // MAINTENANCE
-  maintenance Maintenance[]
+  maintenance                 Maintenance[]
 
   //SOFT DELETE
   created_at DateTime @default(now())

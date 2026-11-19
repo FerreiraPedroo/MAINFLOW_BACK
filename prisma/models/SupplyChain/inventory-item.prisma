@@ -11,7 +11,7 @@ model InventoryItem {
   hs_code                     String? // Harmonized System Code (6 digitos) ou Nomenclatura comun do mercosul (8 digitos)
 
   manufacturer_id             Int?
-  manufacturer                Supplier?    @relation(fields:[manufacturer_id], references: [id])
+  manufacturer                BusinessPartner?    @relation(fields:[manufacturer_id], references: [id])
   manufacturer_part_number    String? // SKU ou EAN
   manufacturer_catalog        String?
   manufacturer_data_sheet     String?

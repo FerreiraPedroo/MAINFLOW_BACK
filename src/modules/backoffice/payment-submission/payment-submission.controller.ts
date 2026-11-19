@@ -5,12 +5,15 @@ import { ValidateService } from "@/common/decorators/validate-service.decorator"
 import { PaymentSubmissionService } from "./payment-submission.service";
 
 import {
-  type FindPaymentSubmissionInputDto,
+  CreatePaymentSubmissionInputSchema,
+  CreatePaymentSubmissionOutputSchema,
   FindPaymentSubmissionInputSchema,
   FindPaymentSubmissionOutputSchema,
+  type CreatePaymentSubmissionRequest,
+  type FindPaymentSubmissionInputDto,
 } from "./types";
 
-@Controller("backoffice/cost-centers")
+@Controller("backoffice/payment-submissions")
 export class PaymentSubmissionController {
   constructor(private paymentSubmissionService: PaymentSubmissionService) {}
 
@@ -23,8 +26,14 @@ export class PaymentSubmissionController {
     return await this.paymentSubmissionService.find(query);
   }
 
-  // @Post()
-  // async createPaymentSubmissionion(@Body() request: CrePaymentSubmissionrolRequest) {
-  //   return await this.paymentSubmissionService.create(request);
-  // }
+  @Post()
+  @ValidateService({
+    input: CreatePaymentSubmissionInputSchema,
+    output: CreatePaymentSubmissionOutputSchema,
+  })
+  async createPaymentSubmissionion(
+    @Body() request: CreatePaymentSubmissionRequest,
+  ) {
+    return await this.paymentSubmissionService.create(request);
+  }
 }

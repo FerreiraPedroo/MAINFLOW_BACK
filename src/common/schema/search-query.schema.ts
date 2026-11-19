@@ -6,6 +6,6 @@ import { SearchPaginationSchema } from "./search-pagination.schema";
 export const SearchQuerySchema = <T extends z.ZodType>(filter: T) =>
   z.object({
     filter: filter.optional(),
-    sort: SearchSortSchema.optional(),
+    order: SearchSortSchema.optional(),
     pagination: SearchPaginationSchema.optional(),
   });

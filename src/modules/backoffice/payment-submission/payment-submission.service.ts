@@ -3,10 +3,10 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 import { PaymentSubmissionRepository } from "./repositories/payment-submission.repository";
 import {
-  FindPaymentSubmissionResponseDto,
+  CreatePaymentSubmissionRequest,
+  FindPaymentSubmissionOutputDto,
   type FindPaymentSubmissionInputDto,
 } from "./types";
-import { searchQueryBuild } from "@/common/utils/search-query-builder.util";
 
 @Injectable()
 export class PaymentSubmissionService {
@@ -53,37 +53,15 @@ export class PaymentSubmissionService {
 
   async find(
     query: FindPaymentSubmissionInputDto,
-  ): Promise<FindPaymentSubmissionResponseDto[]> {
-    const queryBuild = searchQueryBuild<FindPaymentSubmissionInputDto>(query);
-    const result = await this.paymentSubmissionRepository.findAll();
-
-    const paymentSubmissionList = result.map((payment: any) => ({
-      id: payment.id,
-      invoice_number: payment.invoice_number,
-      invoice_type: payment.invoice_type,
-      due_date: payment.due_date,
-      total_amount: payment.total_amount,
-    }));
-
-    return paymentSubmissionList;
+  ): Promise<FindPaymentSubmissionOutputDto> {
+    return await this.paymentSubmissionRepository.find();
   }
 
-  // async create(request: CreatePaymentSubmissionionRequest) {
-  //   try {
-  //     const paymentSubmissionionionionionRecord =paypaypaypaypaymentSubmissionionionionionionymentControlRepository.create({
-  //       title: request.title,
-  //       status: request.status,
-  //       ...(request.description && { description: request.description }),
-  //     });
-
-  //     return {
-  //       id: paymentSubmissionionionionionRecord.id,
-  //       title: paymentSubmissionRecord.title,
-  //       status: paymentSubmissionRecord.status,
-  //       description: paymentSubmissionRecord.description,
-  //     };
-  //   } catch (error) {
-  //     this.prismaErrors(error);
-  //   }
-  // }
+  async create(request: CreatePaymentSubmissionRequest) {
+    try {
+      return await this.paymentSubmissionRepository.create(request);
+    } catch (error) {
+      this.prismaErrors(error);
+    }
+  }
 }

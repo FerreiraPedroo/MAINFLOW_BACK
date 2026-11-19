@@ -21,16 +21,16 @@ export const FindPaymentSubmissionOutputSchema = z.array(
     id: z.number(),
     invoice_number: z.string(),
     invoice_type: z.string(),
-    due_date: z.date(),
-    billing_period: z.date(),
+    due_date: z.coerce.date(),
+    billing_period: z.coerce.date(),
     total_amount: z.number(),
-    party: z.object({
+    business_partner: z.object({
       id: z.number(),
       legal_name: z.string(),
-      trade_name: z.string(),
-      party_type: z.string(),
-      tax_id: z.string(),
-      role: z.array(z.string()),
+      trade_name: z.string().nullable(),
+      business_partner_type: z.string(),
+      tax_number: z.string(),
+      role: z.string(),
     }),
   }),
 );
